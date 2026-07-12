@@ -1,0 +1,36 @@
+# Agent Instructions — agentic-solution-domain-insurance
+
+Rules for any coding or reasoning agent working in this repo (Codex, Claude, GLM, Databricks assistants). Read once; do not restate in outputs.
+
+## Project
+
+Agentic Target Modeling MVP on Databricks Free Edition. Recommendation-only system: analyzes synthetic Bronze metadata and recommends Silver ODS / Gold models, ontology mappings, and STTMs for P&C insurance. Learning build, non-commercial, synthetic data only. Canonical docs: `docs/design/` (architecture v0.2), `docs/planning/` (blueprint v0.1 + Excel work plan = task source of truth). Run evidence lives in `docs/evidence/`.
+
+## Hard rules (never violate)
+
+1. Recommendation-only: never generate deployment DDL, ingestion, transformation-execution, or migration code. Structure recommendations are data records, not executable schemas.
+2. Agent tool surface is read/query/retrieval only. No write, deploy, execute, credential, or ingest capability in any agent tool binding.
+3. No client data, PII, licensed COTS documentation, credentials, or connection strings anywhere in this repo.
+4. Separate observed facts from inferred meaning in every artifact; unresolved stays unresolved — never invent semantics.
+5. Confidence gates workflow routing only; human approval is required before any artifact is authoritative.
+
+## Layout and ownership
+
+- `contracts/` — JSON output contracts per agent. Build first; all agent outputs must validate against them.
+- `prompts/` — versioned agent system prompts (one file per agent, `NN_agent_name.md`).
+- `knowledge_packs/` — synthetic ontology, COTS-like references, standards, rules.
+- `evals/` — judges and labelled reviewer-decision set.
+- `src/databricks/` — numbered notebooks (`NN_purpose.py`), Free Edition serverless only.
+- `tests/unit`, `tests/validation` — validation covers retry/invalidation scenarios.
+- `.agents/skills/` — reusable task skills; check for a matching skill before improvising a workflow.
+
+## Conventions
+
+- Naming: `snake_case` files, numbered execution order (`00_`, `01_`), no tool-specific names or folders. Everything must run from plain Databricks notebooks/jobs — no vendor-specific agent framework assumed.
+- Python: PEP 8, stdlib + PySpark + Databricks SDK only unless a dependency already exists in the repo.
+- Config: single environment, all settings via `src/databricks/00_config.py`; no hardcoded catalog/schema names elsewhere.
+- Free Edition limits: 1 SQL warehouse (2X-Small), max 5 concurrent job tasks (design sequential), 1 vector search endpoint (scope via metadata filters), manual knowledge-pack upload.
+
+## Token economy
+
+Be brief. Read `contracts/` and the relevant schema extract instead of parsing .docx/.pptx/.xlsx. Do not regenerate unchanged files; edit in place. No summaries of what you just did beyond one line.
