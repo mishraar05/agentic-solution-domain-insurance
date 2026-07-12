@@ -5,6 +5,16 @@
   "description": "Reviewer decision on a recommendation",
   "type": "object",
   "properties": {
+    "decision_id": {
+      "type": "string",
+      "pattern": "^decision:si_.+$",
+      "description": "Deterministic identifier for an idempotent review decision"
+    },
+    "queue_item_id": {
+      "type": "string",
+      "pattern": "^si_.+:.+:.+$",
+      "description": "Exact queue item being decided"
+    },
     "schema_version": {
       "$ref": "common.json#/definitions/schema_version"
     },
@@ -39,8 +49,23 @@
     "recommended_reviewer_role": {
       "$ref": "common.json#/definitions/reviewer_role"
     },
+    "reviewer_role": {
+      "type": "string",
+      "enum": [
+        "DATA_ARCHITECT",
+        "DOMAIN_STEWARD",
+        "PRIVACY_STEWARD"
+      ],
+      "description": "Role that made the human decision"
+    },
     "reviewer_decision": {
-      "$ref": "common.json#/definitions/approval_state"
+      "type": "string",
+      "enum": [
+        "APPROVED",
+        "MODIFIED",
+        "REJECTED",
+        "DEFERRED"
+      ]
     },
     "reviewer_rationale": {
       "type": "string",
@@ -49,6 +74,11 @@
     "prior_recommendation_version": {
       "type": "string",
       "description": "Version of the recommendation being reviewed"
+    },
+    "recommendation_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Stable hash used to prevent rejected recommendations reappearing unchanged"
     },
     "invalidation_impact": {
       "type": [
@@ -72,6 +102,8 @@
     }
   },
   "required": [
+    "decision_id",
+    "queue_item_id",
     "schema_version",
     "run_id",
     "artifact_version",
@@ -80,9 +112,12 @@
     "recommendation_type",
     "review_reason",
     "recommended_reviewer_role",
+    "reviewer_role",
     "reviewer_decision",
     "reviewer_rationale",
+    "recommendation_fingerprint",
     "queue_status",
+    "decided_at",
     "queued_at"
   ],
   "additionalProperties": false

@@ -1,0 +1,43 @@
+resources:
+  jobs:
+    source_intelligence_pipeline:
+      name: "Source Intelligence v1 Pipeline"
+      tasks:
+        - task_key: config
+          notebook_task:
+            notebook_path: ../src/workflows/source_intelligence/00_config.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: "si_job_{{job.run_id}}"
+        - task_key: validate_source
+          depends_on:
+            - task_key: config
+          notebook_task:
+            notebook_path: ../src/workflows/source_intelligence/01_validate_source_scope.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: "si_job_{{job.run_id}}"
+        - task_key: build_dictionary
+          depends_on:
+            - task_key: validate_source
+          notebook_task:
+            notebook_path: ../src/workflows/source_intelligence/02_build_source_dictionary.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: "si_job_{{job.run_id}}"
+        - task_key: create_queue
+          depends_on:
+            - task_key: build_dictionary
+          notebook_task:
+            notebook_path: ../src/workflows/source_intelligence/03_create_review_queue.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: "si_job_{{job.run_id}}"
+        - task_key: validate
+          depends_on:
+            - task_key: create_queue
+          notebook_task:
+            notebook_path: ../src/workflows/source_intelligence/04_validate_phase2.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: "si_job_{{job.run_id}}"

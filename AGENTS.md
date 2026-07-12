@@ -21,7 +21,7 @@ Agentic Target Modeling MVP on Databricks Free Edition. Recommendation-only syst
 - `prompts/` — versioned agent system prompts (one file per agent, `NN_agent_name.md`).
 - `knowledge_packs/` — synthetic ontology, COTS-like references, standards, rules.
 - `evals/` — judges and labelled reviewer-decision set.
-- `src/databricks/` — numbered notebooks (`NN_purpose.py`), Free Edition serverless only.
+- `src/workflows/source_intelligence/` — numbered workflow entry-point notebooks (`NN_purpose.py`), Free Edition serverless only.
 - `examples/synthetic_bronze/` — optional demo/test fixture creation; separate job, never a core dependency.
 - `tests/unit`, `tests/validation` — validation covers retry/invalidation scenarios.
 - `.agents/skills/` — reusable task skills; check for a matching skill before improvising a workflow.
@@ -30,7 +30,7 @@ Agentic Target Modeling MVP on Databricks Free Edition. Recommendation-only syst
 
 - Naming: `snake_case` files, numbered execution order (`00_`, `01_`), no tool-specific names or folders. Everything must run from plain Databricks notebooks/jobs — no vendor-specific agent framework assumed.
 - Python: PEP 8, stdlib + PySpark + Databricks SDK only unless a dependency already exists in the repo.
-- Config: single environment, all settings via `src/databricks/00_config.py`; no hardcoded catalog/schema names elsewhere.
+- Config: single environment, all settings via `src/workflows/source_intelligence/00_config.py`; no hardcoded catalog/schema names elsewhere.
 - Free Edition limits: 1 SQL warehouse (2X-Small), max 5 concurrent job tasks (design sequential), 1 vector search endpoint (scope via metadata filters), manual knowledge-pack upload.
 
 ## Token economy

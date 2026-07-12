@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "pack_id": "cots_like_reference",
+  "pack_version": "1.0.0",
+  "status": "PROPOSED",
+  "description": "Vendor-NEUTRAL, synthetic COTS-like reference structures for exercising source recognition. Field and table patterns reflect conventions common across commercial P&C platforms (policy admin, claims, billing). NOT derived from any licensed Guidewire, Origami, or Majesco documentation; real vendor packs are loaded only in a licensed customer environment (design decision D-02).",
+  "product": "cots_like_suite",
+  "modules": [
+    {
+      "module": "policy_admin",
+      "description": "Policy administration module in the style of a modern PAS.",
+      "tables": [
+        {"table": "pa_policy", "maps_to_concept": "Policy.Policy", "columns": [
+          {"column": "public_id", "maps_to_concept": "Policy.Identifier", "pattern": "opaque public identifier"},
+          {"column": "policy_number", "maps_to_concept": "Policy.PolicyNumber"},
+          {"column": "status_code", "maps_to_concept": "Policy.Status", "pattern": "typecode into pa_typelist_policystatus"},
+          {"column": "primary_insured_id", "maps_to_concept": "Party.Identifier", "pattern": "foreign key to pa_contact"},
+          {"column": "product_cd", "maps_to_concept": "Product.Code"},
+          {"column": "update_time", "maps_to_concept": "Technical.SourceUpdatedTimestamp"}]},
+        {"table": "pa_policy_term", "maps_to_concept": "Policy.PolicyTerm", "columns": [
+          {"column": "period_start", "maps_to_concept": "Policy.EffectiveDate"},
+          {"column": "period_end", "maps_to_concept": "Policy.ExpirationDate"},
+          {"column": "written_premium_amt", "maps_to_concept": "Policy.WrittenPremium"}]},
+        {"table": "pa_policy_txn", "maps_to_concept": "Policy.PolicyTransaction", "columns": [
+          {"column": "txn_type_cd", "maps_to_concept": "Policy.PolicyTransaction", "pattern": "typecode: NEW/END/REN/CAN/REI"},
+          {"column": "txn_eff_date", "maps_to_concept": "Policy.EffectiveDate"}]},
+        {"table": "pa_coverage", "maps_to_concept": "Shared.Coverage", "columns": [
+          {"column": "limit_amt", "maps_to_concept": "Coverage.Limit"},
+          {"column": "deductible_amt", "maps_to_concept": "Coverage.Deductible"}]},
+        {"table": "pa_contact", "maps_to_concept": "Shared.Party", "columns": [
+          {"column": "contact_id", "maps_to_concept": "Party.Identifier"},
+          {"column": "contact_type_cd", "maps_to_concept": "Party.Type"}]}
+      ]
+    },
+    {
+      "module": "claims_mgmt",
+      "description": "Claims management module in the style of a modern claims platform.",
+      "tables": [
+        {"table": "cm_claim", "maps_to_concept": "Claim.Claim", "columns": [
+          {"column": "claim_public_id", "maps_to_concept": "Claim.Identifier"},
+          {"column": "policy_ref", "maps_to_concept": "Policy.Identifier", "pattern": "foreign key to policy system"},
+          {"column": "loss_dt", "maps_to_concept": "Claim.LossDate"},
+          {"column": "report_dt", "maps_to_concept": "Claim.ReportedDate"},
+          {"column": "close_dt", "maps_to_concept": "Claim.ClosedDate"},
+          {"column": "claim_state_cd", "maps_to_concept": "Claim.Status"}]},
+        {"table": "cm_exposure", "maps_to_concept": "Claim.Exposure", "columns": [
+          {"column": "coverage_ref", "maps_to_concept": "Shared.Coverage"},
+          {"column": "claimant_id", "maps_to_concept": "Party.Identifier"}]},
+        {"table": "cm_reserve", "maps_to_concept": "Claim.Reserve", "columns": [
+          {"column": "reserve_amt", "maps_to_concept": "Claim.Reserve"}]},
+        {"table": "cm_payment", "maps_to_concept": "Claim.Payment", "columns": [
+          {"column": "pay_amt", "maps_to_concept": "Claim.Payment"},
+          {"column": "pay_type_cd", "maps_to_concept": "Claim.Payment", "pattern": "typecode: INDEMNITY/EXPENSE distinguishes loss vs LAE"}]},
+        {"table": "cm_recovery", "maps_to_concept": "Claim.Recovery", "columns": [
+          {"column": "recovery_amt", "maps_to_concept": "Claim.Recovery"},
+          {"column": "recovery_type_cd", "maps_to_concept": "Claim.Recovery", "pattern": "typecode: SUBRO/SALVAGE"}]}
+      ]
+    },
+    {
+      "module": "billing",
+      "description": "Billing module in the style of a modern billing center.",
+      "tables": [
+        {"table": "bl_account", "maps_to_concept": "Billing.Account", "columns": [
+          {"column": "account_number", "maps_to_concept": "Billing.Account"},
+          {"column": "balance_amt", "maps_to_concept": "Billing.Balance"}]},
+        {"table": "bl_invoice", "maps_to_concept": "Billing.Invoice", "columns": [
+          {"column": "invoice_status_cd", "maps_to_concept": "Billing.Invoice"},
+          {"column": "due_date", "maps_to_concept": "Billing.Installment"}]},
+        {"table": "bl_installment", "maps_to_concept": "Billing.Installment", "columns": []},
+        {"table": "bl_payment", "maps_to_concept": "Billing.Payment", "columns": []},
+        {"table": "bl_disbursement", "maps_to_concept": "Billing.Disbursement", "columns": []},
+        {"table": "bl_delinquency", "maps_to_concept": "Billing.Delinquency", "columns": []}
+      ]
+    }
+  ],
+  "recognition_patterns": {
+    "identifier_style": "opaque public_id plus business number columns",
+    "typecode_style": "*_cd / *_code columns joined to typelist reference tables",
+    "extension_detection": ["column suffix _ext", "table prefix ext_", "columns absent from this reference baseline"],
+    "audit_columns": ["create_time", "update_time", "create_user", "update_user"],
+    "caution": "A match against this baseline is reference evidence only — never proof a field exists or means the same thing (design §5.3)."
+  }
+}

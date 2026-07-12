@@ -16,7 +16,7 @@ Date: 2026-07-12 · Claude independently verified every Codex finding against th
 | 8 | Core performed `CREATE SCHEMA` DDL | High | **FIXED** — config asserts the output schema exists; provisioning is a platform step |
 | 9 | Key candidates not always routed for review | High | **FIXED** — mandatory KEY_CANDIDATE trigger → DATA_ARCHITECT in `routing.py`; 04 asserts every key candidate is queued |
 | 10 | Review reason and reviewer could disagree | High | **FIXED** — atomic routing decision (trigger, reason, reviewer, priority); notebook 03 consumes it |
-| 11 | No reviewer-decision lifecycle | High | **DEFERRED** — needs the review workbench (work plan 3.6); queue now carries `queue_item_id` so decisions can link to exactly one item |
+| 11 | No reviewer-decision lifecycle | High | **PARTIAL** — deterministic decision creation, role/rationale enforcement, exact queue linkage, and unchanged-rejection suppression are implemented; human workbench integration remains external |
 | 12 | "Approved MVP naming rule" not backed by approval | High | **FIXED** — renamed "Deterministic candidate rule (not steward-approved)" |
 | 13 | Labelled set circular (derived from the classifier's own lookup) | High | **OPEN** — requires independent human relabelling; cannot be fixed by code (see C8) |
 | 14 | Improvements uncommitted | Medium | **OPEN** — commit is yours to make; suggested message below |

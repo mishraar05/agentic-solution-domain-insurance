@@ -24,7 +24,7 @@
 | WP | Description | Status |
 |---|---|---|
 | WP-I | Full contract and producer validation suite | PARTIAL |
-| WP-J | CI and quality gates | PENDING |
+| WP-J | CI and quality gates | COMPLETE |
 
 ## Schemas and versions
 
@@ -43,11 +43,11 @@
 
 ## Test and CI results
 
-- **Local tests:** 53/53 passed, including unit and validation scenarios
+- **Local tests:** 81/81 passed, including unit and validation scenarios
 - **Expanded fixture validation:** dependency-free schema subset validation, positive loading, and negative required-field rejection
 - **Leakage validation:** prohibited sentinel injected as source input and confirmed absent from sanitized event output and captured logs
-- **CI workflow:** not implemented; `.github/workflows/ci.yml` does not exist
-- **Remaining validation gap:** all producer outputs are not yet validated against the complete contract suite
+- **CI workflow:** `.github/workflows/ci.yml` runs local-safe tests and parses every contract without Databricks credentials
+- **Remaining validation gap:** Spark producers require an in-workspace run with fresh evidence
 
 ## Labelled-set coverage
 
@@ -101,7 +101,7 @@ Phase 2 producers (Databricks notebooks that use the deterministic core) may be 
 
 ## Next steps
 
-1. **Phase 2 producers:** Implement Databricks notebooks that use `src/source_intelligence/` modules
-2. **Contract enforcement:** Validate every producer output against the complete contract suite before persistence
-3. **CI:** Add a local-safe workflow for tests, schema checks, and leakage scanning without Databricks credentials
-4. **Databricks validation:** Run producers in-workspace and capture evidence
+1. **Databricks validation:** Run the contract-enforced producers in-workspace and capture evidence
+2. **Independent labels:** Have a human relabel the evaluation set before calibration
+3. **Calibration:** Approve or modify confidence weights and the review threshold
+4. **Governance:** Assign named reviewers and approve or modify the PROPOSED artifacts

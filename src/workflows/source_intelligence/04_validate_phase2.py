@@ -1,4 +1,23 @@
 # Databricks notebook source
+"""Enforce the Phase 2 runtime gate and persist the governed run record.
+
+This terminal core-workflow task verifies that all configured source inputs
+and required recommendation outputs exist for one shared ``run_id``. It checks
+attribute and object coverage, minimized profile evidence, expected synthetic
+relationships, evidence references, mandatory key routing, no auto-approval,
+and retry idempotency.
+
+After the assertions pass, the notebook creates a contract-validated
+``source_intelligence_run`` record containing scope, reproducibility context,
+an idempotency key, status, timestamps, and metrics. The record is appended
+only once for the run. A failed assertion stops the job and no successful run
+record is fabricated.
+
+This notebook validates recommendation artifacts only. It does not authorize
+them, change reviewer decisions, deploy schemas, or mutate source/Bronze data.
+Run it after ``03_create_review_queue.py``.
+"""
+
 # MAGIC %run ./00_config
 
 # COMMAND ----------
@@ -33,7 +52,14 @@ existing_source_tables = {
 missing_inputs = set(SOURCE_TABLES) - existing_source_tables
 assert not missing_inputs, f"Missing configured source inputs: {sorted(missing_inputs)}"
 
-required_outputs = {"source_observation_dictionary", "review_queue"}
+required_outputs = {
+    "source_observation_dictionary",
+    "source_attribute_observation",
+    "source_object_observation",
+    "profile_evidence",
+    "relationship_candidate",
+    "review_queue",
+}
 existing_outputs = {
     row.tableName
     for row in spark.sql(f"SHOW TABLES IN `{OUTPUT_CATALOG}`.`{OUTPUT_SCHEMA}`").collect()
@@ -48,6 +74,18 @@ dictionary = spark.table(fq_output_table("source_observation_dictionary")).filte
     F.col("run_id") == RUN_ID
 )
 queue = spark.table(fq_output_table("review_queue")).filter(F.col("run_id") == RUN_ID)
+attributes = spark.table(fq_output_table("source_attribute_observation")).filter(
+    F.col("run_id") == RUN_ID
+)
+objects = spark.table(fq_output_table("source_object_observation")).filter(
+    F.col("run_id") == RUN_ID
+)
+profiles = spark.table(fq_output_table("profile_evidence")).filter(
+    F.col("run_id") == RUN_ID
+)
+relationships = spark.table(fq_output_table("relationship_candidate")).filter(
+    F.col("run_id") == RUN_ID
+)
 
 dictionary_rows = dictionary.count()
 queue_rows = queue.count()
@@ -57,6 +95,17 @@ assert dictionary_rows > 0, (
     "pass a shared run_id job parameter (si_job_{{job.run_id}})."
 )
 assert queue_rows > 0, f"No review-queue records for run {RUN_ID} (same run-context requirement)."
+assert attributes.count() == dictionary_rows, \
+    "Every dictionary attribute must have a Phase 2 attribute observation."
+assert objects.count() == len(SOURCE_TABLES), \
+    "Every configured source object must have an object observation."
+assert profiles.count() > 0, "Approved minimized profile evidence is missing."
+assert relationships.count() == 2, \
+    "The two known synthetic relationships must be proposed."
+assert attributes.filter(F.size("evidence_references") == 0).count() == 0, \
+    "Every attribute observation must retain physical-metadata evidence references."
+assert profiles.filter(F.col("privacy_class") != "INTERNAL").count() == 0, \
+    "Personal-data columns must be rejected before value-level profiling."
 
 # Retry idempotency: identical rerun must not have duplicated dictionary rows.
 dup = (dictionary.groupBy("source_table", "source_column", "artifact_version")
@@ -108,10 +157,9 @@ run_record = {
     "started_at": RUN_STARTED_AT.isoformat(),
     "completed_at": completed_at.isoformat(),
     "metrics": {
-        "objects_observed": len(SOURCE_TABLES),
-        "attributes_observed": dictionary_rows,
-        "relationships_inferred": dictionary.filter(
-            F.col("relationship_evidence").isNotNull()).count(),
+        "objects_observed": objects.count(),
+        "attributes_observed": attributes.count(),
+        "relationships_inferred": relationships.count(),
         "privacy_classifications": dictionary.filter(
             F.col("privacy_class") != "INTERNAL").count(),
         "review_items_created": queue_rows,

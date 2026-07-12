@@ -1,4 +1,22 @@
 # Databricks notebook source
+"""Route governed recommendations into the human review queue.
+
+This workflow reads the current run's source-attribute recommendations and
+applies the deterministic routing policy from ``source_intelligence.routing``.
+Privacy findings, key and relationship candidates, contradictions, unmapped
+concepts, insufficient evidence coverage, and low-confidence proposals are
+assigned atomically to the appropriate reviewer role with a reason and
+priority.
+
+Each queue item is validated against ``contracts/review_queue_item.json``
+before persistence. Queue items start as ``OPEN`` and never approve the source
+recommendation. The stable ``queue_item_id`` links a later human decision to
+exactly one recommendation. Re-running the same ``run_id`` does not append
+duplicates.
+
+Run after ``02_build_source_dictionary.py`` and before Phase 2 validation.
+"""
+
 # MAGIC %run ./00_config
 
 # COMMAND ----------

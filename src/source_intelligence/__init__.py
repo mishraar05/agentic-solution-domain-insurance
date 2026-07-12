@@ -1,1 +1,1 @@
-"""Deterministic Source Intelligence core module."""
+"""Reusable deterministic core for the insurance Source Intelligence workflow."""

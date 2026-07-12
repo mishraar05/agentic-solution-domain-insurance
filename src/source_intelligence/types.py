@@ -1,4 +1,11 @@
-"""Type compatibility rules for semantic concepts."""
+"""Score compatibility between physical types and proposed field semantics.
+
+The rules compare a source column's PySpark type representation with transparent
+name-based expectations for dates, timestamps, identifiers, measures, and
+counts. The result is one confidence component rather than a semantic decision:
+compatible types support a proposal, while unknown or conflicting types lower
+the evidence strength and may require review.
+"""
 
 TYPE_EXPECTATIONS = {
     "DateType": ["date", "effective_date", "expiration_date", "loss_date", "birth_date"],

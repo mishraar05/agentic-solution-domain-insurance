@@ -1,4 +1,29 @@
 # Databricks notebook source
+"""Shared runtime configuration for every Source Intelligence workflow task.
+
+This notebook is the first entry point and is also imported with ``%run`` by
+the later numbered notebooks. It centralizes source scope, recommendation
+output locations, artifact versions, review thresholds, and the run identifier
+so every task in one Databricks job operates on exactly the same context.
+
+Inputs
+------
+``run_id`` is an optional Databricks widget supplied by the job definition.
+All catalog, schema, source-table, and threshold settings are declared below.
+
+Provides to downstream notebooks
+---------------------------------
+Validated constants plus helpers for safely quoted source and output table
+names. It also makes the reusable ``src/source_intelligence`` package
+importable from both Databricks Asset Bundle and interactive workspace paths.
+
+Safety boundary
+---------------
+The notebook only checks that the configured output schema already exists. It
+does not create infrastructure or create, ingest, overwrite, or populate any
+source/Bronze table. Source tables are external read-only prerequisites.
+"""
+
 # MAGIC %md
 # MAGIC # 00 — Source Intelligence configuration
 # MAGIC
@@ -68,22 +93,52 @@ RUN_STARTED_AT = datetime.now(timezone.utc)
 # Make the deterministic core importable from workspace files.
 # Primary: resolve from the notebook path (robust across Databricks execution
 # modes); fallback: cwd-relative for local/test execution.
+def _parent_directories(path: str, maximum_depth: int = 6):
+    """Return ``path`` and a bounded list of parents, nearest first."""
+    current = os.path.abspath(path)
+    parents = []
+    for _ in range(maximum_depth):
+        if current in parents:
+            break
+        parents.append(current)
+        parent = os.path.dirname(current)
+        if parent == current:
+            break
+        current = parent
+    return parents
+
+
 def _resolve_repo_src() -> str:
+    """Locate the ``src`` directory without assuming a workspace root path."""
+    starting_points = []
+    try:
+        starting_points.append(os.path.dirname(os.path.abspath(__file__)))
+    except NameError:
+        pass
     try:
         nb_path = (dbutils.notebook.entry_point.getDbutils().notebook()
                    .getContext().notebookPath().get())
-        repo_src = os.path.dirname(os.path.dirname("/Workspace" + nb_path))
-        if os.path.isdir(os.path.join(repo_src, "source_intelligence")):
-            return repo_src
+        workspace_path = (
+            nb_path if nb_path.startswith("/Workspace/")
+            else f"/Workspace{nb_path}"
+        )
+        starting_points.append(os.path.dirname(workspace_path))
     except Exception:
         pass
-    return os.path.abspath(os.path.join(os.getcwd(), ".."))
+    starting_points.append(os.getcwd())
+    candidates = []
+    for starting_point in starting_points:
+        candidates.extend(_parent_directories(starting_point))
+    for candidate in candidates:
+        if os.path.isdir(os.path.join(candidate, "source_intelligence")):
+            return candidate
+    raise RuntimeError(
+        "Cannot locate source_intelligence modules relative to the deployed "
+        "notebook or current working directory."
+    )
 
 
 _REPO_SRC = _resolve_repo_src()
-assert os.path.isdir(os.path.join(_REPO_SRC, "source_intelligence")), (
-    f"Cannot locate source_intelligence modules from {_REPO_SRC}; check workspace layout."
-)
 if _REPO_SRC not in sys.path:
     sys.path.insert(0, _REPO_SRC)
 

@@ -1,4 +1,11 @@
-"""Deterministic data-quality helpers used by Source Intelligence tests."""
+"""Provide deterministic quality and idempotency helpers for synthetic tests.
+
+The functions navigate machine-readable fixture tables, inspect nulls,
+duplicates, orphan relationships, and type conflicts, and derive stable hashes
+from canonicalized inputs. They also map fixture issues to governed reviewer
+roles. This module operates only on isolated synthetic structures and is not a
+production source-data profiling service.
+"""
 
 import hashlib
 import json

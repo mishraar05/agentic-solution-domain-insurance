@@ -1,4 +1,11 @@
-"""Naming pattern classification rules."""
+"""Propose business semantics from transparent table and column-name rules.
+
+Known synthetic attributes map to explicit business names, ontology concepts,
+domains, and naming strengths. Unknown attributes receive only a readable name,
+an unresolved concept, a cautious strength, and a reason that states the result
+is naming-pattern inference. These proposals are deterministic candidates, not
+steward-approved truth, and unresolved meaning remains unresolved.
+"""
 
 EXACT_MATCHES = {
     "policy_id": ("Policy Identifier", "Policy.Identifier", "Policy", 0.95),
@@ -29,11 +36,13 @@ def classify_naming(table_name, column_name):
     naming_strength = 0.55
     reason = "Naming-pattern inference only"
 
-    if "policy" in table or name.startswith("policy_"):
+    if "policyholder" in table or "party" in table:
+        domain = "Shared"
+    elif "policy" in table or name.startswith("policy_"):
         domain = "Policy"
     elif "claim" in table or name.startswith("claim_") or name == "loss_date":
         domain = "Claims"
-    elif "party" in table or "party" in name or "insured" in name:
+    elif "party" in name or "insured" in name:
         domain = "Shared"
 
     if name in EXACT_MATCHES:

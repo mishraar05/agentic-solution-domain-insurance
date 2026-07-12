@@ -152,7 +152,7 @@ The overall confidence score is derived from weighted component evidence - never
 | **Medium** | 0.75 - 0.84 | No mandatory review (still PROPOSED) | Good evidence but may have assumptions |
 | **Low** | < 0.75 | **Mandatory review** - routed to Domain Steward | Insufficient evidence; steward validation required |
 
-**Configured threshold:** `LOW_CONFIDENCE_THRESHOLD = 0.75` (in `src/databricks/00_config.py`)
+**Configured threshold:** `LOW_CONFIDENCE_THRESHOLD = 0.75` (in `src/workflows/source_intelligence/00_config.py`)
 
 ## Mandatory review triggers
 

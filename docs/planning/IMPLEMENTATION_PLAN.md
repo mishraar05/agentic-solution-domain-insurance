@@ -65,11 +65,11 @@ flowchart LR
 | `01_validate_source_scope.py` | Verifies configured source tables through read-only metadata access. | Source preflight result. |
 | `02_build_source_dictionary.py` | Runs deterministic source intelligence rules. | `source_observation_dictionary`. |
 | `03_create_review_queue.py` | Routes uncertain, relationship, and privacy items. | `review_queue`. |
-| `04_validate_mvp.py` | Validates artifact completeness and no auto-approval. | Run summary and validation result. |
+| `04_validate_phase2.py` | Validates artifact completeness and no auto-approval. | Run summary and validation result. |
 
 ### Foundation tasks
 
-- Upload `src/databricks/` to a Databricks Workspace folder.
+- Deploy `src/workflows/source_intelligence/` as the workflow entry-point notebooks.
 - Configure `SOURCE_CATALOG`, `SOURCE_SCHEMA`, `SOURCE_TABLES`, and output settings in `00_config.py`.
 - Run the five notebooks in README order.
 - Inspect the data dictionary and reviewer queue.

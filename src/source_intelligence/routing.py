@@ -1,7 +1,11 @@
-"""Atomic review routing: one decision carrying trigger, reason, reviewer, priority.
+"""Route one recommendation to one coherent human-review decision.
 
-Governance requires primary-key and foreign-key candidates to reach the Data
-Architect (mandatory key review), independent of confidence.
+Routing evaluates mandatory governance triggers in priority order and returns
+the trigger, reason, reviewer role, and priority together so those fields cannot
+drift apart. Privacy, key, relationship, contradiction, unmapped-concept,
+evidence-coverage, and confidence conditions are handled explicitly. Primary-
+and foreign-key candidates always reach the Data Architect regardless of their
+confidence score, and no routing result grants approval.
 """
 
 LOW_CONFIDENCE_THRESHOLD = 0.75

@@ -19,9 +19,8 @@ __pycache__/
 # Jupyter
 .ipynb_checkpoints/
 
-# Databricks
+# Databricks local state (databricks.yml is version-controlled for DAB)
 .databricks/
-databricks.yml
 
 # OS
 .DS_Store

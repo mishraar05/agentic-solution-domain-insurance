@@ -30,6 +30,7 @@ class TestNamingClassification:
     def test_unknown_column(self):
         name, concept, domain, strength, reason = classify_naming("bronze_policyholder", "display_name")
         assert concept is None
+        assert domain == "Shared"
         assert strength == 0.55
 
     def test_personal_data_detection(self):
@@ -115,6 +116,21 @@ class TestConfidenceCalculation:
         result2 = compute_confidence(**kwargs)
         assert result1.score == result2.score
         assert result1.evidence_coverage == result2.evidence_coverage
+
+    def test_contradicted_component_is_retained_but_not_scored(self):
+        result = compute_confidence(
+            naming_strength=0.95,
+            type_strength=0.8,
+            relationship_strength=0.4,
+            cots_match_strength=0.5,
+            standard_consistency=0.7,
+            relationship_contradicted=True,
+        )
+        component = result.components["relationship_strength"]
+        assert component["availability"] == "CONTRADICTED"
+        assert component["value"] == 0.4
+        assert result.evidence_coverage == 0.75
+        assert "require review" in result.confidence_reason
 
 
 class TestReviewRouting:

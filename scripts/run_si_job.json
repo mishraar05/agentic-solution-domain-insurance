@@ -1,48 +1,43 @@
 {
-  "run_name": "agentic-source-intelligence-run",
+  "run_name": "source-intelligence-v1-run",
   "tasks": [
     {
       "task_key": "config",
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/src/workflows/source_intelligence/00_config",
-        "source": "WORKSPACE",
-        "base_parameters": { "run_id": "si_job_{{job.run_id}}" }
+        "source": "WORKSPACE"
       }
     },
     {
-      "task_key": "source_preflight",
-      "depends_on": [{ "task_key": "config" }],
+      "task_key": "validate_source",
+      "depends_on": [{"task_key": "config"}],
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/src/workflows/source_intelligence/01_validate_source_scope",
-        "source": "WORKSPACE",
-        "base_parameters": { "run_id": "si_job_{{job.run_id}}" }
+        "source": "WORKSPACE"
       }
     },
     {
-      "task_key": "dictionary",
-      "depends_on": [{ "task_key": "source_preflight" }],
+      "task_key": "build_dictionary",
+      "depends_on": [{"task_key": "validate_source"}],
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/src/workflows/source_intelligence/02_build_source_dictionary",
-        "source": "WORKSPACE",
-        "base_parameters": { "run_id": "si_job_{{job.run_id}}" }
+        "source": "WORKSPACE"
       }
     },
     {
-      "task_key": "review_queue",
-      "depends_on": [{ "task_key": "dictionary" }],
+      "task_key": "create_queue",
+      "depends_on": [{"task_key": "build_dictionary"}],
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/src/workflows/source_intelligence/03_create_review_queue",
-        "source": "WORKSPACE",
-        "base_parameters": { "run_id": "si_job_{{job.run_id}}" }
+        "source": "WORKSPACE"
       }
     },
     {
       "task_key": "validate",
-      "depends_on": [{ "task_key": "review_queue" }],
+      "depends_on": [{"task_key": "create_queue"}],
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/src/workflows/source_intelligence/04_validate_phase2",
-        "source": "WORKSPACE",
-        "base_parameters": { "run_id": "si_job_{{job.run_id}}" }
+        "source": "WORKSPACE"
       }
     }
   ]

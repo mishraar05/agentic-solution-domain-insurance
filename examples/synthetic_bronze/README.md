@@ -9,5 +9,5 @@ needed for a demo or integration test. The notebook creates tables in
 
 The core solution consumes configured, existing source tables and never calls
 this setup notebook. To use the demo fixture, configure
-`src/databricks/00_config.py` with the demo catalog, schema, and table names,
+`src/workflows/source_intelligence/00_config.py` with the demo catalog, schema, and table names,
 then run the core Source Intelligence job separately.

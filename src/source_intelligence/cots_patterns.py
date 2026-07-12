@@ -1,4 +1,11 @@
-"""Authorized structured COTS pattern matching (Phase 2 deterministic only)."""
+"""Represent authorized deterministic COTS-pattern evidence for Phase 2.
+
+Phase 2 contains no licensed product documentation or semantic retrieval. The
+public function therefore returns an explicit unavailable assessment unless a
+small, authorized, versioned structured pattern is later configured. Keeping
+the component unavailable is intentional: the confidence calculation records
+the missing evidence instead of inventing a product match from model memory.
+"""
 
 def match_cots_pattern(table_name: str, column_name: str, value_hint=None) -> dict:
     """Match against authorized COTS patterns.

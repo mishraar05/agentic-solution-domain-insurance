@@ -1,9 +1,12 @@
-"""Contract validation with cross-file $ref resolution rooted at contracts/.
+"""Validate producer records against the repository's JSON contracts.
 
-Producers MUST validate contract-shaped records before persistence (F7).
-Dependency-free subset of JSON Schema: $ref (local + cross-file), type, enum,
-const, pattern, required, properties, additionalProperties, items,
-minimum/maximum, array/object recursion.
+Every workflow producer calls this module before persistence so malformed or
+incomplete recommendations fail at the write boundary. The dependency-free
+validator resolves local and cross-file ``$ref`` values rooted at ``contracts``
+and implements the schema features used by this project: types, enums,
+constants, patterns, required properties, additional properties, arrays,
+objects, item limits, and numeric bounds. It validates logical records before
+Spark-specific serialization changes timestamps or nested objects.
 """
 import json
 import os
@@ -85,14 +88,29 @@ def validate_instance(value, schema, root_schema=None, path="$", contracts_dir=N
         if missing:
             raise ContractValidationError(f"{path}: missing required keys {missing}")
         props = schema.get("properties", {})
-        if schema.get("additionalProperties") is False:
-            extra = [k for k in value if k not in props]
+        extra = [key for key in value if key not in props]
+        additional = schema.get("additionalProperties")
+        if additional is False:
             if extra:
                 raise ContractValidationError(f"{path}: additional properties not allowed: {extra}")
+        elif isinstance(additional, dict):
+            for key in extra:
+                validate_instance(
+                    value[key], additional, root_schema,
+                    f"{path}.{key}", contracts_dir,
+                )
         for key, subschema in props.items():
             if key in value:
                 validate_instance(value[key], subschema, root_schema, f"{path}.{key}", contracts_dir)
     if isinstance(value, list) and "items" in schema:
+        if "minItems" in schema and len(value) < schema["minItems"]:
+            raise ContractValidationError(
+                f"{path}: expected at least {schema['minItems']} item(s)"
+            )
+        if "maxItems" in schema and len(value) > schema["maxItems"]:
+            raise ContractValidationError(
+                f"{path}: expected at most {schema['maxItems']} item(s)"
+            )
         for index, item in enumerate(value):
             validate_instance(item, schema["items"], root_schema, f"{path}[{index}]", contracts_dir)
 

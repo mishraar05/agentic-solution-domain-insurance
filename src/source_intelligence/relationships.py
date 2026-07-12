@@ -1,4 +1,11 @@
-"""Relationship inference from key naming and type patterns."""
+"""Infer candidate keys and relationships from deterministic structural rules.
+
+The pilot recognizes a small synthetic set of primary-key names and known
+cross-table identifier relationships. Functions return candidate roles,
+evidence descriptions, and relationship strengths; they never assert database
+constraints or referential integrity. All key and relationship candidates are
+non-authoritative and must reach the Data Architect review queue.
+"""
 
 PRIMARY_KEYS = {
     "bronze_policy": "policy_id",

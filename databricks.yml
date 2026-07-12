@@ -1,0 +1,11 @@
+bundle:
+  name: source-intelligence-v1
+
+targets:
+  DEV:
+    workspace:
+      host: https://dbc-b2d72a44-d1b1.cloud.databricks.com
+      root_path: /Workspace/bundles/source-intelligence-v1
+
+include:
+  - resources/source_intelligence_pipeline.yml

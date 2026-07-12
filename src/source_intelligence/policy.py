@@ -1,4 +1,11 @@
-"""Prohibited-evidence rejection with sanitized audit output."""
+"""Reject prohibited evidence before inspection, profiling, or retention.
+
+The policy helpers identify prohibited narrative, credential, connection, and
+test-sentinel evidence. Rejection returns a contract-shaped sanitized audit
+event containing only structural context and the action taken; raw values never
+enter the event or log message. The event routes the exception to the Privacy
+Steward without pretending that prohibited content was safely profiled.
+"""
 
 from datetime import datetime, timezone
 

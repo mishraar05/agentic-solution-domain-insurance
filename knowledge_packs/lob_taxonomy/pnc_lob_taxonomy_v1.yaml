@@ -1,0 +1,201 @@
+# P&C Line of Business Taxonomy — operational lens
+# Governed reference data: gives the semantic classifier and Gold agent a fixed
+# list to classify against (design: segment -> LOB -> product -> coverage, D-01).
+# NAIC statutory line NAMES included for regulatory mapping; exact statement
+# line numbers are confirmed per filing jurisdiction at scale-up.
+schema_version: "1.0.0"
+pack_id: pnc_lob_taxonomy
+pack_version: "1.0.0"
+status: PROPOSED
+ontology_concept: Shared.LineOfBusiness
+segments:
+  - segment_id: PERSONAL
+    name: Personal Lines
+    description: Insurance sold to individuals and households.
+  - segment_id: COMMERCIAL
+    name: Commercial Lines
+    description: Insurance sold to businesses and organizations.
+  - segment_id: SPECIALTY
+    name: Specialty Lines
+    description: Specialized risks often written by dedicated units or programs.
+
+lines_of_business:
+  - lob_id: PERS_AUTO
+    name: Personal Auto
+    segment: PERSONAL
+    aliases: [private passenger auto, PPA, motor personal]
+    description: Liability and physical damage coverage for privately owned vehicles.
+    typical_products: [standard auto, non-standard auto, usage-based auto]
+    typical_coverages: [bodily injury liability, property damage liability, collision, comprehensive, uninsured motorist, medical payments, PIP]
+    naic_line_names: [private passenger auto liability, auto physical damage]
+
+  - lob_id: HOMEOWNERS
+    name: Homeowners
+    segment: PERSONAL
+    aliases: [home, HO, homeowners multi-peril]
+    description: Package coverage for owner-occupied dwellings, contents, and personal liability.
+    typical_products: [HO-3 special form, HO-5 comprehensive form, high-value home]
+    typical_coverages: [dwelling, other structures, personal property, loss of use, personal liability, medical payments]
+    naic_line_names: [homeowners multiple peril]
+
+  - lob_id: RENTERS_CONDO
+    name: Renters and Condo
+    segment: PERSONAL
+    aliases: [HO-4, HO-6, tenants]
+    description: Contents and liability coverage for tenants and unit owners.
+    typical_products: [renters HO-4, condo HO-6]
+    typical_coverages: [personal property, loss of use, personal liability, loss assessment]
+    naic_line_names: [homeowners multiple peril]
+
+  - lob_id: DWELLING_FIRE
+    name: Dwelling Fire
+    segment: PERSONAL
+    aliases: [DP, landlord, dwelling property]
+    description: Named-peril or open-peril coverage for non-owner-occupied dwellings.
+    typical_products: [DP-1, DP-3, landlord package]
+    typical_coverages: [dwelling, other structures, fair rental value, premises liability]
+    naic_line_names: [fire, allied lines]
+
+  - lob_id: PERS_UMBRELLA
+    name: Personal Umbrella
+    segment: PERSONAL
+    aliases: [PUL, excess liability personal]
+    description: Excess liability over underlying personal auto and home policies.
+    typical_products: [personal umbrella]
+    typical_coverages: [excess bodily injury, excess property damage, personal injury]
+    naic_line_names: [other liability]
+
+  - lob_id: PERS_MARINE
+    name: Personal Inland Marine and Watercraft
+    segment: PERSONAL
+    aliases: [personal articles, boat, watercraft, scheduled property]
+    description: Scheduled valuables, small watercraft, and recreational marine risks.
+    typical_products: [personal articles floater, boatowners, yacht (small)]
+    typical_coverages: [scheduled property, hull, watercraft liability]
+    naic_line_names: [inland marine, ocean marine]
+
+  - lob_id: MOTORCYCLE_RV
+    name: Motorcycle and Recreational Vehicles
+    segment: PERSONAL
+    aliases: [powersports, RV, ATV, motorhome]
+    description: Liability and physical damage for motorcycles and recreational vehicles.
+    typical_products: [motorcycle, motorhome, ATV/off-road]
+    typical_coverages: [liability, collision, comprehensive, accessory coverage]
+    naic_line_names: [private passenger auto liability, auto physical damage]
+
+  - lob_id: COMM_AUTO
+    name: Commercial Auto
+    segment: COMMERCIAL
+    aliases: [business auto, fleet, trucking]
+    description: Liability and physical damage for business-owned or hired vehicles.
+    typical_products: [business auto, motor carrier, garage]
+    typical_coverages: [auto liability, physical damage, hired and non-owned auto, motor truck cargo]
+    naic_line_names: [commercial auto liability, auto physical damage]
+
+  - lob_id: COMM_PROPERTY
+    name: Commercial Property
+    segment: COMMERCIAL
+    aliases: [CP, property, commercial fire]
+    description: Buildings, business personal property, and income coverage for businesses.
+    typical_products: [commercial property, output policy, builders risk]
+    typical_coverages: [building, business personal property, business income, extra expense, equipment breakdown]
+    naic_line_names: [fire, allied lines, commercial multiple peril (non-liability)]
+
+  - lob_id: GENERAL_LIABILITY
+    name: General Liability
+    segment: COMMERCIAL
+    aliases: [GL, CGL, casualty]
+    description: Third-party bodily injury, property damage, and related liability for businesses.
+    typical_products: [CGL occurrence, CGL claims-made, products liability]
+    typical_coverages: [premises operations, products-completed operations, personal and advertising injury, medical payments]
+    naic_line_names: [other liability, products liability, commercial multiple peril (liability)]
+
+  - lob_id: WORKERS_COMP
+    name: Workers Compensation
+    segment: COMMERCIAL
+    aliases: [WC, comp, workers' compensation]
+    description: Statutory benefits for employee workplace injuries plus employers liability.
+    typical_products: [guaranteed cost, retrospective rated, large deductible]
+    typical_coverages: [statutory workers compensation, employers liability]
+    naic_line_names: [workers' compensation]
+
+  - lob_id: BOP
+    name: Business Owners Policy
+    segment: COMMERCIAL
+    aliases: [businessowners, package small commercial]
+    description: Packaged property and liability product for small and mid-size businesses.
+    typical_products: [standard BOP, industry-tailored BOP]
+    typical_coverages: [building, business personal property, business income, business liability]
+    naic_line_names: [commercial multiple peril]
+
+  - lob_id: COMM_UMBRELLA
+    name: Commercial Umbrella and Excess
+    segment: COMMERCIAL
+    aliases: [excess casualty, umbrella commercial]
+    description: Excess limits over underlying commercial liability policies.
+    typical_products: [umbrella, follow-form excess]
+    typical_coverages: [excess liability]
+    naic_line_names: [other liability]
+
+  - lob_id: PROF_LIABILITY
+    name: Professional Liability
+    segment: COMMERCIAL
+    aliases: [E&O, D&O, EPL, management liability, medical professional]
+    description: Liability arising from professional services, management decisions, or employment practices.
+    typical_products: [errors and omissions, directors and officers, employment practices, medical malpractice]
+    typical_coverages: [professional negligence, defense costs, entity coverage]
+    naic_line_names: [other liability, medical professional liability]
+
+  - lob_id: CYBER
+    name: Cyber
+    segment: COMMERCIAL
+    aliases: [cyber liability, privacy and network security]
+    description: First- and third-party coverage for cyber incidents and privacy breaches.
+    typical_products: [standalone cyber, cyber endorsement]
+    typical_coverages: [breach response, business interruption, cyber extortion, network security liability, privacy liability]
+    naic_line_names: [other liability]
+
+  - lob_id: COMM_MARINE
+    name: Commercial Inland Marine
+    segment: COMMERCIAL
+    aliases: [IM, equipment floater, cargo]
+    description: Property in transit, mobile equipment, and specialized floaters.
+    typical_products: [contractors equipment, motor truck cargo, installation floater]
+    typical_coverages: [scheduled equipment, transit, bailee]
+    naic_line_names: [inland marine]
+
+  - lob_id: SURETY_FIDELITY
+    name: Surety and Fidelity
+    segment: COMMERCIAL
+    aliases: [bonds, surety bonds, crime]
+    description: Contract and commercial bonds plus employee dishonesty coverage.
+    typical_products: [contract surety, commercial surety, crime/fidelity]
+    typical_coverages: [performance bond, payment bond, employee theft]
+    naic_line_names: [surety, fidelity]
+
+  - lob_id: OCEAN_MARINE
+    name: Ocean Marine
+    segment: SPECIALTY
+    aliases: [marine, hull and cargo, P&I]
+    description: Vessels, marine cargo, and marine liabilities.
+    typical_products: [hull, cargo, protection and indemnity]
+    typical_coverages: [hull damage, cargo loss, marine liability]
+    naic_line_names: [ocean marine]
+
+  - lob_id: CROP
+    name: Crop
+    segment: SPECIALTY
+    aliases: [crop hail, MPCI]
+    description: Crop yield and hail coverage, often federally reinsured.
+    typical_products: [multi-peril crop insurance, crop hail]
+    typical_coverages: [yield loss, hail damage]
+    naic_line_names: [multiple peril crop]
+
+  - lob_id: WARRANTY
+    name: Warranty and Service Contracts
+    segment: SPECIALTY
+    aliases: [extended warranty, service contract]
+    description: Mechanical breakdown and product warranty programs.
+    typical_products: [vehicle service contract, consumer product warranty]
+    typical_coverages: [mechanical breakdown, product repair or replacement]
+    naic_line_names: [warranty]

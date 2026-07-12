@@ -1,0 +1,12 @@
+{
+  "run_name": "si-config-test",
+  "tasks": [
+    {
+      "task_key": "config",
+      "notebook_task": {
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/00_config",
+        "source": "WORKSPACE"
+      }
+    }
+  ]
+}

@@ -14,7 +14,7 @@
 5. Never mark a governance artifact or recommendation `APPROVED`; only named humans may approve.
 6. Preserve unrelated work. Inspect the working tree before each work package.
 7. Implement one work package at a time. Run its acceptance checks before starting the next package.
-8. Keep shared configuration in `src/databricks/00_config.py`. Remove business-logic coupling between notebooks, not the shared configuration entry point.
+8. Keep shared configuration in `src/workflows/source_intelligence/00_config.py`. Remove business-logic coupling between notebooks, not the shared configuration entry point.
 9. LLMs, prompts, vector search, and semantic retrieval are eligible only in Phase 3+ after the deterministic Phase 2 gate passes.
 10. Use semantic versioning for schemas: patch for clarification, minor for backward-compatible additions, major for breaking changes. Add compatibility tests.
 11. Treat existing source/Bronze tables as external read-only inputs. Bronze creation, ingestion, and population are outside the solution and must remain in a separate optional demo/test harness.

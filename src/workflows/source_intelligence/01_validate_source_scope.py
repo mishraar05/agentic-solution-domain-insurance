@@ -1,4 +1,20 @@
 # Databricks notebook source
+"""Perform the read-only preflight for configured source tables.
+
+This is the first operational workflow step after shared configuration. It
+lists tables in the configured source schema, confirms that every requested
+table exists, and verifies that each table exposes at least one column.
+
+The notebook reads only catalog metadata and Spark schemas. It never creates,
+loads, modifies, repairs, or deletes source data. A missing table or empty
+schema is treated as a platform prerequisite failure and stops the workflow
+before any recommendation artifact is produced.
+
+Run this notebook after ``00_config.py`` and before all analysis producers. It
+has no persisted output; successful completion is the precondition consumed by
+the next job task.
+"""
+
 # MAGIC %run ./00_config
 
 # COMMAND ----------
