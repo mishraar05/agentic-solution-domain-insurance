@@ -10,6 +10,7 @@
 # MAGIC privacy logic comes from the tested `source_intelligence` core — no embedded
 # MAGIC rules. Records are validated against `contracts/source_attribute_observation.json`
 # MAGIC before persistence and appended (never overwritten) scoped by `run_id`.
+# MAGIC Retry-idempotent: existing rows for this run_id skip the write.
 
 # COMMAND ----------
 
@@ -17,6 +18,7 @@ import json
 from datetime import datetime, timezone
 
 from pyspark.sql import Row
+from pyspark.sql import functions as F
 from pyspark.sql.types import (
     BooleanType, DoubleType, IntegerType, StringType, StructField, StructType,
     TimestampType,
@@ -105,17 +107,8 @@ print(f"Contract validation passed for {validated} records")
 
 # COMMAND ----------
 
-# Flatten for Delta: nested confidence components persist as a JSON document.
-rows = [
-    Row(**{
-        **{k: v for k, v in record.items()
-           if k not in ("confidence_components", "created_at")},
-        "confidence_components": json.dumps(record["confidence_components"]),
-        "created_at": created_at,
-    })
-    for record in contract_records
-]
-
+# Physical serialization of the validated records: identical fields; nested
+# confidence components -> JSON string, ISO timestamp -> native TIMESTAMP.
 dictionary_schema = StructType([
     StructField("schema_version", StringType(), False),
     StructField("run_id", StringType(), False),
@@ -150,15 +143,32 @@ dictionary_schema = StructType([
 ])
 
 field_order = [f.name for f in dictionary_schema.fields]
-rows = [Row(**{name: row[name] for name in field_order}) for row in rows]
+rows = [
+    Row(**{name: (
+        json.dumps(record["confidence_components"]) if name == "confidence_components"
+        else created_at if name == "created_at"
+        else record[name]
+    ) for name in field_order})
+    for record in contract_records
+]
 
 dictionary_df = spark.createDataFrame(rows, schema=dictionary_schema)
+
 # Versioned persistence: append run-scoped records; history is never destroyed.
-(dictionary_df.write.format("delta").mode("append")
- .option("mergeSchema", "false")
- .saveAsTable(fq_table("source_observation_dictionary")))
+# Idempotency guard: a retry with the same run_id must not append duplicates.
+_dict_table = fq_table("source_observation_dictionary")
+_already_written = (
+    spark.catalog.tableExists(_dict_table)
+    and spark.table(_dict_table).filter(F.col("run_id") == RUN_ID).count() > 0
+)
+if _already_written:
+    print(f"Idempotent skip: dictionary rows for run {RUN_ID} already exist.")
+else:
+    (dictionary_df.write.format("delta").mode("append")
+     .option("mergeSchema", "false")
+     .saveAsTable(_dict_table))
 
 display(
-    dictionary_df.filter(dictionary_df.run_id == RUN_ID)
+    dictionary_df.filter(F.col("run_id") == RUN_ID)
     .orderBy("source_table", "ordinal_position")
 )

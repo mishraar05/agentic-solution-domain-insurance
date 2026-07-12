@@ -1,5 +1,4 @@
-﻿"""Naming pattern classification rules."""
-from typing import Optional, Tuple
+"""Naming pattern classification rules."""
 
 EXACT_MATCHES = {
     "policy_id": ("Policy Identifier", "Policy.Identifier", "Policy", 0.95),

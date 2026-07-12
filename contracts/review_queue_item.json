@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/review_queue_item.json",
+  "title": "Review Queue Item",
+  "description": "One open review work item routed to a named reviewer role",
+  "type": "object",
+  "properties": {
+    "schema_version": { "$ref": "common.json#/definitions/schema_version" },
+    "queue_item_id": { "type": "string", "pattern": "^si_.+:.+:.+$", "description": "run_id:source_table:source_column" },
+    "run_id": { "$ref": "common.json#/definitions/run_id" },
+    "artifact_version": { "$ref": "common.json#/definitions/artifact_version" },
+    "engagement_id": { "$ref": "common.json#/definitions/engagement_id" },
+    "source_table": { "$ref": "common.json#/definitions/source_table" },
+    "source_column": { "$ref": "common.json#/definitions/source_column" },
+    "proposed_business_name": { "type": "string" },
+    "domain": { "$ref": "common.json#/definitions/domain" },
+    "ontology_concept_id": { "type": ["string", "null"] },
+    "key_role": { "$ref": "common.json#/definitions/key_role" },
+    "confidence_score": { "$ref": "common.json#/definitions/confidence_score" },
+    "evidence_coverage": { "$ref": "common.json#/definitions/evidence_coverage" },
+    "privacy_class": { "$ref": "common.json#/definitions/privacy_class" },
+    "review_trigger": { "type": "string", "enum": ["PRIVACY", "KEY_CANDIDATE", "RELATIONSHIP", "CONTRADICTION", "UNMAPPED_CONCEPT", "LOW_EVIDENCE_COVERAGE", "LOW_CONFIDENCE"] },
+    "review_reason": { "type": "string" },
+    "review_priority": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW"] },
+    "recommended_reviewer_role": { "type": "string", "enum": ["DATA_ARCHITECT", "DOMAIN_STEWARD", "PRIVACY_STEWARD"] },
+    "queue_status": { "type": "string", "enum": ["OPEN"] },
+    "assumptions": { "type": ["string", "null"] },
+    "open_question": { "type": ["string", "null"] },
+    "queued_at": { "$ref": "common.json#/definitions/timestamp_utc" }
+  },
+  "required": ["schema_version", "queue_item_id", "run_id", "artifact_version", "engagement_id", "source_table", "source_column", "proposed_business_name", "domain", "key_role", "confidence_score", "evidence_coverage", "privacy_class", "review_trigger", "review_reason", "review_priority", "recommended_reviewer_role", "queue_status", "queued_at"],
+  "additionalProperties": false
+}

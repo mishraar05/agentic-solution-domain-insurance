@@ -6,17 +6,20 @@
 # MAGIC %md
 # MAGIC # 04 — Validate Source Intelligence outputs and record the run
 # MAGIC
-# MAGIC Validates the current run's artifacts only (run-scoped, since persistence is
-# MAGIC append-based), checks run-ID consistency across artifacts, and writes a
-# MAGIC contract-validated `source_intelligence_run` record.
+# MAGIC Run-scoped validation, run-ID consistency checks, and a `source_intelligence_run`
+# MAGIC record. The persisted record IS the validated record: identical fields and
+# MAGIC values; defined physical serialization only (ISO timestamps -> TIMESTAMP,
+# MAGIC metrics object -> JSON string, source_scope -> ARRAY<STRING>). Retry-idempotent.
 
 # COMMAND ----------
 
+import hashlib
+import json
 from datetime import datetime, timezone
 
 from pyspark.sql import Row
 from pyspark.sql import functions as F
-from pyspark.sql.types import IntegerType, StringType, StructField, StructType, TimestampType
+from pyspark.sql.types import ArrayType, StringType, StructField, StructType, TimestampType
 
 from source_intelligence.contract_validation import validate_records
 
@@ -49,12 +52,16 @@ queue = spark.table(fq_output_table("review_queue")).filter(F.col("run_id") == R
 dictionary_rows = dictionary.count()
 queue_rows = queue.count()
 
-# Run-context consistency: this run must have produced both artifacts.
 assert dictionary_rows > 0, (
     f"No dictionary records for run {RUN_ID}. If tasks generated different run IDs, "
     "pass a shared run_id job parameter (si_job_{{job.run_id}})."
 )
 assert queue_rows > 0, f"No review-queue records for run {RUN_ID} (same run-context requirement)."
+
+# Retry idempotency: identical rerun must not have duplicated dictionary rows.
+dup = (dictionary.groupBy("source_table", "source_column", "artifact_version")
+       .count().filter(F.col("count") > 1).count())
+assert dup == 0, f"{dup} duplicate dictionary records for run {RUN_ID} — idempotency violated."
 
 assert dictionary.filter(F.col("confidence_score").isNull()).count() == 0, \
     "Every record needs a confidence score."
@@ -67,7 +74,6 @@ assert dictionary.filter(F.col("approval_state") != "PROPOSED").count() == 0, \
 assert queue.filter(F.col("queue_status") != "OPEN").count() == 0, \
     "The review queue should contain open work only."
 
-# Mandatory key review: every key candidate must be queued for the Data Architect.
 key_candidates = dictionary.filter(F.col("key_role") != "NON_KEY").count()
 queued_keys = queue.filter(
     (F.col("key_role") != "NON_KEY")
@@ -80,6 +86,14 @@ assert queued_keys >= key_candidates, (
 # COMMAND ----------
 
 completed_at = datetime.now(timezone.utc)
+idempotency_key = hashlib.sha256(json.dumps({
+    "source_system": SOURCE_SYSTEM,
+    "source_scope": list(SOURCE_TABLES),
+    "artifact_version": ARTIFACT_VERSION,
+    "schema_version": SCHEMA_VERSION,
+    "knowledge_pack_versions": {},
+}, sort_keys=True).encode()).hexdigest()
+
 run_record = {
     "schema_version": SCHEMA_VERSION,
     "run_id": RUN_ID,
@@ -87,49 +101,70 @@ run_record = {
     "engagement_id": ENGAGEMENT_ID,
     "source_system": SOURCE_SYSTEM,
     "source_scope": list(SOURCE_TABLES),
-    "run_status": "COMPLETED",
-    "started_at": completed_at.isoformat(),
+    "knowledge_pack_versions": {},
+    "task_contract_version": SCHEMA_VERSION,
+    "idempotency_key": idempotency_key,
+    "run_status": "SUCCEEDED",
+    "started_at": RUN_STARTED_AT.isoformat(),
+    "completed_at": completed_at.isoformat(),
+    "metrics": {
+        "objects_observed": len(SOURCE_TABLES),
+        "attributes_observed": dictionary_rows,
+        "relationships_inferred": dictionary.filter(
+            F.col("relationship_evidence").isNotNull()).count(),
+        "privacy_classifications": dictionary.filter(
+            F.col("privacy_class") != "INTERNAL").count(),
+        "review_items_created": queue_rows,
+        "policy_violations": 0,
+    },
+    "error_info": None,
 }
+# The record persisted below is EXACTLY this validated record.
 validate_records([run_record], "source_intelligence_run.json")
-
-run_schema = StructType([
-    StructField("schema_version", StringType(), False),
-    StructField("run_id", StringType(), False),
-    StructField("artifact_version", StringType(), False),
-    StructField("engagement_id", StringType(), False),
-    StructField("source_system", StringType(), False),
-    StructField("source_scope", StringType(), False),
-    StructField("run_status", StringType(), False),
-    StructField("dictionary_rows", IntegerType(), False),
-    StructField("review_queue_rows", IntegerType(), False),
-    StructField("completed_at", TimestampType(), False),
-])
-run_df = spark.createDataFrame(
-    [Row(
-        schema_version=SCHEMA_VERSION, run_id=RUN_ID, artifact_version=ARTIFACT_VERSION,
-        engagement_id=ENGAGEMENT_ID, source_system=SOURCE_SYSTEM,
-        source_scope=",".join(SOURCE_TABLES), run_status="COMPLETED",
-        dictionary_rows=dictionary_rows, review_queue_rows=queue_rows,
-        completed_at=completed_at,
-    )],
-    schema=run_schema,
-)
-run_df.write.format("delta").mode("append").saveAsTable(fq_table("source_intelligence_run"))
+print("Run-record contract validation passed")
 
 # COMMAND ----------
 
-summary = {
-    "run_id": RUN_ID,
-    "configured_source_tables": len(SOURCE_TABLES),
-    "dictionary_rows": dictionary_rows,
-    "review_queue_rows": queue_rows,
-    "key_candidates_queued_for_architect": queued_keys,
-    "low_confidence_rows": dictionary.filter(
-        F.col("confidence_score") < LOW_CONFIDENCE_THRESHOLD).count(),
-    "personal_data_rows": dictionary.filter(F.col("privacy_class") != "INTERNAL").count(),
-}
+run_table = fq_table("source_intelligence_run")
+run_exists = (
+    spark.catalog.tableExists(run_table)
+    and spark.table(run_table).filter(F.col("run_id") == RUN_ID).count() > 0
+)
+if run_exists:
+    print(f"Idempotent skip: run record for {RUN_ID} already exists.")
+else:
+    run_schema = StructType([
+        StructField("schema_version", StringType(), False),
+        StructField("run_id", StringType(), False),
+        StructField("artifact_version", StringType(), False),
+        StructField("engagement_id", StringType(), False),
+        StructField("source_system", StringType(), False),
+        StructField("source_scope", ArrayType(StringType()), False),
+        StructField("knowledge_pack_versions", StringType(), False),
+        StructField("task_contract_version", StringType(), False),
+        StructField("idempotency_key", StringType(), False),
+        StructField("run_status", StringType(), False),
+        StructField("started_at", TimestampType(), False),
+        StructField("completed_at", TimestampType(), False),
+        StructField("metrics", StringType(), False),
+        StructField("error_info", StringType(), True),
+    ])
+    # Defined physical serialization of the validated record — no other changes.
+    run_df = spark.createDataFrame([Row(**{
+        **run_record,
+        "knowledge_pack_versions": json.dumps(run_record["knowledge_pack_versions"]),
+        "metrics": json.dumps(run_record["metrics"]),
+        "started_at": RUN_STARTED_AT,
+        "completed_at": completed_at,
+    })], schema=run_schema)
+    run_df.write.format("delta").mode("append").saveAsTable(run_table)
+
+# COMMAND ----------
+
 print("Source Intelligence validation passed")
-for key, value in summary.items():
+for key in ("run_id", "run_status", "started_at", "completed_at"):
+    print(f"{key}: {run_record[key]}")
+for key, value in run_record["metrics"].items():
     print(f"{key}: {value}")
 
 display(dictionary.groupBy("domain", "approval_state").count().orderBy("domain", "approval_state"))

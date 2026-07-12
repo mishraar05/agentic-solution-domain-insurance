@@ -33,3 +33,5 @@ desktop.ini
 .env.local
 *.pem
 *.key
+# Generated synthetic outputs (reproduce via scripts/generate_synthetic_50k.py)
+data/synthetic/*_50k.json

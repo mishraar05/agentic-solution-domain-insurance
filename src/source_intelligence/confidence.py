@@ -17,25 +17,33 @@ class ConfidenceResult:
     normalized_score: float
 
 
-def compute_confidence(naming_strength, type_strength, relationship_strength, cots_match_strength=None, standard_consistency=None):
-    """Compute governed confidence score from components."""
-    def _component(value, key):
-        availability = "AVAILABLE" if value is not None else "NOT_AVAILABLE"
+def compute_confidence(naming_strength, type_strength, relationship_strength,
+                       cots_match_strength=None, standard_consistency=None,
+                       naming_contradicted=False, type_contradicted=False,
+                       relationship_contradicted=False, cots_contradicted=False,
+                       standard_contradicted=False):
+    """Compute governed confidence score from components.
+
+    Each component can be AVAILABLE, NOT_AVAILABLE, or CONTRADICTED.
+    CONTRADICTED components are excluded from the weighted sum and
+    flagged for human review by the routing layer.
+    """
+    def _component(value, key, contradicted=False):
+        if contradicted:
+            availability = "CONTRADICTED"
+        elif value is not None:
+            availability = "AVAILABLE"
+        else:
+            availability = "NOT_AVAILABLE"
         return {"value": value, "availability": availability, "weight": WEIGHTS[key]}
 
     components = {
-        "naming_strength": _component(naming_strength, "naming_strength"),
-        "type_strength": _component(type_strength, "type_strength"),
-        "relationship_strength": _component(relationship_strength, "relationship_strength"),
+        "naming_strength": _component(naming_strength, "naming_strength", naming_contradicted),
+        "type_strength": _component(type_strength, "type_strength", type_contradicted),
+        "relationship_strength": _component(relationship_strength, "relationship_strength", relationship_contradicted),
+        "cots_match_strength": _component(cots_match_strength, "cots_match_strength", cots_contradicted),
+        "standard_consistency": _component(standard_consistency, "standard_consistency", standard_contradicted),
     }
-    if cots_match_strength is not None:
-        components["cots_match_strength"] = {"value": cots_match_strength, "availability": "AVAILABLE", "weight": WEIGHTS["cots_match_strength"]}
-    else:
-        components["cots_match_strength"] = {"value": None, "availability": "NOT_AVAILABLE", "weight": WEIGHTS["cots_match_strength"]}
-    if standard_consistency is not None:
-        components["standard_consistency"] = {"value": standard_consistency, "availability": "AVAILABLE", "weight": WEIGHTS["standard_consistency"]}
-    else:
-        components["standard_consistency"] = {"value": None, "availability": "NOT_AVAILABLE", "weight": WEIGHTS["standard_consistency"]}
     raw_weighted_sum = 0.0
     available_weight = 0.0
     total_weight = sum(WEIGHTS.values())

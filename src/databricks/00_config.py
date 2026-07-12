@@ -61,11 +61,29 @@ def _resolve_run_id() -> str:
 
 
 RUN_ID = _resolve_run_id()
+RUN_STARTED_AT = datetime.now(timezone.utc)
 
 # COMMAND ----------
 
 # Make the deterministic core importable from workspace files.
-_REPO_SRC = os.path.abspath(os.path.join(os.getcwd(), ".."))
+# Primary: resolve from the notebook path (robust across Databricks execution
+# modes); fallback: cwd-relative for local/test execution.
+def _resolve_repo_src() -> str:
+    try:
+        nb_path = (dbutils.notebook.entry_point.getDbutils().notebook()
+                   .getContext().notebookPath().get())
+        repo_src = os.path.dirname(os.path.dirname("/Workspace" + nb_path))
+        if os.path.isdir(os.path.join(repo_src, "source_intelligence")):
+            return repo_src
+    except Exception:
+        pass
+    return os.path.abspath(os.path.join(os.getcwd(), ".."))
+
+
+_REPO_SRC = _resolve_repo_src()
+assert os.path.isdir(os.path.join(_REPO_SRC, "source_intelligence")), (
+    f"Cannot locate source_intelligence modules from {_REPO_SRC}; check workspace layout."
+)
 if _REPO_SRC not in sys.path:
     sys.path.insert(0, _REPO_SRC)
 
