@@ -43,7 +43,7 @@
 
 ## Test and CI results
 
-- **Local tests:** 83/83 passed, including unit and validation scenarios
+- **Local tests:** 85/85 passed, including unit and validation scenarios
 - **Expanded fixture validation:** dependency-free schema subset validation, positive loading, and negative required-field rejection
 - **Leakage validation:** prohibited sentinel injected as source input and confirmed absent from sanitized event output and captured logs
 - **CI workflow:** `.github/workflows/ci.yml` runs local-safe tests and parses every contract without Databricks credentials

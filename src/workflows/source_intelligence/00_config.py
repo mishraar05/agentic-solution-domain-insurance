@@ -39,6 +39,7 @@ source/Bronze table. Source tables are external read-only prerequisites.
 
 # COMMAND ----------
 
+import importlib
 import os
 import re
 import sys
@@ -110,6 +111,21 @@ def _parent_directories(path: str, maximum_depth: int = 6):
     return parents
 
 
+def _is_source_root(candidate: str) -> bool:
+    """Return True only for the parent of the real importable core package.
+
+    The workflow directory is also named ``source_intelligence`` but contains
+    Databricks entry points rather than the reusable Python package. Requiring
+    ``__init__.py`` prevents that directory from shadowing the package at
+    ``src/source_intelligence``.
+    """
+    package_dir = os.path.join(candidate, "source_intelligence")
+    return (
+        os.path.isdir(package_dir)
+        and os.path.isfile(os.path.join(package_dir, "__init__.py"))
+    )
+
+
 def _resolve_repo_src() -> str:
     """Locate the ``src`` directory without assuming a workspace root path."""
     starting_points = []
@@ -132,7 +148,7 @@ def _resolve_repo_src() -> str:
     for starting_point in starting_points:
         candidates.extend(_parent_directories(starting_point))
     for candidate in candidates:
-        if os.path.isdir(os.path.join(candidate, "source_intelligence")):
+        if _is_source_root(candidate):
             return candidate
     raise RuntimeError(
         "Cannot locate source_intelligence modules relative to the deployed "
@@ -141,8 +157,23 @@ def _resolve_repo_src() -> str:
 
 
 _REPO_SRC = _resolve_repo_src()
-if _REPO_SRC not in sys.path:
-    sys.path.insert(0, _REPO_SRC)
+while _REPO_SRC in sys.path:
+    sys.path.remove(_REPO_SRC)
+sys.path.insert(0, _REPO_SRC)
+print(f"Source Intelligence Python package root: {_REPO_SRC}")
+
+_core_package = importlib.import_module("source_intelligence")
+_expected_package_file = os.path.normcase(os.path.abspath(
+    os.path.join(_REPO_SRC, "source_intelligence", "__init__.py")
+))
+_actual_package_file = os.path.normcase(os.path.abspath(
+    getattr(_core_package, "__file__", "") or ""
+))
+assert _actual_package_file == _expected_package_file, (
+    "The workflow directory is shadowing the reusable source_intelligence "
+    f"package. Expected {_expected_package_file!r}, resolved "
+    f"{_actual_package_file!r}. Redeploy the complete bundle source tree."
+)
 
 # COMMAND ----------
 
