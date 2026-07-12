@@ -21,6 +21,7 @@
     "known_relationships_matched": 2,
     "known_relationships_expected": 2,
     "review_decision_lifecycle": "PASS",
+    "human_review_workbench": "PASS",
     "rejected_recommendation_suppression": "PASS"
   },
   "runtime_validation": {

@@ -96,7 +96,8 @@ The Databricks job is intentionally sequential. Every task receives the same
 | 02 | `02_build_source_dictionary.py` | Source schemas and permitted aggregate profiles | Attribute/object observations, profile evidence, relationship candidates, and the Phase 1-compatible dictionary |
 | 03 | `03_create_review_queue.py` | Current run's proposed attribute observations | Contract-valid open review items with role, reason, trigger, and priority |
 | 04 | `04_validate_phase2.py` | All current-run recommendation outputs | Runtime gate assertions and one idempotent `source_intelligence_run` record |
-| 05 | `05_publish_data_dictionary.py` | Governed dictionary records | Optional approved-only or visibly watermarked draft Excel workbook; not part of the core job |
+| 05 | `05_record_review_decision.py` | One open queue item plus explicit human widget input | Contract-valid, idempotent human decision event; not part of the automated core job |
+| 06 | `06_publish_data_dictionary.py` | Governed dictionary records | Optional approved-only or visibly watermarked draft Excel workbook; not part of the core job |
 
 Detailed entry-point behavior, failure modes, and execution guidance are in
 [`src/workflows/source_intelligence/README.md`](src/workflows/source_intelligence/README.md).

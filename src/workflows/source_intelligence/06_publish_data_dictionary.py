@@ -25,7 +25,7 @@ Run this notebook manually after review, not as part of the five-task core job.
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC # 05 — Publish the source data dictionary (deliverable)
+# MAGIC # 06 — Publish the source data dictionary (deliverable)
 # MAGIC
 # MAGIC Read-only reporting step: renders the governed `source_observation_dictionary`
 # MAGIC as a formatted Excel workbook — one sheet per source table, stamped with run ID,

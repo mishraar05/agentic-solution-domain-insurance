@@ -16,7 +16,7 @@ Date: 2026-07-12 · Claude independently verified every Codex finding against th
 | 8 | Core performed `CREATE SCHEMA` DDL | High | **FIXED** — config asserts the output schema exists; provisioning is a platform step |
 | 9 | Key candidates not always routed for review | High | **FIXED** — mandatory KEY_CANDIDATE trigger → DATA_ARCHITECT in `routing.py`; 04 asserts every key candidate is queued |
 | 10 | Review reason and reviewer could disagree | High | **FIXED** — atomic routing decision (trigger, reason, reviewer, priority); notebook 03 consumes it |
-| 11 | No reviewer-decision lifecycle | High | **PARTIAL** — deterministic decision creation, role/rationale enforcement, exact queue linkage, and unchanged-rejection suppression are implemented; human workbench integration remains external |
+| 11 | No reviewer-decision lifecycle | High | **FIXED** — `05_record_review_decision.py` provides a human-operated, contract-valid, idempotent workbench backed by deterministic role/rationale enforcement, exact queue linkage, targeted invalidation, and unchanged-rejection suppression |
 | 12 | "Approved MVP naming rule" not backed by approval | High | **FIXED** — renamed "Deterministic candidate rule (not steward-approved)" |
 | 13 | Labelled set circular (derived from the classifier's own lookup) | High | **OPEN** — requires independent human relabelling; cannot be fixed by code (see C8) |
 | 14 | Improvements uncommitted | Medium | **OPEN** — commit is yours to make; suggested message below |
@@ -39,13 +39,13 @@ Date: 2026-07-12 · Claude independently verified every Codex finding against th
 
 ## What the fixes did NOT do
 
-No LLM, vector search, or knowledge packs introduced (Phase 3 gate unchanged). No reviewer-decision producer invented without a workbench. No threshold tuning without labelled data. Confidence still gates routing only.
+No LLM, vector search, or knowledge packs introduced (Phase 3 gate unchanged). A human-operated reviewer-decision workbench is now present, but it never chooses or auto-approves a decision. No threshold tuning occurred without independently reviewed labels. Confidence still gates routing only.
 
 ## Remaining gate-blocking sequence
 
 1. Run the full job on Databricks with the shared `run_id` parameter; capture fresh evidence in `docs/evidence/` (validates fixes 1, 6, 7, 9 at runtime).
 2. Producer-level Spark checks in `tests/validation/` executed in-workspace.
 3. Independent human relabelling of the eval set (F13) → then calibrate threshold/weights (C7).
-4. Reviewer-decision lifecycle via the workbench (F11).
+4. Human reviewers use the workbench to record required decisions and rationale.
 5. Named human approvals of governance artifacts.
 6. Commit. Suggested: `fix(phase2): single run context, contract enforcement at write, versioned persistence, atomic routing with mandatory key review, wired deterministic core, CI`

@@ -20,11 +20,17 @@ and must remain independently testable.
 | 03 | `03_create_review_queue.py` | Applies mandatory-review and confidence routing to current-run attributes, validates queue items, and appends them once | `review_queue` |
 | 04 | `04_validate_phase2.py` | Checks run consistency, completeness, evidence, relationships, review routing, idempotency, and no auto-approval; then validates and appends the run record | `source_intelligence_run` |
 
-The Databricks Asset Bundle job ends after step 04. Step 05 is optional.
+The Databricks Asset Bundle job ends after step 04. Steps 05 and 06 are
+human-operated and optional.
 
-## Optional reporting entry point
+## Human-operated entry points
 
-`05_publish_data_dictionary.py` renders an Excel workbook for human use. Its
+`05_record_review_decision.py` accepts an explicit human reviewer decision for
+one open queue item. It verifies the routed role, requires rationale, validates
+the decision contract, and appends an idempotent event. It never selects or
+approves a recommendation on the reviewer's behalf.
+
+`06_publish_data_dictionary.py` renders an Excel workbook for human use. Its
 default mode includes only records already marked `APPROVED` by a human. Draft
 mode is explicit and visibly watermarked. Publication never changes source or
 recommendation tables and is not part of the core job.
