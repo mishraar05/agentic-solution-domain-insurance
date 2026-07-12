@@ -12,7 +12,7 @@
 | Role | Responsibility | Decision rights | Turnaround target | Backup |
 |---|---|---|---|---|
 | **Data Architect** | Approves key/relationship candidates, target grain, Silver entity structure, and ontology extensions | APPROVE, MODIFY, REJECT, DEFER | 3 business days | Enterprise Architect (placeholder) |
-| **Domain Steward** | Approves semantic mappings, business names, domain classifications, and COTS pattern matches | APPROVE, MODIFY, REJECT, DEFER | 3 business days | Product SME (placeholder) |
+| **Domain Steward** | Approves semantic mappings, business names, source-column descriptions, glossary proposals, domain classifications, and COTS pattern matches | APPROVE, MODIFY, REJECT, DEFER | 3 business days | Product SME (placeholder) |
 | **Privacy Steward** | Approves privacy classifications, evidence-class decisions, and personal-data routing | APPROVE, MODIFY, REJECT, DEFER | 2 business days | Security/Legal (placeholder) |
 
 ## RACI matrix
@@ -23,6 +23,7 @@
 | Evidence classification | I | C | A | I | R |
 | Key/relationship candidates | A | C | I | - | R |
 | Semantic mapping | C | A | I | - | R |
+| Source documentation and glossary proposal | C | A | C | - | R |
 | Privacy classification | I | C | A | - | R |
 | Target grain (Silver/Gold) | A | C | I | I | R |
 | Financial measures | A | C | C | I | R |

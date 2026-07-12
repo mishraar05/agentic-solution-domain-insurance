@@ -1,4 +1,4 @@
-"""Local Phase 2 labelled-set evaluation tests."""
+"""Local Source Intelligence labelled-set evaluation tests."""
 
 import json
 import os

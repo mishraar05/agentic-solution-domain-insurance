@@ -10,21 +10,52 @@ confidence calibration remain separate governance requirements.
 from source_intelligence.naming import classify_naming
 from source_intelligence.privacy import classify_privacy
 from source_intelligence.relationships import (
-    KNOWN_RELATIONSHIPS,
-    infer_key_role,
-    infer_relationship,
+    discover_relationship_candidates,
+    infer_key_roles,
+    relationship_evidence_by_attribute,
 )
 from source_intelligence.routing import route_review
 
 
-def _relationship_target(table_name, column_name):
-    target = KNOWN_RELATIONSHIPS.get((table_name, column_name))
-    return ".".join(target) if target else None
+def _runtime_relationship_context(records):
+    tables = {}
+    for position, record in enumerate(records, start=1):
+        tables.setdefault(record["source_table"], []).append({
+            "name": record["source_column"],
+            "nullable": False,
+            "ordinal_position": position,
+        })
+    roles = {
+        table_name: infer_key_roles(table_name, columns)
+        for table_name, columns in tables.items()
+    }
+    attributes = [
+        {
+            "source_table": record["source_table"],
+            "source_column": record["source_column"],
+            "physical_type": "LABELLED_SET_TYPE_NOT_AVAILABLE",
+            "key_role": roles[record["source_table"]][record["source_column"]],
+        }
+        for record in records
+    ]
+    candidates = discover_relationship_candidates(attributes)
+    evidence = relationship_evidence_by_attribute(candidates)
+    targets = {}
+    for candidate in candidates:
+        key = (candidate["from_table"], candidate["from_column"])
+        target = f"{candidate['to_table']}.{candidate['to_column']}"
+        targets.setdefault(key, []).append(target)
+    resolved_targets = {
+        key: values[0] if len(values) == 1 else "|".join(sorted(values))
+        for key, values in targets.items()
+    }
+    return roles, evidence, resolved_targets
 
 
 def evaluate_labelled_records(records):
     """Evaluate deterministic semantics and routing without claiming label approval."""
     results = []
+    roles, relationships, targets = _runtime_relationship_context(records)
     for label in records:
         table_name = label["source_table"]
         column_name = label["source_column"]
@@ -32,8 +63,8 @@ def evaluate_labelled_records(records):
             table_name, column_name
         )
         privacy_class, _ = classify_privacy(column_name)
-        key_role = infer_key_role(table_name, column_name)
-        relationship = infer_relationship(table_name, column_name)
+        key_role = roles[table_name][column_name]
+        relationship = relationships.get((table_name, column_name))
         route = route_review(
             confidence_score=1.0,
             evidence_coverage=1.0,
@@ -49,7 +80,7 @@ def evaluate_labelled_records(records):
             "domain": domain,
             "privacy_class": privacy_class,
             "key_role": key_role,
-            "relationship_target": _relationship_target(table_name, column_name),
+            "relationship_target": targets.get((table_name, column_name)),
             "review_route": route,
         }
         expected = {

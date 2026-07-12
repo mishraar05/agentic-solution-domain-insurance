@@ -40,9 +40,9 @@ Before moving from Free Edition to a business trial or paid Databricks workspace
 
 ## Current status summary
 
-- **Phase 1 (MVP):** Complete - all acceptance gate criteria passed
+- **MVP foundation:** Complete - all acceptance gate criteria passed
 - **Phase 0 (Governance):** PROPOSED - all artifacts created, awaiting human review and assignment
-- **Phase 2 (Source Intelligence v1):** Not started - blocked until Phase 0 governance is reviewed
+- **Source Intelligence v1:** Not started - blocked until pilot governance is reviewed
 
 ## Open questions
 

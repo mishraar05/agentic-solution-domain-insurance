@@ -16,7 +16,7 @@ Date: 2026-07-12 · Claude independently verified every Codex finding against th
 | 8 | Core performed `CREATE SCHEMA` DDL | High | **FIXED** — config asserts the output schema exists; provisioning is a platform step |
 | 9 | Key candidates not always routed for review | High | **FIXED** — mandatory KEY_CANDIDATE trigger → DATA_ARCHITECT in `routing.py`; 04 asserts every key candidate is queued |
 | 10 | Review reason and reviewer could disagree | High | **FIXED** — atomic routing decision (trigger, reason, reviewer, priority); notebook 03 consumes it |
-| 11 | No reviewer-decision lifecycle | High | **FIXED** — `05_record_review_decision.py` provides a human-operated, contract-valid, idempotent workbench backed by deterministic role/rationale enforcement, exact queue linkage, targeted invalidation, and unchanged-rejection suppression |
+| 11 | No reviewer-decision lifecycle | High | **FIXED** — `06_record_review_decision.py` provides a human-operated, contract-valid, idempotent workbench backed by deterministic role/rationale enforcement, exact queue linkage, targeted invalidation, and unchanged-rejection suppression |
 | 12 | "Approved MVP naming rule" not backed by approval | High | **FIXED** — renamed "Deterministic candidate rule (not steward-approved)" |
 | 13 | Labelled set circular (derived from the classifier's own lookup) | High | **OPEN** — requires independent human relabelling; cannot be fixed by code (see C8) |
 | 14 | Improvements uncommitted | Medium | **OPEN** — commit is yours to make; suggested message below |
@@ -39,7 +39,11 @@ Date: 2026-07-12 · Claude independently verified every Codex finding against th
 
 ## What the fixes did NOT do
 
-No LLM, vector search, or knowledge packs introduced (Phase 3 gate unchanged). A human-operated reviewer-decision workbench is now present, but it never chooses or auto-approves a decision. No threshold tuning occurred without independently reviewed labels. Confidence still gates routing only.
+This statement described the 2026-07-12 baseline. On 2026-07-13 it was
+superseded for one bounded capability: the Source Documentation Agent may use
+an LLM over prompt-eligible structural context to propose column descriptions
+and glossary entries. Vector search, knowledge retrieval, auto-approval, and
+LLM-derived confidence remain prohibited.
 
 ## Remaining gate-blocking sequence
 

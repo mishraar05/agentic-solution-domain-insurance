@@ -68,14 +68,14 @@ Each review decision is captured with:
 | MVP run evidence | `docs/evidence/mvp_run_evidence.json` |
 | MVP evidence summary | `docs/evidence/MVP_RUN_EVIDENCE.md` |
 | Labelled set | `evals/labelled_set/` (to be created) |
-| Review queue | `workspace.agentic_insurance_mvp.review_queue` (Databricks) |
+| Review queue | Configured output schema table `source_intelligence_review_queue` (Databricks) |
 | Job run history | Databricks job run API |
 
 ## Open questions
 
 - [ ] Who is the named evaluation owner?
 - [ ] Should the labelled set be a JSON file or a Delta table?
-- [ ] What is the acceptable precision/recall baseline for Phase 2?
+- [ ] What is the acceptable precision/recall baseline for Source Intelligence?
 
 ## Change log
 

@@ -13,7 +13,7 @@ data columns are classified from their names and are skipped before value-level
 profiling; only permitted aggregate profiles for internal columns are retained.
 
 Outputs are solution-owned recommendation records:
-``source_observation_dictionary`` for Phase 1 compatibility,
+``source_observation_dictionary`` as a consumer-facing dictionary projection,
 ``source_attribute_observation``, ``source_object_observation``,
 ``profile_evidence``, and ``relationship_candidate``. Writes are append-only,
 scoped by ``run_id``, and retry-idempotent. Every recommendation remains
@@ -55,85 +55,131 @@ from source_intelligence.cots_patterns import match_cots_pattern
 from source_intelligence.naming import classify_naming
 from source_intelligence.privacy import classify_privacy
 from source_intelligence.persistence import (
-    LEGACY_CONFIDENCE_FIELDS,
+    DICTIONARY_PROJECTION_CONFIDENCE_FIELDS,
     plan_existing_schema_alignment,
 )
 from source_intelligence.relationships import (
-    KNOWN_RELATIONSHIPS, compute_relationship_strength, infer_key_role,
-    infer_relationship,
+    compute_relationship_strength,
+    discover_relationship_candidates,
+    infer_key_roles,
+    relationship_evidence_by_attribute,
 )
 from source_intelligence.types import check_type_compatibility
 
 # COMMAND ----------
 
 created_at = datetime.now(timezone.utc)
-contract_records = []
+source_attributes = []
 
 for table_name in SOURCE_TABLES:
     source_schema = spark.table(fq_source_table(table_name)).schema
+    column_metadata = [
+        {
+            "name": field.name,
+            "nullable": field.nullable,
+            "ordinal_position": ordinal_position,
+        }
+        for ordinal_position, field in enumerate(source_schema.fields, start=1)
+    ]
+    key_roles = infer_key_roles(table_name, column_metadata)
     for ordinal_position, field in enumerate(source_schema.fields, start=1):
-        proposed_name, ontology_concept, domain, naming_strength, naming_reason = (
-            classify_naming(table_name, field.name)
-        )
-        type_strength = check_type_compatibility(str(field.dataType), field.name)
-        relation = infer_relationship(table_name, field.name)
-        relationship_strength = compute_relationship_strength(
-            table_name, field.name, relation is not None
-        )
-        cots = match_cots_pattern(table_name, field.name)
-        privacy_class, privacy_rationale = classify_privacy(field.name)
-
-        confidence = compute_confidence(
-            naming_strength=naming_strength,
-            type_strength=type_strength,
-            relationship_strength=relationship_strength,
-            cots_match_strength=cots["match_strength"],
-            standard_consistency=None,  # standards knowledge pack deferred to Phase 3
-        )
-
-        assumptions = (
-            None if ontology_concept
-            else "Business meaning inferred from naming pattern; steward validation required."
-        )
-        contract_records.append({
-            "schema_version": SCHEMA_VERSION,
-            "run_id": RUN_ID,
-            "artifact_version": ARTIFACT_VERSION,
-            "engagement_id": ENGAGEMENT_ID,
-            "source_system": SOURCE_SYSTEM,
+        source_attributes.append({
             "source_table": table_name,
             "source_column": field.name,
             "ordinal_position": ordinal_position,
             "physical_type": str(field.dataType),
             "nullable": field.nullable,
-            "key_role": infer_key_role(table_name, field.name),
-            "relationship_evidence": relation,
-            "proposed_business_name": proposed_name,
-            "ontology_concept_id": ontology_concept,
-            "domain": domain,
-            "observed_or_inferred": "INFERRED",
-            "evidence_references": [
-                f"catalog_metadata:{SOURCE_CATALOG}.{SOURCE_SCHEMA}."
-                f"{table_name}.{field.name}"
-            ],
-            "confidence_score": confidence.score,
-            "confidence_components": confidence.components,
-            "evidence_coverage": confidence.evidence_coverage,
-            "confidence_reason": f"{naming_reason}; {confidence.confidence_reason}",
-            "formula_version": confidence.formula_version,
-            "assumptions": assumptions,
-            "contradictions": None,
-            "open_question": (
-                None if confidence.score >= LOW_CONFIDENCE_THRESHOLD
-                else "Confirm semantic meaning with data steward."
-            ),
-            "privacy_class": privacy_class,
-            "privacy_rationale": privacy_rationale,
-            "approval_state": "PROPOSED",
-            "reviewer_role": None,
-            "review_rationale": None,
-            "created_at": created_at.isoformat(),
+            "key_role": key_roles[field.name],
         })
+
+relationship_candidates = discover_relationship_candidates(source_attributes)
+relationship_evidence = relationship_evidence_by_attribute(
+    relationship_candidates
+)
+candidates_by_attribute = {}
+for candidate in relationship_candidates:
+    key = (candidate["from_table"], candidate["from_column"])
+    candidates_by_attribute.setdefault(key, []).append(candidate)
+
+contract_records = []
+for attribute in source_attributes:
+    table_name = attribute["source_table"]
+    column_name = attribute["source_column"]
+    proposed_name, ontology_concept, domain, naming_strength, naming_reason = (
+        classify_naming(table_name, column_name)
+    )
+    type_strength = check_type_compatibility(
+        attribute["physical_type"], column_name
+    )
+    attribute_candidates = candidates_by_attribute.get(
+        (table_name, column_name), []
+    )
+    relation = relationship_evidence.get((table_name, column_name))
+    relationship_strength = (
+        max(candidate["confidence_score"] for candidate in attribute_candidates)
+        if attribute_candidates
+        else compute_relationship_strength(table_name, column_name, False)
+    )
+    contradictions = "; ".join(sorted({
+        candidate["contradictions"]
+        for candidate in attribute_candidates
+        if candidate["contradictions"]
+    })) or None
+    cots = match_cots_pattern(table_name, column_name)
+    privacy_class, privacy_rationale = classify_privacy(column_name)
+
+    confidence = compute_confidence(
+        naming_strength=naming_strength,
+        type_strength=type_strength,
+        relationship_strength=relationship_strength,
+        cots_match_strength=cots["match_strength"],
+        standard_consistency=None,  # standards knowledge pack deferred to Phase 3
+        relationship_contradicted=contradictions is not None,
+    )
+
+    assumptions = (
+        None if ontology_concept
+        else "Business meaning inferred from naming pattern; steward validation required."
+    )
+    contract_records.append({
+        "schema_version": SCHEMA_VERSION,
+        "run_id": RUN_ID,
+        "artifact_version": ARTIFACT_VERSION,
+        "engagement_id": ENGAGEMENT_ID,
+        "source_system": SOURCE_SYSTEM,
+        "source_table": table_name,
+        "source_column": column_name,
+        "ordinal_position": attribute["ordinal_position"],
+        "physical_type": attribute["physical_type"],
+        "nullable": attribute["nullable"],
+        "key_role": attribute["key_role"],
+        "relationship_evidence": relation,
+        "proposed_business_name": proposed_name,
+        "ontology_concept_id": ontology_concept,
+        "domain": domain,
+        "observed_or_inferred": "INFERRED",
+        "evidence_references": [
+            f"catalog_metadata:{SOURCE_CATALOG}.{SOURCE_SCHEMA}."
+            f"{table_name}.{column_name}"
+        ],
+        "confidence_score": confidence.score,
+        "confidence_components": confidence.components,
+        "evidence_coverage": confidence.evidence_coverage,
+        "confidence_reason": f"{naming_reason}; {confidence.confidence_reason}",
+        "formula_version": confidence.formula_version,
+        "assumptions": assumptions,
+        "contradictions": contradictions,
+        "open_question": (
+            None if confidence.score >= LOW_CONFIDENCE_THRESHOLD
+            else "Confirm semantic meaning with data steward."
+        ),
+        "privacy_class": privacy_class,
+        "privacy_rationale": privacy_rationale,
+        "approval_state": "PROPOSED",
+        "reviewer_role": None,
+        "review_rationale": None,
+        "created_at": created_at.isoformat(),
+    })
 
 # Contract enforcement BEFORE persistence — any violation aborts the write.
 validated = validate_records(contract_records, "source_attribute_observation.json")
@@ -187,20 +233,20 @@ rows = [
     for record in contract_records
 ]
 
-phase2_attributes_df = spark.createDataFrame(rows, schema=dictionary_schema)
-dictionary_df = phase2_attributes_df.drop("evidence_references")
-for legacy_field in LEGACY_CONFIDENCE_FIELDS:
+attribute_observations_df = spark.createDataFrame(rows, schema=dictionary_schema)
+dictionary_df = attribute_observations_df.drop("evidence_references")
+for projection_field in DICTIONARY_PROJECTION_CONFIDENCE_FIELDS:
     dictionary_df = dictionary_df.withColumn(
-        legacy_field,
+        projection_field,
         F.get_json_object(
             F.col("confidence_components"),
-            f"$.{legacy_field}.value",
+            f"$.{projection_field}.value",
         ).cast("double"),
     )
 
 
-def _align_legacy_dictionary(frame, table_name):
-    """Fit Phase 2 data to an existing Phase 1 dictionary without evolution."""
+def _align_dictionary_projection(frame, table_name):
+    """Fit canonical observations to the dictionary projection schema."""
     if not spark.catalog.tableExists(table_name):
         return frame
     existing_schema = spark.table(table_name).schema
@@ -221,7 +267,7 @@ def _align_legacy_dictionary(frame, table_name):
     ]
     if dropped:
         print(
-            "Phase 1 compatibility write excludes Phase 2-only columns: "
+            "Dictionary projection excludes canonical-only columns: "
             f"{dropped}"
         )
     return frame.select(*column_order)
@@ -237,13 +283,13 @@ _already_written = (
 if _already_written:
     print(f"Idempotent skip: dictionary rows for run {RUN_ID} already exist.")
 else:
-    legacy_dictionary_df = _align_legacy_dictionary(
+    dictionary_projection_df = _align_dictionary_projection(
         dictionary_df, _dict_table
     )
     if _dict_exists:
-        legacy_dictionary_df.write.mode("append").insertInto(_dict_table)
+        dictionary_projection_df.write.mode("append").insertInto(_dict_table)
     else:
-        (legacy_dictionary_df.write.format("delta").mode("append")
+        (dictionary_projection_df.write.format("delta").mode("append")
          .option("mergeSchema", "false")
          .saveAsTable(_dict_table))
 
@@ -253,9 +299,9 @@ _attributes_written = (
     and spark.table(_attribute_table).filter(F.col("run_id") == RUN_ID).count() > 0
 )
 if _attributes_written:
-    print(f"Idempotent skip: Phase 2 attributes for run {RUN_ID} already exist.")
+    print(f"Idempotent skip: canonical attributes for run {RUN_ID} already exist.")
 else:
-    (phase2_attributes_df.write.format("delta").mode("append")
+    (attribute_observations_df.write.format("delta").mode("append")
      .option("mergeSchema", "false")
      .saveAsTable(_attribute_table))
 
@@ -356,43 +402,30 @@ object_rows = [
 ]
 object_df = spark.createDataFrame(object_rows, object_schema)
 
-# Relationship candidates use naming and physical-type compatibility only;
-# value overlap stays unavailable until explicitly governed.
-attribute_index = {
-    (record["source_table"], record["source_column"]): record
-    for record in contract_records
-}
+# Relationship candidates use only current-run metadata; value overlap stays
+# unavailable until explicitly governed.
 relationship_records = []
-for (from_table, from_column), (to_table, to_column) in KNOWN_RELATIONSHIPS.items():
-    source = attribute_index[(from_table, from_column)]
-    target = attribute_index[(to_table, to_column)]
-    compatible = source["physical_type"] == target["physical_type"]
+for candidate in relationship_candidates:
     relationship_records.append({
         "schema_version": SCHEMA_VERSION,
         "run_id": RUN_ID,
         "artifact_version": ARTIFACT_VERSION,
         "engagement_id": ENGAGEMENT_ID,
         "source_system": SOURCE_SYSTEM,
-        "from_table": from_table,
-        "from_column": from_column,
-        "to_table": to_table,
-        "to_column": to_column,
+        "from_table": candidate["from_table"],
+        "from_column": candidate["from_column"],
+        "to_table": candidate["to_table"],
+        "to_column": candidate["to_column"],
         "relationship_type": "FOREIGN_KEY",
-        "evidence_description": (
-            "Deterministic identifier naming overlap and compatible physical types."
-        ),
-        "naming_overlap": True,
-        "type_compatible": compatible,
+        "evidence_description": candidate["evidence_description"],
+        "naming_overlap": candidate["naming_overlap"],
+        "type_compatible": candidate["type_compatible"],
         "overlap_ratio": None,
-        "confidence_score": 0.9 if compatible else 0.6,
-        "confidence_reason": (
-            "Known naming relationship with compatible physical types."
-            if compatible
-            else "Known naming relationship with conflicting physical types."
-        ),
+        "confidence_score": candidate["confidence_score"],
+        "confidence_reason": candidate["confidence_reason"],
         "observed_or_inferred": "INFERRED",
         "assumptions": "Referential integrity was not asserted from source values.",
-        "contradictions": None if compatible else "Physical types are incompatible.",
+        "contradictions": candidate["contradictions"],
         "approval_state": "PROPOSED",
         "reviewer_role": "DATA_ARCHITECT",
         "review_rationale": None,

@@ -38,7 +38,8 @@
         "PRIVACY",
         "KEY_ROLE",
         "DOMAIN",
-        "ONTOLOGY"
+        "ONTOLOGY",
+        "SOURCE_DOCUMENTATION"
       ],
       "description": "Type of recommendation reviewed"
     },

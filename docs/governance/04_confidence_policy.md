@@ -45,7 +45,7 @@ Each component records one of three availability states:
 
 ## COTS sequencing
 
-- **Phase 2:** COTS pattern match is `NOT_AVAILABLE` — no knowledge packs loaded. Deterministic matching against small authorized structured patterns is permitted but not required.
+- **Current deterministic workflow:** COTS pattern match is `NOT_AVAILABLE` — no knowledge packs are loaded. Matching against small authorized structured patterns is permitted but not required.
 - **Phase 3:** Governed retrieval and semantic search introduce COTS pattern matching with loaded knowledge packs. The COTS component becomes `AVAILABLE`.
 
 ## v1-to-Phase-3 component mapping

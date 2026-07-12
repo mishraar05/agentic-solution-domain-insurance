@@ -33,14 +33,26 @@
       }
     },
     {
-      "task_key": "create_queue",
+      "task_key": "generate_documentation",
       "depends_on": [
         {
           "task_key": "build_dictionary"
         }
       ],
       "notebook_task": {
-        "notebook_path": "/Workspace/agentic-solution-domain-insurance/src/workflows/source_intelligence/03_create_review_queue",
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/src/workflows/source_intelligence/03_generate_source_documentation",
+        "source": "WORKSPACE"
+      }
+    },
+    {
+      "task_key": "create_queue",
+      "depends_on": [
+        {
+          "task_key": "generate_documentation"
+        }
+      ],
+      "notebook_task": {
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/src/workflows/source_intelligence/04_create_review_queue",
         "source": "WORKSPACE"
       }
     },
@@ -52,7 +64,7 @@
         }
       ],
       "notebook_task": {
-        "notebook_path": "/Workspace/agentic-solution-domain-insurance/src/workflows/source_intelligence/04_validate_phase2",
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/src/workflows/source_intelligence/05_validate_source_intelligence",
         "source": "WORKSPACE"
       }
     }

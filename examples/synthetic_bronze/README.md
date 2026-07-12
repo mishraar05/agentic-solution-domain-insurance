@@ -8,6 +8,6 @@ needed for a demo or integration test. The notebook creates tables in
 `workspace.agentic_insurance_demo_bronze` by default.
 
 The core solution consumes configured, existing source tables and never calls
-this setup notebook. To use the demo fixture, configure
-`src/workflows/source_intelligence/00_config.py` with the demo catalog, schema, and table names,
-then run the core Source Intelligence job separately.
+this setup notebook. To use the demo fixture, supply its catalog, schema, and
+table names through the DAB/job source-scope parameters, then run the core
+Source Intelligence job separately.

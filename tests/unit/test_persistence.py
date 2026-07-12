@@ -8,13 +8,13 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
 from source_intelligence.persistence import (
-    LEGACY_CONFIDENCE_FIELDS,
+    DICTIONARY_PROJECTION_CONFIDENCE_FIELDS,
     SchemaCompatibilityError,
     plan_existing_schema_alignment,
 )
 
 
-def test_phase2_extra_columns_are_excluded_from_legacy_order():
+def test_canonical_extra_columns_are_excluded_from_projection_order():
     incoming = {
         "run_id": "string",
         "source_table": "string",
@@ -42,8 +42,8 @@ def test_phase2_extra_columns_are_excluded_from_legacy_order():
     ]
 
 
-def test_legacy_confidence_fields_match_phase1_contract():
-    assert LEGACY_CONFIDENCE_FIELDS == (
+def test_dictionary_projection_confidence_fields_are_explicit():
+    assert DICTIONARY_PROJECTION_CONFIDENCE_FIELDS == (
         "naming_strength",
         "type_strength",
         "relationship_strength",

@@ -99,3 +99,24 @@ def test_rejected_recommendation_cannot_reappear_unchanged():
     assert should_suppress_unchanged(queue_item, [decision])
     changed = {**queue_item, "key_role": "NON_KEY"}
     assert not should_suppress_unchanged(changed, [decision])
+
+
+def test_source_documentation_routes_to_documentation_decision_type():
+    queue_item = {
+        **_queue_item(),
+        "queue_item_id": (
+            "si_job_12:bronze_policy:policy_id:source_documentation"
+        ),
+        "review_trigger": "SOURCE_DOCUMENTATION",
+        "recommended_reviewer_role": "DOMAIN_STEWARD",
+        "assumptions": '{"column_description":"Proposed policy identifier."}',
+    }
+    decision = create_review_decision(
+        queue_item,
+        "DOMAIN_STEWARD",
+        "APPROVED",
+        "Description and glossary term are supported by the source context.",
+        "2026-07-12T09:00:00+00:00",
+    )
+    assert decision["recommendation_type"] == "SOURCE_DOCUMENTATION"
+    assert validate_records([decision], "review_decision.json") == 1

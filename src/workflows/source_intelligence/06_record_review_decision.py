@@ -63,7 +63,7 @@ assert reviewer_rationale, "reviewer_rationale is required."
 
 # COMMAND ----------
 
-queue_table = fq_output_table("review_queue")
+queue_table = fq_output_table("source_intelligence_review_queue")
 matches = (
     spark.table(queue_table)
     .filter(F.col("queue_item_id") == queue_item_id)

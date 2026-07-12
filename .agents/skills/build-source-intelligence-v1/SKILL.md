@@ -1,18 +1,21 @@
 ---
 name: build-source-intelligence-v1
-description: Implement and validate deterministic Source Intelligence Agent v1 for the agentic insurance Databricks project. Use when consuming configured existing source tables through read-only access, creating output contracts, extracting approved metadata and minimized profiles, inferring relationships, classifying domains and privacy, tracking runs, routing recommendations to review, adding isolated synthetic test fixtures, or evaluating the Phase 2 gate.
+description: Implement and validate governed Source Intelligence for the agentic insurance Databricks project. Use when consuming configured existing source tables through read-only access, creating output contracts, extracting approved metadata and minimized profiles, inferring relationships, classifying domains and privacy, generating LLM-assisted source documentation from permitted context, tracking runs, routing recommendations to review, adding isolated synthetic test fixtures, or evaluating the Source Intelligence release gate.
 ---
 
 # Build Source Intelligence v1
 
-Replace MVP static rules with a reusable, transparent, deterministic source-analysis service. Do not add an LLM or vector search.
+Build a reusable source-analysis service with deterministic observation and
+routing logic plus a separately governed Source Documentation Agent. LLM calls
+may generate column descriptions and business-glossary proposals only from
+prompt-eligible context; do not add vector search.
 
 ## Confirm prerequisites
 
  1. Discover and work from the repository root.
-2. Read the Phase 2 section of `docs/planning/IMPLEMENTATION_PLAN.md`, existing notebooks, contracts, tests, and governance decisions.
+2. Read the Source Intelligence section of `docs/planning/IMPLEMENTATION_PLAN.md`, existing notebooks, contracts, tests, and governance decisions.
 3. Require a defined evidence policy before profiling or retaining evidence. Stop and report missing governance rather than inventing permission.
-4. Preserve Phase 1 behavior and evidence while adding the smallest complete vertical slice.
+4. Preserve existing consumer projections and evidence while adding the smallest complete vertical slice.
 5. Treat source/Bronze tables as external read-only inputs. Never create, ingest, overwrite, or populate them. Keep synthetic setup in the isolated `examples/synthetic_bronze/` harness.
 
 ## Define contracts before producers
@@ -38,6 +41,16 @@ Build pure or narrowly scoped functions for:
 5. privacy classification from transparent rules without exposing values;
 6. run creation, idempotent persistence, metrics, failure state, and reproducible version context.
 
+## Generate source documentation with an LLM
+
+Use a separate, versioned prompt and output contract. Send only allow-listed
+physical metadata, deterministic inferences, and permitted minimized aggregate
+profiles. Reject personal/sensitive columns before prompt construction. Require
+strict structured output containing a column description and business-glossary
+proposal, retain prompt/model provenance and the context fingerprint, assign no
+LLM-derived confidence, keep every result `PROPOSED` or `UNRESOLVED`, and route
+every result to a Domain Steward.
+
 Place reusable code under `src/`, contracts under `contracts/`, synthetic fixtures under `data/synthetic/`, and tests under `tests/`. Validate every output against its contract before persistence.
 
 ## Route review explicitly
@@ -59,7 +72,7 @@ Add tests for:
 
 Use synthetic data only. Keep tests independent of production connections and secrets.
 
-## Evaluate the Phase 2 gate
+## Evaluate the Source Intelligence gate
 
 Pass only when:
 
@@ -70,4 +83,4 @@ Pass only when:
 - repeat runs produce controlled, idempotent results;
 - tests and contract validation succeed.
 
-Capture machine-readable results plus a concise evidence summary under `docs/evidence/`. Report files changed, commands or jobs run, acceptance evidence, unresolved governance decisions, and the next eligible phase.
+Capture machine-readable results plus a concise evidence summary under `docs/evidence/`. Report files changed, commands or jobs run, acceptance evidence, unresolved governance decisions, and the next eligible workstream.

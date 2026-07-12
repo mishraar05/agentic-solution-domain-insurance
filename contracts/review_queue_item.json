@@ -19,7 +19,7 @@
     "confidence_score": { "$ref": "common.json#/definitions/confidence_score" },
     "evidence_coverage": { "$ref": "common.json#/definitions/evidence_coverage" },
     "privacy_class": { "$ref": "common.json#/definitions/privacy_class" },
-    "review_trigger": { "type": "string", "enum": ["PRIVACY", "KEY_CANDIDATE", "RELATIONSHIP", "CONTRADICTION", "UNMAPPED_CONCEPT", "LOW_EVIDENCE_COVERAGE", "LOW_CONFIDENCE"] },
+    "review_trigger": { "type": "string", "enum": ["PRIVACY", "KEY_CANDIDATE", "RELATIONSHIP", "CONTRADICTION", "UNMAPPED_CONCEPT", "LOW_EVIDENCE_COVERAGE", "LOW_CONFIDENCE", "SOURCE_DOCUMENTATION"] },
     "review_reason": { "type": "string" },
     "review_priority": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW"] },
     "recommended_reviewer_role": { "type": "string", "enum": ["DATA_ARCHITECT", "DOMAIN_STEWARD", "PRIVACY_STEWARD"] },

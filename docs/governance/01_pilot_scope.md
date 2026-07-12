@@ -51,8 +51,8 @@ Policy is selected as the first-release scope because:
 ## Open questions
 
 - [ ] Who is the named data architect owner?
-- [ ] Should Claims be included as a read-only relationship target in Phase 2?
-- [ ] Are there additional synthetic objects to add before Phase 2?
+- [ ] Should Claims be included as a read-only relationship target for Source Intelligence?
+- [ ] Are additional synthetic objects needed for Source Intelligence evaluation?
 
 ## Change log
 

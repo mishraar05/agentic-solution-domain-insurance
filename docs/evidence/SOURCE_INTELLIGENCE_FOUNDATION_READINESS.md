@@ -1,6 +1,6 @@
-﻿# Phase 2 Foundation Readiness Report
+﻿# Source Intelligence Foundation Readiness Report
 
-**Artifact:** `PHASE2_FOUNDATION_READINESS.md`
+**Artifact:** `SOURCE_INTELLIGENCE_FOUNDATION_READINESS.md`
 **Version:** 0.1.0
 **Date:** 2026-07-12
 **Author:** Agent (Cline)
@@ -43,7 +43,7 @@
 
 ## Test and CI results
 
-- **Local tests:** 89/89 passed, including unit and validation scenarios
+- **Local tests:** 99/99 passed, including unit and validation scenarios
 - **Expanded fixture validation:** dependency-free schema subset validation, positive loading, and negative required-field rejection
 - **Leakage validation:** prohibited sentinel injected as source input and confirmed absent from sanitized event output and captured logs
 - **CI workflow:** `.github/workflows/ci.yml` runs local-safe tests and parses every contract without Databricks credentials
@@ -63,10 +63,11 @@
 | `naming.py` | `classify_naming()`, `detect_personal_data()` |
 | `types.py` | `check_type_compatibility()` |
 | `privacy.py` | `classify_privacy()` |
-| `relationships.py` | `infer_key_role()`, `infer_relationship()`, `compute_relationship_strength()` |
-| `cots_patterns.py` | `match_cots_pattern()` (returns NOT_AVAILABLE in Phase 2) |
+| `relationships.py` | Runtime-metadata key-role inference, relationship discovery, evidence grouping, and strength calculation |
+| `cots_patterns.py` | `match_cots_pattern()` (returns NOT_AVAILABLE until governed reference patterns exist) |
 | `confidence.py` | `compute_confidence()` with 5 weighted components, evidence coverage, renormalization |
 | `routing.py` | `route_review()` with mandatory triggers |
+| `source_documentation.py` | Prompt allow-listing, strict model-output validation, context fingerprinting, and non-authoritative documentation recommendation assembly |
 
 ## Confidence implementation
 
@@ -89,11 +90,11 @@
 
 All governance artifacts remain PROPOSED. No artifact is authoritative until human review.
 
-## Decision: May Phase 2 producers proceed?
+## Decision: May Source Intelligence producers proceed?
 
 **YES - in a PROPOSED capacity.** Contracts, synthetic fixtures, and tests may proceed under PROPOSED governance. Outputs remain non-authoritative. Organizational data, publication, promotion, and approval require approved governance.
 
-Phase 2 producers (Databricks notebooks that use the deterministic core) may be implemented. Their outputs must:
+Source Intelligence producers (Databricks notebooks that use the deterministic core) may be implemented. Their outputs must:
 1. Validate against contracts before persistence
 2. Record all confidence components with availability states
 3. Route all uncertain/privacy-relevant items to review

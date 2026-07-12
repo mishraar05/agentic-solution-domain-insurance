@@ -1,4 +1,4 @@
-# Phase 2 Databricks Runtime Evidence
+# Source Intelligence Databricks Runtime Evidence
 
 **Status:** NOT RUN  
 **Operator:** Pending  
@@ -40,10 +40,11 @@ profile. Automated agents must not deploy or execute the job.
 | `source_attribute_observation` | Pending | Pending |
 | `profile_evidence` | Pending | Pending |
 | `relationship_candidate` | Pending | Pending |
-| `review_queue` | Pending | Pending |
+| `source_documentation_recommendation` | Pending | Pending |
+| `source_intelligence_review_queue` | Pending | Pending |
 | `source_intelligence_run` | Pending | Pending |
 
-## Phase 2 runtime assertions
+## Source Intelligence runtime assertions
 
 | Assertion | Result | Evidence |
 |---|---|---|
@@ -56,6 +57,10 @@ profile. Automated agents must not deploy or execute the job.
 | Zero auto-approved recommendations | Pending | Pending |
 | Repeat execution is controlled and idempotent | Pending | Pending |
 | Producer-level Spark checks pass | Pending | Pending |
+| Every attribute has one documentation recommendation | Pending | Pending |
+| Personal/sensitive attributes were excluded before LLM invocation | Pending | Pending |
+| Every documentation result routed to a Domain Steward | Pending | Pending |
+| Prompt version, model endpoint, and context fingerprint retained | Pending | Pending |
 
 ## Operator attestation
 

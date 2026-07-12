@@ -7,7 +7,7 @@ independent of the notebook runtime.
 
 ## What the project does
 
-The Phase 2 Source Intelligence workflow examines configured, existing
+The Source Intelligence workflow examines configured, existing
 source-aligned/Bronze tables and produces reviewable recommendations about:
 
 - physical source objects and attributes;
@@ -16,6 +16,7 @@ source-aligned/Bronze tables and produces reviewable recommendations about:
 - candidate keys and relationships;
 - minimized aggregate profile evidence;
 - transparent confidence components and evidence coverage;
+- LLM-assisted source-column descriptions and business-glossary proposals;
 - items that require a Data Architect, Domain Steward, or Privacy Steward.
 
 The workflow does not deploy a Silver or Gold model. It produces governed data
@@ -64,6 +65,9 @@ The separation is deliberate:
 - `resources/` describes how Databricks Asset Bundles sequence the entry points.
 - `contracts/` defines the logical records that producers must validate.
 
+The LLM boundary and newcomer-oriented flow are documented in
+[`docs/design/SOURCE_DOCUMENTATION_AGENT.md`](docs/design/SOURCE_DOCUMENTATION_AGENT.md).
+
 ## Repository layout
 
 | Path | Responsibility |
@@ -93,11 +97,12 @@ The Databricks job is intentionally sequential. Every task receives the same
 |---|---|---|---|
 | 00 | `00_config.py` | Job widget and declared environment settings | Shared run context, thresholds, version constants, safe table-name helpers, and import path |
 | 01 | `01_validate_source_scope.py` | Catalog metadata and configured source schemas | Read-only prerequisite validation; no persisted output |
-| 02 | `02_build_source_dictionary.py` | Source schemas and permitted aggregate profiles | Attribute/object observations, profile evidence, relationship candidates, and the Phase 1-compatible dictionary |
-| 03 | `03_create_review_queue.py` | Current run's proposed attribute observations | Contract-valid open review items with role, reason, trigger, and priority |
-| 04 | `04_validate_phase2.py` | All current-run recommendation outputs | Runtime gate assertions and one idempotent `source_intelligence_run` record |
-| 05 | `05_record_review_decision.py` | One open queue item plus explicit human widget input | Contract-valid, idempotent human decision event; not part of the automated core job |
-| 06 | `06_publish_data_dictionary.py` | Governed dictionary records | Optional approved-only or visibly watermarked draft Excel workbook; not part of the core job |
+| 02 | `02_build_source_dictionary.py` | Source schemas and permitted aggregate profiles | Canonical attribute/object observations, profile evidence, relationship candidates, and a consumer-facing dictionary projection |
+| 03 | `03_generate_source_documentation.py` | Governed structural context and minimized profiles | `PROPOSED` or `UNRESOLVED` column descriptions and glossary recommendations from the configured Databricks model |
+| 04 | `04_create_review_queue.py` | Attribute and documentation recommendations | Contract-valid open review items; every LLM-assisted proposal routes to a Domain Steward |
+| 05 | `05_validate_source_intelligence.py` | All current-run recommendation outputs | Runtime gate assertions and one idempotent `source_intelligence_run` record |
+| 06 | `06_record_review_decision.py` | One open queue item plus explicit human widget input | Contract-valid, idempotent human decision event; not part of the automated core job |
+| 07 | `07_publish_data_dictionary.py` | Governed dictionary records | Optional approved-only or visibly watermarked draft Excel workbook; not part of the core job |
 
 Detailed entry-point behavior, failure modes, and execution guidance are in
 [`src/workflows/source_intelligence/README.md`](src/workflows/source_intelligence/README.md).
@@ -119,6 +124,7 @@ Detailed entry-point behavior, failure modes, and execution guidance are in
 | `relationships.py` | Infers key roles and known candidate relationships from naming and compatibility evidence |
 | `review_lifecycle.py` | Creates role-authorized human decisions and suppresses unchanged rejected recommendations |
 | `routing.py` | Routes privacy, key, relationship, contradiction, unmapped, incomplete, and low-confidence items |
+| `source_documentation.py` | Builds allow-listed prompts, validates strict LLM output, and creates non-authoritative descriptions and glossary proposals |
 | `types.py` | Scores compatibility between physical types and proposed semantics |
 
 Business rules belong in these modules. Workflow notebooks should contain only
@@ -136,22 +142,28 @@ timestamps into physical Spark representations.
 | `profile_evidence` | `profile_evidence.json` | Minimized, governance-permitted aggregate profile results |
 | `relationship_candidate` | `relationship_candidate.json` | Proposed relationships with naming/type evidence and confidence |
 | `source_intelligence_run` | `source_intelligence_run.json` | Run scope, versions, status, idempotency key, timestamps, and metrics |
-| `review_queue` | `review_queue_item.json` | Open human review work with a stable queue-item identifier |
+| `source_documentation_recommendation` | `source_documentation_recommendation.json` | LLM-assisted column description and business-glossary proposal with context fingerprint, prompt/model provenance, and mandatory review |
+| `source_intelligence_review_queue` | `review_queue_item.json` | Canonical human review work with a stable queue-item identifier |
 | Review decisions | `review_decision.json` | Human decision, rationale, exact queue link, and invalidation impact |
 | Policy violations | `policy_violation_event.json` | Sanitized record of prohibited evidence rejected before profiling |
 
-`source_observation_dictionary` remains as a Phase 1 compatibility output. It
-is not a deployment schema and is never automatically authoritative.
+`source_observation_dictionary` and `review_queue` are consumer-facing
+projections of the canonical observation and review records. They are not
+deployment schemas and are never automatically
+authoritative.
 
 ## Configuration
 
-All environment-specific workflow settings are centralized in
-`src/workflows/source_intelligence/00_config.py`:
+Environment-specific source and output scope is supplied as DAB/job parameters;
+`src/workflows/source_intelligence/00_config.py` validates those parameters and
+centralizes governed versions and thresholds:
 
-- `SOURCE_CATALOG`, `SOURCE_SCHEMA`, and `SOURCE_TABLES` identify external,
+- `source_catalog`, `source_schema`, and `source_tables` identify external,
   read-only inputs;
-- `SOURCE_SYSTEM` identifies the configured source family;
-- `OUTPUT_CATALOG` and `OUTPUT_SCHEMA` identify the solution-owned destination;
+- `source_system` identifies the configured source family;
+- `output_catalog` and `output_schema` identify the solution-owned destination;
+- `documentation_model_endpoint` identifies the Databricks-hosted model used by
+  the Source Documentation Agent;
 - `ARTIFACT_VERSION` and `SCHEMA_VERSION` provide traceability;
 - `LOW_CONFIDENCE_THRESHOLD` and `EVIDENCE_COVERAGE_FLOOR` govern routing.
 
@@ -177,8 +189,9 @@ Before a run:
 1. Confirm the configured external source tables exist.
 2. Confirm the solution-owned output schema exists.
 3. Confirm governance permits the intended metadata and aggregate evidence.
-4. Validate the bundle and inspect the resolved five-task sequence.
-5. Run the job and capture its run URL and output evidence under `docs/evidence/`.
+4. Confirm serverless `ai_query` access to the configured model endpoint.
+5. Validate the bundle and inspect the resolved six-task sequence.
+6. Run the job and capture its run URL and output evidence under `docs/evidence/`.
 
 The optional publication notebook is deliberately excluded from the core job.
 
@@ -207,18 +220,18 @@ contradictions, unmapped concepts, inadequate evidence coverage, and low
 confidence. Rejections retain a fingerprint so the same recommendation cannot
 silently reappear unchanged.
 
-## Current Phase 2 status
+## Current Source Intelligence status
 
 Local implementation evidence is recorded in:
 
-- `docs/evidence/PHASE2_COMPLETION_STATUS.md`;
-- `docs/evidence/phase2_local_gate.json`;
-- `docs/evidence/PHASE2_FOUNDATION_READINESS.md`.
+- `docs/evidence/SOURCE_INTELLIGENCE_COMPLETION_STATUS.md`;
+- `docs/evidence/source_intelligence_local_gate.json`;
+- `docs/evidence/SOURCE_INTELLIGENCE_FOUNDATION_READINESS.md`.
 
-The overall Phase 2 gate remains incomplete until fresh Databricks runtime
+The Source Intelligence release gate remains incomplete until fresh Databricks runtime
 evidence, independent human relabelling and confidence calibration, and named
-governance approvals exist. Phase 3 agentic, retrieval, and knowledge-driven
-capabilities remain ineligible until that gate is evidenced.
+governance approvals exist. Knowledge-driven and target-modelling capabilities
+remain ineligible until that gate is evidenced.
 
 ## Newcomer starting path
 

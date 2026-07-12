@@ -3,13 +3,14 @@
 
 This notebook is the first entry point and is also imported with ``%run`` by
 the later numbered notebooks. It centralizes source scope, recommendation
-output locations, artifact versions, review thresholds, and the run identifier
+output locations, artifact versions, review thresholds, model endpoint, and the run identifier
 so every task in one Databricks job operates on exactly the same context.
 
 Inputs
 ------
-``run_id`` is an optional Databricks widget supplied by the job definition.
-All catalog, schema, source-table, and threshold settings are declared below.
+``run_id`` and the governed source/output scope are Databricks widgets supplied
+by the job definition. Threshold and artifact-version settings are declared
+below because changing them requires versioned code and governance review.
 
 Provides to downstream notebooks
 ---------------------------------
@@ -45,23 +46,46 @@ import re
 import sys
 from datetime import datetime, timezone
 
-ENGAGEMENT_ID = "free-edition-synthetic-mvp"
+def _required_widget(name: str) -> str:
+    """Read a required job parameter without embedding environment inventory."""
+    dbutils.widgets.text(name, "")
+    value = dbutils.widgets.get(name).strip()
+    if not value:
+        raise ValueError(f"Required Databricks job parameter is empty: {name}")
+    return value
 
-# Existing source tables supplied by the client/platform data pipeline.
-SOURCE_CATALOG = "workspace"
-SOURCE_SCHEMA = "agentic_insurance_demo_bronze"
-SOURCE_TABLES = ("bronze_policy", "bronze_policyholder", "bronze_claim")
-SOURCE_SYSTEM = "configured_source_system"
 
-# Solution-owned recommendation artifacts. Source and output locations may differ.
-OUTPUT_CATALOG = "workspace"
-OUTPUT_SCHEMA = "agentic_insurance_mvp"
+ENGAGEMENT_ID = _required_widget("engagement_id")
+
+# Existing read-only source scope supplied by deployment configuration.
+SOURCE_CATALOG = _required_widget("source_catalog")
+SOURCE_SCHEMA = _required_widget("source_schema")
+SOURCE_TABLES = tuple(
+    table.strip()
+    for table in _required_widget("source_tables").split(",")
+    if table.strip()
+)
+if not SOURCE_TABLES:
+    raise ValueError("source_tables must contain at least one table name.")
+SOURCE_SYSTEM = _required_widget("source_system")
+
+# Solution-owned recommendation destination supplied independently of source scope.
+OUTPUT_CATALOG = _required_widget("output_catalog")
+OUTPUT_SCHEMA = _required_widget("output_schema")
+
+# Databricks-hosted model endpoint used only by the Source Documentation Agent.
+DOCUMENTATION_MODEL_ENDPOINT = _required_widget("documentation_model_endpoint")
+if not re.fullmatch(r"[A-Za-z0-9._-]+", DOCUMENTATION_MODEL_ENDPOINT):
+    raise ValueError(
+        "documentation_model_endpoint may contain only letters, numbers, dots, "
+        "underscores, and hyphens."
+    )
 
 # Compatibility aliases for notebooks that only write recommendation artifacts.
 CATALOG = OUTPUT_CATALOG
 SCHEMA = OUTPUT_SCHEMA
 
-ARTIFACT_VERSION = "0.3.0"
+ARTIFACT_VERSION = "0.4.0"
 SCHEMA_VERSION = "1.0.0"
 LOW_CONFIDENCE_THRESHOLD = 0.75
 EVIDENCE_COVERAGE_FLOOR = 0.60
@@ -211,3 +235,4 @@ assert OUTPUT_SCHEMA in _output_schemas, (
 print(f"Run ID: {RUN_ID}")
 print(f"Read-only source scope: {SOURCE_CATALOG}.{SOURCE_SCHEMA} {SOURCE_TABLES}")
 print(f"Recommendation output schema: {OUTPUT_CATALOG}.{OUTPUT_SCHEMA}")
+print(f"Source Documentation model endpoint: {DOCUMENTATION_MODEL_ENDPOINT}")

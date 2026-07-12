@@ -1,7 +1,8 @@
 """Render the governed source data dictionary as a publishable Excel workbook.
 
-Read-only reporting: consumes dictionary records, produces a deliverable file.
-Never writes to source or recommendation tables.
+Read-only reporting: consumes dictionary records optionally enriched with
+human-reviewed Source Documentation Agent fields and produces a deliverable
+file. Never writes to source or recommendation tables.
 """
 from collections import OrderedDict
 
@@ -12,6 +13,11 @@ COLUMNS = [
     ("nullable", "Nullable"),
     ("key_role", "Key Role"),
     ("proposed_business_name", "Business Name"),
+    ("proposed_column_description", "Proposed Column Description"),
+    ("proposed_glossary_term", "Proposed Glossary Term"),
+    ("proposed_glossary_definition", "Proposed Glossary Definition"),
+    ("documentation_generation_status", "Documentation Status"),
+    ("documentation_review_state", "Documentation Review"),
     ("ontology_concept_id", "Ontology Concept"),
     ("domain", "Domain"),
     ("observed_or_inferred", "Observed/Inferred"),
@@ -56,8 +62,8 @@ def build_workbook(records, source_system, run_id, artifact_version,
         ("Publication status", status),
         ("Tables", len(tables)),
         ("Attributes published", len(records)),
-        ("Traceability", "Generated from governed table source_observation_dictionary; "
-                         "every row carries its run_id and approval state."),
+        ("Traceability", "Generated from governed dictionary and source-documentation "
+                         "recommendations; every row carries run and review state."),
     ]
     for idx, (key, value) in enumerate(meta_rows, start=1):
         overview.cell(row=idx, column=1, value=key).font = Font(name="Arial", bold=True)
@@ -78,7 +84,10 @@ def build_workbook(records, source_system, run_id, artifact_version,
                                value="" if value is None else value)
                 cell.font = Font(name="Arial", size=10)
         ws.freeze_panes = "A2"
-        widths = [22, 6, 16, 10, 22, 26, 26, 12, 16, 16, 11, 14, 40, 40, 34]
+        widths = [
+            22, 6, 16, 10, 22, 26, 48, 28, 48, 18, 20, 26, 12, 16,
+            16, 11, 14, 40, 40, 34,
+        ]
         for col_idx, width in enumerate(widths, start=1):
             ws.column_dimensions[ws.cell(row=1, column=col_idx).column_letter].width = width
 

@@ -15,7 +15,9 @@
 6. Preserve unrelated work. Inspect the working tree before each work package.
 7. Implement one work package at a time. Run its acceptance checks before starting the next package.
 8. Keep shared configuration in `src/workflows/source_intelligence/00_config.py`. Remove business-logic coupling between notebooks, not the shared configuration entry point.
-9. LLMs, prompts, vector search, and semantic retrieval are eligible only in Phase 3+ after the deterministic Phase 2 gate passes.
+9. The bounded Source Documentation Agent may use an LLM over prompt-eligible
+   structural context. Vector search, semantic retrieval, and other LLM agents
+   remain gated until the Source Intelligence gate passes.
 10. Use semantic versioning for schemas: patch for clarification, minor for backward-compatible additions, major for breaking changes. Add compatibility tests.
 11. Treat existing source/Bronze tables as external read-only inputs. Bronze creation, ingestion, and population are outside the solution and must remain in a separate optional demo/test harness.
 
@@ -198,7 +200,7 @@ Adapt names to existing repository conventions if an equivalent structure alread
 
 **Actions**
 
-1. Extract logic from `02_build_source_dictionary.py` and `03_create_review_queue.py` into deterministic functions with explicit inputs and outputs.
+1. Extract deterministic logic from `02_build_source_dictionary.py` and `04_create_review_queue.py` into functions with explicit inputs and outputs; keep model orchestration isolated in `03_generate_source_documentation.py`.
 2. Keep notebooks as orchestration entry points.
 3. Replace exact-name-only behavior with transparent rules while retaining approved exact patterns as one evidence source.
 4. Separate physical metadata extraction, minimized profile evidence, semantic classification, relationship inference, privacy classification, authorized structured COTS matching, confidence, and review routing.
@@ -320,7 +322,7 @@ Never use realistic credentials or real personal information. Use obvious sentin
 1. Add Markdown extracts for implementation-critical architecture information currently available only in Office files.
 2. State that agents should not need Office parsing for routine implementation; contracts and Markdown extracts are authoritative implementation interfaces.
 3. Update `README.md`, `AGENTS.md`, and the implementation plan only where behavior or navigation changed.
-4. Produce `docs/evidence/PHASE2_FOUNDATION_READINESS.md` with:
+4. Produce `docs/evidence/SOURCE_INTELLIGENCE_FOUNDATION_READINESS.md` with:
    - work packages completed;
    - schemas and versions;
    - test and CI results;
@@ -358,7 +360,7 @@ Stop and request human direction when:
 - choosing a dependency not already permitted by `AGENTS.md`;
 - changing confidence weights or the evidence-coverage floor from their proposed values;
 - using any non-synthetic or externally sourced data;
-- introducing LLMs, vector search, prompts, or semantic retrieval;
+- introducing LLM uses beyond the bounded Source Documentation Agent, vector search, or semantic retrieval;
 - changing the recommendation-only boundary.
 
 ## 6. Final completion criteria

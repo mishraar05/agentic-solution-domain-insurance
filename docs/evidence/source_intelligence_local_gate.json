@@ -1,11 +1,11 @@
 {
-  "artifact": "phase2_local_gate",
+  "artifact": "source_intelligence_local_gate",
   "version": "1.0.0",
   "evaluated_at": "2026-07-12",
   "status": "BLOCKED_EXTERNAL",
   "local_validation": {
     "command": "python -m pytest -q",
-    "tests_passed": 89,
+    "tests_passed": 99,
     "tests_failed": 0,
     "labelled_records": 19,
     "semantic_classification_coverage": 1.0,
@@ -22,24 +22,28 @@
     "known_relationships_expected": 2,
     "review_decision_lifecycle": "PASS",
     "human_review_workbench": "PASS",
-    "rejected_recommendation_suppression": "PASS"
+    "rejected_recommendation_suppression": "PASS",
+    "source_documentation_agent_unit_tests": "PASS"
   },
   "runtime_validation": {
     "databricks_bundle_validation": "NOT_RUN_LEGACY_CLI",
     "databricks_job_run": "NOT_RUN",
     "producer_spark_checks": "NOT_RUN",
-    "fresh_runtime_evidence": "NOT_CAPTURED"
+    "fresh_runtime_evidence": "NOT_CAPTURED",
+    "documentation_model_invocation": "NOT_RUN"
   },
   "human_validation": {
     "independent_label_review": "PENDING",
     "confidence_calibration": "PENDING",
-    "named_governance_approvals": "PENDING"
+    "named_governance_approvals": "PENDING",
+    "documentation_quality_review": "PENDING"
   },
-  "phase2_gate": "NOT_PASSED",
+  "source_intelligence_gate": "NOT_PASSED",
   "blockers": [
     "Fresh Databricks producer evidence is required.",
     "The evaluation labels require independent human review.",
     "Confidence weights and threshold require calibration from reviewed labels.",
-    "Governance artifacts require named human approvals."
+    "Governance artifacts require named human approvals.",
+    "The Source Documentation Agent requires an in-workspace model run and independent Domain Steward quality review."
   ]
 }

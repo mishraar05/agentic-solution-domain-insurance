@@ -21,6 +21,8 @@ RECOMMENDATION_FIELDS = (
     "ontology_concept_id",
     "key_role",
     "privacy_class",
+    "assumptions",
+    "open_question",
 )
 
 
@@ -43,6 +45,7 @@ def _recommendation_type(review_trigger):
         "UNMAPPED_CONCEPT": "ONTOLOGY",
         "LOW_EVIDENCE_COVERAGE": "SEMANTIC_MAPPING",
         "LOW_CONFIDENCE": "SEMANTIC_MAPPING",
+        "SOURCE_DOCUMENTATION": "SOURCE_DOCUMENTATION",
     }[review_trigger]
 
 

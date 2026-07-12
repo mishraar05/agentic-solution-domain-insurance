@@ -7,7 +7,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 from source_intelligence.naming import classify_naming, detect_personal_data
 from source_intelligence.types import check_type_compatibility
 from source_intelligence.privacy import classify_privacy
-from source_intelligence.relationships import infer_key_role, infer_relationship, compute_relationship_strength
+from source_intelligence.relationships import (
+    compute_relationship_strength,
+    discover_relationship_candidates,
+    infer_key_role,
+    infer_key_roles,
+    relationship_evidence_by_attribute,
+)
 from source_intelligence.confidence import compute_confidence, EVIDENCE_COVERAGE_FLOOR
 from source_intelligence.routing import route_review
 
@@ -62,29 +68,88 @@ class TestPrivacyClassification:
 
 
 class TestRelationshipInference:
-    def test_primary_key(self):
-        assert infer_key_role("bronze_policy", "policy_id") == "PRIMARY_KEY_CANDIDATE"
-        assert infer_key_role("bronze_claim", "claim_id") == "PRIMARY_KEY_CANDIDATE"
+    def test_core_relationship_engine_has_no_fixture_table_inventory(self):
+        root = os.path.join(os.path.dirname(__file__), "..", "..")
+        paths = [
+            os.path.join(root, "src", "source_intelligence", "relationships.py"),
+            os.path.join(
+                root,
+                "src",
+                "workflows",
+                "source_intelligence",
+                "02_build_source_dictionary.py",
+            ),
+            os.path.join(
+                root,
+                "src",
+                "workflows",
+                "source_intelligence",
+                "05_validate_source_intelligence.py",
+            ),
+        ]
+        forbidden = ("bronze_policy", "bronze_claim", "bronze_policyholder")
+        for path in paths:
+            with open(path, encoding="utf-8") as handle:
+                source = handle.read()
+            assert not any(name in source for name in forbidden), path
 
-    def test_foreign_key(self):
-        assert infer_key_role("bronze_claim", "policy_id") == "FOREIGN_KEY_CANDIDATE"
-        assert infer_key_role("bronze_policy", "insured_party_id") == "FOREIGN_KEY_CANDIDATE"
+    def test_table_wide_key_roles_use_runtime_columns(self):
+        roles = infer_key_roles(
+            "raw_customer",
+            ["customer_id", "account_id", "customer_status"],
+        )
+        assert roles["customer_id"] == "PRIMARY_KEY_CANDIDATE"
+        assert roles["account_id"] == "FOREIGN_KEY_CANDIDATE"
+        assert roles["customer_status"] == "NON_KEY"
 
     def test_non_key(self):
-        assert infer_key_role("bronze_policy", "policy_status") == "NON_KEY"
+        assert infer_key_role("arbitrary_file", "record_status") == "NON_KEY"
 
-    def test_relationship_evidence(self):
-        rel = infer_relationship("bronze_claim", "policy_id")
-        assert rel is not None
-        assert "bronze_claim.policy_id" in rel
-        assert "bronze_policy.policy_id" in rel
+    def test_relationships_are_discovered_from_runtime_metadata(self):
+        attributes = [
+            {
+                "source_table": "raw_customer",
+                "source_column": "customer_id",
+                "physical_type": "StringType()",
+                "key_role": "PRIMARY_KEY_CANDIDATE",
+            },
+            {
+                "source_table": "raw_order",
+                "source_column": "order_id",
+                "physical_type": "StringType()",
+                "key_role": "PRIMARY_KEY_CANDIDATE",
+            },
+            {
+                "source_table": "raw_order",
+                "source_column": "customer_id",
+                "physical_type": "StringType()",
+                "key_role": "FOREIGN_KEY_CANDIDATE",
+            },
+        ]
+        candidates = discover_relationship_candidates(attributes)
+        assert len(candidates) == 1
+        assert candidates[0]["from_table"] == "raw_order"
+        assert candidates[0]["to_table"] == "raw_customer"
+        evidence = relationship_evidence_by_attribute(candidates)
+        assert "raw_order.customer_id" in evidence[("raw_order", "customer_id")]
 
-    def test_no_relationship(self):
-        assert infer_relationship("bronze_policy", "policy_status") is None
+    def test_unrecognized_as400_names_remain_unresolved_without_failure(self):
+        roles = infer_key_roles("LIBFILE", ["POLNBR", "CLMSTS", "EFFDT"])
+        assert set(roles.values()) == {"NON_KEY"}
+        attributes = [
+            {
+                "source_table": "LIBFILE",
+                "source_column": name,
+                "physical_type": "StringType()",
+                "key_role": role,
+            }
+            for name, role in roles.items()
+        ]
+        assert discover_relationship_candidates(attributes) == []
 
     def test_relationship_strength(self):
-        assert compute_relationship_strength("bronze_claim", "policy_id", True) == 0.9
-        assert compute_relationship_strength("bronze_policy", "policy_status", False) == 0.4
+        assert compute_relationship_strength("any_child", "parent_id", True) == 0.9
+        assert compute_relationship_strength("any_table", "status", False) == 0.4
 
 
 class TestConfidenceCalculation:

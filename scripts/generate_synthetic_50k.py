@@ -1,4 +1,4 @@
-"""Generate 50K synthetic P&C insurance Bronze-layer records for Phase 2 integration testing.
+"""Generate 50K synthetic P&C insurance Bronze-layer records for Source Intelligence integration testing.
 
 Creates three source tables:
 - bronze_policy: 50,000 records (Policy domain)

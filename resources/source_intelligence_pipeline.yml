@@ -9,6 +9,14 @@ resources:
             source: WORKSPACE
             base_parameters:
               run_id: "si_job_{{job.run_id}}"
+              engagement_id: ${var.engagement_id}
+              source_catalog: ${var.source_catalog}
+              source_schema: ${var.source_schema}
+              source_tables: ${var.source_tables}
+              source_system: ${var.source_system}
+              output_catalog: ${var.output_catalog}
+              output_schema: ${var.output_schema}
+              documentation_model_endpoint: ${var.documentation_model_endpoint}
         - task_key: validate_source
           depends_on:
             - task_key: config
@@ -17,6 +25,14 @@ resources:
             source: WORKSPACE
             base_parameters:
               run_id: "si_job_{{job.run_id}}"
+              engagement_id: ${var.engagement_id}
+              source_catalog: ${var.source_catalog}
+              source_schema: ${var.source_schema}
+              source_tables: ${var.source_tables}
+              source_system: ${var.source_system}
+              output_catalog: ${var.output_catalog}
+              output_schema: ${var.output_schema}
+              documentation_model_endpoint: ${var.documentation_model_endpoint}
         - task_key: build_dictionary
           depends_on:
             - task_key: validate_source
@@ -25,19 +41,59 @@ resources:
             source: WORKSPACE
             base_parameters:
               run_id: "si_job_{{job.run_id}}"
-        - task_key: create_queue
+              engagement_id: ${var.engagement_id}
+              source_catalog: ${var.source_catalog}
+              source_schema: ${var.source_schema}
+              source_tables: ${var.source_tables}
+              source_system: ${var.source_system}
+              output_catalog: ${var.output_catalog}
+              output_schema: ${var.output_schema}
+              documentation_model_endpoint: ${var.documentation_model_endpoint}
+        - task_key: generate_documentation
           depends_on:
             - task_key: build_dictionary
           notebook_task:
-            notebook_path: ../src/workflows/source_intelligence/03_create_review_queue.py
+            notebook_path: ../src/workflows/source_intelligence/03_generate_source_documentation.py
             source: WORKSPACE
             base_parameters:
               run_id: "si_job_{{job.run_id}}"
+              engagement_id: ${var.engagement_id}
+              source_catalog: ${var.source_catalog}
+              source_schema: ${var.source_schema}
+              source_tables: ${var.source_tables}
+              source_system: ${var.source_system}
+              output_catalog: ${var.output_catalog}
+              output_schema: ${var.output_schema}
+              documentation_model_endpoint: ${var.documentation_model_endpoint}
+        - task_key: create_queue
+          depends_on:
+            - task_key: generate_documentation
+          notebook_task:
+            notebook_path: ../src/workflows/source_intelligence/04_create_review_queue.py
+            source: WORKSPACE
+            base_parameters:
+              run_id: "si_job_{{job.run_id}}"
+              engagement_id: ${var.engagement_id}
+              source_catalog: ${var.source_catalog}
+              source_schema: ${var.source_schema}
+              source_tables: ${var.source_tables}
+              source_system: ${var.source_system}
+              output_catalog: ${var.output_catalog}
+              output_schema: ${var.output_schema}
+              documentation_model_endpoint: ${var.documentation_model_endpoint}
         - task_key: validate
           depends_on:
             - task_key: create_queue
           notebook_task:
-            notebook_path: ../src/workflows/source_intelligence/04_validate_phase2.py
+            notebook_path: ../src/workflows/source_intelligence/05_validate_source_intelligence.py
             source: WORKSPACE
             base_parameters:
               run_id: "si_job_{{job.run_id}}"
+              engagement_id: ${var.engagement_id}
+              source_catalog: ${var.source_catalog}
+              source_schema: ${var.source_schema}
+              source_tables: ${var.source_tables}
+              source_system: ${var.source_system}
+              output_catalog: ${var.output_catalog}
+              output_schema: ${var.output_schema}
+              documentation_model_endpoint: ${var.documentation_model_endpoint}

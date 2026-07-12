@@ -16,6 +16,11 @@ def _record(table, column, pos, state="APPROVED"):
         "privacy_class": "INTERNAL", "confidence_score": 0.9,
         "approval_state": state, "relationship_evidence": None,
         "assumptions": None, "open_question": None,
+        "proposed_column_description": "Proposed source-column description.",
+        "proposed_glossary_term": "Policy Term",
+        "proposed_glossary_definition": "A proposed glossary definition.",
+        "documentation_generation_status": "PROPOSED",
+        "documentation_review_state": "APPROVED",
     }
 
 
@@ -40,6 +45,9 @@ class TestDictionaryExport:
         assert set(wb.sheetnames) == {"Overview", "bronze_policy", "bronze_claim"}
         assert wb["bronze_policy"].cell(row=1, column=1).value == "Column"
         assert wb["bronze_policy"].cell(row=2, column=1).value == "a"
+        assert wb["bronze_policy"].cell(row=1, column=7).value == (
+            "Proposed Column Description"
+        )
 
     def test_traceability_metadata_present(self):
         wb, _ = build_workbook([_record("t", "a", 1)], "guidewire_pc", "si_job_9", "0.3.0")

@@ -1,6 +1,6 @@
 """Classify privacy from transparent column-name indicators.
 
-The Phase 2 pilot uses structural names rather than personal values to identify
+The Source Intelligence workflow uses structural names rather than personal values to identify
 privacy-relevant attributes. The public classifier returns both a governed
 privacy class and a human-readable rationale. A personal-data classification
 causes the workflow to skip value-level profiling and route the recommendation

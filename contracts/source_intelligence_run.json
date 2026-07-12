@@ -74,6 +74,10 @@
           "type": "integer",
           "minimum": 0
         },
+        "documentation_recommendations": {
+          "type": "integer",
+          "minimum": 0
+        },
         "privacy_classifications": {
           "type": "integer",
           "minimum": 0

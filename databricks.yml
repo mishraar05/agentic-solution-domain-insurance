@@ -1,6 +1,32 @@
 bundle:
   name: source-intelligence-v1
 
+variables:
+  engagement_id:
+    description: Governed engagement or pilot identifier
+    default: free-edition-synthetic-mvp
+  source_catalog:
+    description: Catalog containing existing read-only source tables
+    default: workspace
+  source_schema:
+    description: Schema containing existing read-only source tables
+    default: agentic_insurance_demo_bronze
+  source_tables:
+    description: Comma-separated existing source table names
+    default: bronze_policy,bronze_policyholder,bronze_claim
+  source_system:
+    description: Governed source-system identifier
+    default: configured_source_system
+  output_catalog:
+    description: Catalog containing solution-owned recommendation outputs
+    default: workspace
+  output_schema:
+    description: Existing schema for solution-owned recommendation outputs
+    default: agentic_insurance_mvp
+  documentation_model_endpoint:
+    description: Databricks-hosted model endpoint for source documentation proposals
+    default: databricks-gpt-5-mini
+
 targets:
   DEV:
     workspace:

@@ -1,8 +1,8 @@
 # Databricks notebook source
 """Route governed recommendations into the human review queue.
 
-This workflow reads the current run's source-attribute recommendations and
-applies the deterministic routing policy from ``source_intelligence.routing``.
+This workflow reads the current run's source-attribute and source-documentation
+recommendations and applies deterministic routing policy.
 Privacy findings, key and relationship candidates, contradictions, unmapped
 concepts, insufficient evidence coverage, and low-confidence proposals are
 assigned atomically to the appropriate reviewer role with a reason and
@@ -14,7 +14,10 @@ recommendation. The stable ``queue_item_id`` links a later human decision to
 exactly one recommendation. Re-running the same ``run_id`` does not append
 duplicates.
 
-Run after ``02_build_source_dictionary.py`` and before Phase 2 validation.
+Every LLM-assisted documentation recommendation is routed to a Domain Steward;
+the model is never allowed to approve its output.
+
+Run after ``03_generate_source_documentation.py`` and before workflow validation.
 """
 
 # COMMAND ----------
@@ -24,7 +27,7 @@ Run after ``02_build_source_dictionary.py`` and before Phase 2 validation.
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC # 03 — Create reviewer work queue
+# MAGIC # 04 — Create reviewer work queue
 # MAGIC
 # MAGIC Atomic routing via `source_intelligence.routing`; every queue item is validated
 # MAGIC against `contracts/review_queue_item.json` before persistence. Writes are
@@ -32,6 +35,7 @@ Run after ``02_build_source_dictionary.py`` and before Phase 2 validation.
 
 # COMMAND ----------
 
+import json
 from datetime import datetime, timezone
 
 from pyspark.sql import Row
@@ -41,12 +45,13 @@ from pyspark.sql.types import (
 )
 
 from source_intelligence.contract_validation import validate_records
+from source_intelligence.persistence import plan_existing_schema_alignment
 from source_intelligence.routing import route_review
 
 # COMMAND ----------
 
 # Idempotency guard: a retry with the same run_id must not append duplicates.
-queue_table = fq_table("review_queue")
+queue_table = fq_table("source_intelligence_review_queue")
 already_written = (
     spark.catalog.tableExists(queue_table)
     and spark.table(queue_table).filter(F.col("run_id") == RUN_ID).count() > 0
@@ -58,16 +63,31 @@ if already_written:
     print(f"Idempotent skip: review_queue rows for run {RUN_ID} already exist.")
     review_queue = spark.table(queue_table).filter(F.col("run_id") == RUN_ID)
 else:
-    dictionary_rows = (
-        spark.table(fq_table("source_observation_dictionary"))
+    attribute_rows = (
+        spark.table(fq_table("source_attribute_observation"))
         .filter(F.col("run_id") == RUN_ID)
         .collect()
     )
-    assert dictionary_rows, f"No dictionary records found for run {RUN_ID}."
+    assert attribute_rows, (
+        f"No canonical attribute observations found for run {RUN_ID}."
+    )
+    documentation_rows = (
+        spark.table(fq_table("source_documentation_recommendation"))
+        .filter(F.col("run_id") == RUN_ID)
+        .collect()
+    )
+    assert len(documentation_rows) == len(attribute_rows), (
+        "Every canonical attribute must have one source-documentation "
+        "recommendation before review routing."
+    )
+    attributes_by_key = {
+        (row.source_table, row.source_column): row
+        for row in attribute_rows
+    }
 
     queued_at = datetime.now(timezone.utc)
     contract_items = []
-    for row in dictionary_rows:
+    for row in attribute_rows:
         decision = route_review(
             confidence_score=row.confidence_score,
             evidence_coverage=row.evidence_coverage,
@@ -106,6 +126,58 @@ else:
             "queued_at": queued_at.isoformat(),
         })
 
+    for documentation in documentation_rows:
+        key = (documentation.source_table, documentation.source_column)
+        attribute = attributes_by_key[key]
+        material_documentation = json.dumps({
+            "generation_status": documentation.generation_status,
+            "column_description": documentation.proposed_column_description,
+            "glossary_term": documentation.proposed_glossary_term,
+            "glossary_definition": documentation.proposed_glossary_definition,
+            "glossary_concept_id": (
+                documentation.proposed_glossary_concept_id
+            ),
+            "context_fingerprint": documentation.context_fingerprint,
+        }, sort_keys=True)
+        contract_items.append({
+            "schema_version": SCHEMA_VERSION,
+            "queue_item_id": (
+                f"{RUN_ID}:{documentation.source_table}:"
+                f"{documentation.source_column}:source_documentation"
+            ),
+            "run_id": documentation.run_id,
+            "artifact_version": documentation.artifact_version,
+            "engagement_id": documentation.engagement_id,
+            "source_table": documentation.source_table,
+            "source_column": documentation.source_column,
+            "proposed_business_name": (
+                documentation.proposed_glossary_term
+                or attribute.proposed_business_name
+            ),
+            "domain": attribute.domain,
+            "ontology_concept_id": (
+                documentation.proposed_glossary_concept_id
+            ),
+            "key_role": attribute.key_role,
+            "confidence_score": attribute.confidence_score,
+            "evidence_coverage": attribute.evidence_coverage,
+            "privacy_class": attribute.privacy_class,
+            "review_trigger": "SOURCE_DOCUMENTATION",
+            "review_reason": (
+                "LLM-assisted column description and business-glossary "
+                "proposal requires Domain Steward review."
+            ),
+            "review_priority": (
+                "HIGH" if documentation.generation_status == "UNRESOLVED"
+                else "MEDIUM"
+            ),
+            "recommended_reviewer_role": "DOMAIN_STEWARD",
+            "queue_status": "OPEN",
+            "assumptions": material_documentation,
+            "open_question": documentation.resolution_reason,
+            "queued_at": queued_at.isoformat(),
+        })
+
     # Contract enforcement BEFORE persistence.
     validated = validate_records(contract_items, "review_queue_item.json")
     print(f"Queue-item contract validation passed for {validated} records")
@@ -139,5 +211,36 @@ else:
     rows = [Row(**{**item, "queued_at": queued_at}) for item in contract_items]
     review_queue = spark.createDataFrame(rows, schema=queue_schema)
     review_queue.write.format("delta").mode("append").saveAsTable(queue_table)
+
+# Preserve the consumer-facing queue projection without evolving its physical
+# schema. Governed review consumers use source_intelligence_review_queue.
+queue_projection_table = fq_table("review_queue")
+queue_projection_exists = spark.catalog.tableExists(queue_projection_table)
+queue_projection_written = (
+    queue_projection_exists
+    and spark.table(queue_projection_table)
+    .filter(F.col("run_id") == RUN_ID)
+    .count() > 0
+)
+if not queue_projection_written:
+    queue_projection_df = review_queue
+    if queue_projection_exists:
+        incoming_types = {
+            field.name: field.dataType.simpleString()
+            for field in queue_projection_df.schema.fields
+        }
+        existing_types = {
+            field.name: field.dataType.simpleString()
+            for field in spark.table(queue_projection_table).schema.fields
+        }
+        column_order = plan_existing_schema_alignment(
+            incoming_types, existing_types
+        )
+        queue_projection_df = queue_projection_df.select(*column_order)
+        queue_projection_df.write.mode("append").insertInto(queue_projection_table)
+    else:
+        queue_projection_df.write.format("delta").mode("append").saveAsTable(
+            queue_projection_table
+        )
 
 display(review_queue.orderBy("review_priority", "recommended_reviewer_role", "source_table"))

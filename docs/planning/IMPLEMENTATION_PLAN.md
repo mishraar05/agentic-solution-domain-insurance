@@ -64,13 +64,14 @@ flowchart LR
 | `00_config.py` | Defines existing source scope, output location, run ID, version, and threshold. | Reusable configuration. |
 | `01_validate_source_scope.py` | Verifies configured source tables through read-only metadata access. | Source preflight result. |
 | `02_build_source_dictionary.py` | Runs deterministic source intelligence rules. | `source_observation_dictionary`. |
-| `03_create_review_queue.py` | Routes uncertain, relationship, and privacy items. | `review_queue`. |
-| `04_validate_phase2.py` | Validates artifact completeness and no auto-approval. | Run summary and validation result. |
+| `03_generate_source_documentation.py` | Uses governed metadata context to propose column descriptions and glossary terms through a configured Databricks model. | `source_documentation_recommendation`. |
+| `04_create_review_queue.py` | Routes uncertain, relationship, privacy, and LLM-assisted documentation items. | Canonical `source_intelligence_review_queue` and consumer-facing `review_queue` projection. |
+| `05_validate_source_intelligence.py` | Validates artifact completeness and no auto-approval. | Run summary and validation result. |
 
 ### Foundation tasks
 
 - Deploy `src/workflows/source_intelligence/` as the workflow entry-point notebooks.
-- Configure `SOURCE_CATALOG`, `SOURCE_SCHEMA`, `SOURCE_TABLES`, and output settings in `00_config.py`.
+- Supply source and output scope through governed DAB/job parameters; `00_config.py` validates them and owns versions and thresholds.
 - Run the five notebooks in README order.
 - Inspect the data dictionary and reviewer queue.
 - Capture screenshots or query results as the MVP evidence pack.
@@ -98,6 +99,7 @@ For demonstrations only, `examples/synthetic_bronze/` may provision a disposable
 | Relationship inference | Compare identifier naming, compatible types, overlap ratios, and documented constraints. | Relationship candidates. |
 | Classification rules | Map object and attribute patterns to Policy, Claims, Billing, Party, Product, Coverage, and Reference Data. | Proposed domain classifications. |
 | Privacy rules | Detect direct identifiers and sensitive-field names; prohibit value-level inspection unless approved. | Privacy classification and rationale. |
+| Source documentation | Use strict structured LLM output over prompt-eligible structural context to propose column descriptions and glossary entries. | Source documentation recommendations requiring Domain Steward review. |
 | COTS recognition | Compare source naming/structure to authorized product/version patterns. | Match assessment and customization candidates. |
 
 ### New tables
@@ -109,6 +111,7 @@ For demonstrations only, `examples/synthetic_bronze/` may provision a disposable
 | `relationship_candidate` | Proposed keys/relationships with evidence and confidence. |
 | `profile_evidence` | Approved, minimized profile summaries and evidence references. |
 | `source_intelligence_run` | Run status, scope, context versions, metrics, and error information. |
+| `source_documentation_recommendation` | Proposed column descriptions and business-glossary entries with context fingerprint, prompt/model provenance, and human-review state. |
 
 ### Tests
 
@@ -274,4 +277,4 @@ Move from Free Edition to a business trial or paid Databricks workspace before u
 2. Save the resulting table counts and screenshots from the validation notebook.
 3. Decide whether the first real pilot will begin with Policy or Claims.
 4. Create the evidence-classification matrix and name the three reviewer roles.
-5. Extend the deterministic Source Intelligence Agent before adding an LLM or vector search.
+5. Evaluate the Source Documentation Agent against independently reviewed descriptions and glossary decisions before expanding its prompt context or adding retrieval.

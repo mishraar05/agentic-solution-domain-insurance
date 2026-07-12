@@ -3,6 +3,11 @@
 Status: PROPOSED · Date: 2026-07-12 · Supersedes individual tool reviews.
 Shared conclusion: architecture and governance principles are sound; executable foundations (contracts, labelled data, testable functions) must catch up before Phase 3 agentic development.
 
+> Superseded in part on 2026-07-13: the bounded Source Documentation Agent is
+> now an approved implementation direction. It may use an LLM only over
+> prompt-eligible structural context and must route every result to human
+> review. The older blanket LLM deferral below is retained as review history.
+
 ## 1. Fix the skill layer
 - Rename `insurance-lake-next-steps` → `advance-next-step`; make it a lightweight router invoking `$define-insurance-pilot-governance` and `$build-source-intelligence-v1`; remove duplicated instructions.
 - Replace hardcoded `D:\...` paths with "discover and work from the repository root"; replace tool-specific "Codex" wording with agent-neutral language.

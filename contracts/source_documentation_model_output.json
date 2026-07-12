@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/source_documentation_model_output.json",
+  "title": "Source Documentation Model Output",
+  "description": "Strict model response used to propose source-column documentation",
+  "type": "object",
+  "properties": {
+    "generation_status": {
+      "type": "string",
+      "enum": ["PROPOSED", "UNRESOLVED"]
+    },
+    "column_description": {
+      "type": ["string", "null"]
+    },
+    "glossary_term": {
+      "type": ["string", "null"]
+    },
+    "glossary_definition": {
+      "type": ["string", "null"]
+    },
+    "glossary_concept_id": {
+      "type": ["string", "null"]
+    },
+    "resolution_reason": {
+      "type": "string"
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "contradictions": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  },
+  "required": [
+    "generation_status",
+    "column_description",
+    "glossary_term",
+    "glossary_definition",
+    "glossary_concept_id",
+    "resolution_reason",
+    "assumptions",
+    "contradictions"
+  ],
+  "additionalProperties": false
+}

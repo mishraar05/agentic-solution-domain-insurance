@@ -271,7 +271,7 @@ Each review decision is captured with:
 
 - [ ] Who is the named evaluation owner?
 - [ ] Should the labelled set be a JSON file or a Delta table?
-- [ ] What is the acceptable precision/recall baseline for Phase 2?
+- [ ] What is the acceptable precision/recall baseline for Source Intelligence?
 
 ## Change log
 
@@ -322,9 +322,9 @@ Before moving from Free Edition to a business trial or paid Databricks workspace
 
 ## Current status summary
 
-- **Phase 1 (MVP):** Complete - all acceptance gate criteria passed
+- **MVP foundation:** Complete - all acceptance gate criteria passed
 - **Phase 0 (Governance):** PROPOSED - all artifacts created, awaiting human review and assignment
-- **Phase 2 (Source Intelligence v1):** Not started - blocked until Phase 0 governance is reviewed
+- **Source Intelligence v1:** Not started - blocked until pilot governance is reviewed
 
 ## Open questions
 
@@ -385,7 +385,7 @@ artifacts["00_phase0_gate_validation.md"] = """# Phase 0 Governance Gate Validat
 
 The Phase 0 governance gate is **structurally complete** - all six required artifact types exist with the required content. However, all artifacts carry PROPOSED status because no human has reviewed or approved them. Per the hard rules in AGENTS.md (rule 5), these artifacts cannot be treated as authoritative until human review occurs.
 
-**Phase 2 may begin in a PROPOSED capacity** - contracts and code can be developed against these proposed governance decisions, but no Phase 2 output may be treated as authoritative until the governance artifacts are reviewed and approved by the named human reviewers.
+**Source Intelligence may proceed in a PROPOSED capacity** - contracts and code can be developed against these proposed governance decisions, but no output may be treated as authoritative until the governance artifacts are reviewed and approved by the named human reviewers.
 
 ## Change log
 

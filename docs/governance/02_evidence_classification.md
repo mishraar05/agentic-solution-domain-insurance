@@ -34,6 +34,11 @@ Defines which evidence classes may be observed, profiled, retained, indexed, or 
 3. **Reject before profile:** If a column is classified as personal data, value-level profiling is rejected before it runs.
 4. **Synthetic data only:** All evidence in the Free Edition pilot comes from synthetic Bronze tables. No client data is permitted.
 5. **Retention scope:** Evidence is retained in Delta tables within `workspace.agentic_insurance_mvp` only. No external retention.
+6. **Source documentation prompts:** Only allow-listed `INTERNAL` structural
+   metadata, deterministic inferences, and minimized aggregate profiles may be
+   sent to the configured Databricks model endpoint. Raw prompts and raw model
+   responses are not retained; the governed recommendation, prompt version,
+   model endpoint, and context fingerprint are retained.
 
 ## Open questions
 

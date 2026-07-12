@@ -1,4 +1,4 @@
-# MVP Run Evidence — Phase 1 Acceptance Gate
+# MVP Run Evidence — Foundation Acceptance Gate
 
 **Run ID:** `mvp_20260712T061257Z`
 **Artifact Version:** `0.1.0`
@@ -8,7 +8,7 @@
 **Catalog:** `workspace` | **Schema:** `agentic_insurance_mvp`
 **Job Run URL:** https://dbc-b2d72a44-d1b1.cloud.databricks.com/?o=507217943166572#job/83020287731974/run/707079892867523
 
-## Phase 1 Acceptance Gate Results
+## Foundation Acceptance Gate Results
 
 | Acceptance Criterion | Result | Evidence |
 |---|---|---|

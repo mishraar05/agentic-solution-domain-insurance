@@ -71,3 +71,26 @@ def test_workflow_directory_is_not_accepted_as_core_package_root(tmp_path):
 
     assert not namespace["_is_source_root"](str(workflow_parent))
     assert namespace["_is_source_root"](str(src))
+
+
+def test_routing_and_validation_use_canonical_attribute_table():
+    documentation = (
+        WORKFLOW_DIR / "03_generate_source_documentation.py"
+    ).read_text(encoding="utf-8")
+    routing = (WORKFLOW_DIR / "04_create_review_queue.py").read_text(
+        encoding="utf-8"
+    )
+    validation = (WORKFLOW_DIR / "05_validate_source_intelligence.py").read_text(
+        encoding="utf-8"
+    )
+    assert 'fq_table("source_attribute_observation")' in documentation
+    assert "ai_query(" in documentation
+    assert "is_prompt_eligible" in documentation
+    assert 'fq_table("source_attribute_observation")' in routing
+    assert 'fq_table("source_observation_dictionary")' not in routing
+    assert 'fq_table("source_documentation_recommendation")' in routing
+    assert 'fq_table("source_intelligence_review_queue")' in routing
+    assert 'fq_output_table("source_intelligence_review_queue")' in validation
+    assert 'fq_output_table("source_documentation_recommendation")' in validation
+    assert 'attributes.filter(F.col("evidence_coverage")' in validation
+    assert 'attributes.filter(F.col("formula_version")' in validation

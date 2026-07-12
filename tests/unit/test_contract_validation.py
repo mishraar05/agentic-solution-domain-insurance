@@ -1,4 +1,4 @@
-"""Contract-validator coverage for schema features used by Phase 2."""
+"""Contract-validator coverage for Source Intelligence records."""
 
 import os
 import sys

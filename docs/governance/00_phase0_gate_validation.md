@@ -43,7 +43,7 @@
 
 The Phase 0 governance gate is **structurally complete** - all six required artifact types exist with the required content. However, all artifacts carry PROPOSED status because no human has reviewed or approved them. Per the hard rules in AGENTS.md (rule 5), these artifacts cannot be treated as authoritative until human review occurs.
 
-**Phase 2 may begin in a PROPOSED capacity** - contracts and code can be developed against these proposed governance decisions, but no Phase 2 output may be treated as authoritative until the governance artifacts are reviewed and approved by the named human reviewers.
+**Source Intelligence may proceed in a PROPOSED capacity** - contracts and code can be developed against these proposed governance decisions, but no output may be treated as authoritative until the governance artifacts are reviewed and approved by the named human reviewers.
 
 ## Change log
 

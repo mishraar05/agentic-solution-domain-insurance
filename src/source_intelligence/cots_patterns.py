@@ -1,6 +1,7 @@
-"""Represent authorized deterministic COTS-pattern evidence for Phase 2.
+"""Represent authorized deterministic COTS-pattern evidence.
 
-Phase 2 contains no licensed product documentation or semantic retrieval. The
+The current deterministic workflow contains no licensed product documentation
+or semantic retrieval. The
 public function therefore returns an explicit unavailable assessment unless a
 small, authorized, versioned structured pattern is later configured. Keeping
 the component unavailable is intentional: the confidence calculation records

@@ -78,7 +78,7 @@ print("Created: relationships.py")
 
 # cots_patterns.py
 with open(os.path.join(SRC_DIR, "cots_patterns.py"), "w", encoding="utf-8") as f:
-    f.write('"""Authorized structured COTS pattern matching (Phase 2 deterministic only)."""\n\n')
+    f.write('"""Authorized structured COTS pattern matching for the deterministic workflow."""\n\n')
     f.write('def match_cots_pattern(table_name: str, column_name: str, value_hint=None) -> dict:\n')
     f.write('    """Match against authorized COTS patterns.\n')
     f.write('    Returns dict with match_strength, product, module, version, or NOT_AVAILABLE.\n')

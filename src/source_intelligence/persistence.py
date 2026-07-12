@@ -1,14 +1,14 @@
 """Plan safe appends to existing solution-owned Delta table schemas.
 
-Phase 1 compatibility tables can have a narrower physical schema than the full
-Phase 2 contract record. This module compares simple, dependency-free mappings
+Consumer-facing projection tables can have a narrower physical schema than the
+canonical observation record. This module compares simple, dependency-free mappings
 of column names to Spark type strings and returns the exact existing-table
 column order when every required column is present with a compatible type.
 
 The planner never proposes schema evolution, migration, casting, or field
 invention. Missing or incompatible columns fail explicitly. Producers may use
 the returned order to drop only additional incoming fields for a compatibility
-write while persisting the complete contract record to its Phase 2 table.
+write while persisting the complete record to its canonical observation table.
 """
 
 
@@ -16,7 +16,7 @@ class SchemaCompatibilityError(ValueError):
     """Raised when an incoming record cannot safely fit an existing schema."""
 
 
-LEGACY_CONFIDENCE_FIELDS = (
+DICTIONARY_PROJECTION_CONFIDENCE_FIELDS = (
     "naming_strength",
     "type_strength",
     "relationship_strength",
