@@ -4,7 +4,7 @@ Rules for any coding or reasoning agent working in this repo (Codex, Claude, GLM
 
 ## Project
 
-Agentic Target Modeling MVP on Databricks Free Edition. Recommendation-only system: analyzes existing source-aligned/Bronze metadata and recommends Silver ODS / Gold models, ontology mappings, and STTMs for P&C insurance. The optional synthetic Bronze harness is isolated under `examples/synthetic_bronze/` and is never part of the core job. Canonical docs: `docs/design/` (architecture v0.2), `docs/planning/` (blueprint v0.1 + Excel work plan = task source of truth). Run evidence lives in `docs/evidence/`.
+Agentic Target Modeling solution on Databricks (currently a proof of concept; will scale to a full customer environment). Recommendation-only system: analyzes existing source-aligned/Bronze metadata and recommends Silver ODS / Gold models, ontology mappings, and STTMs for P&C insurance. The optional synthetic Bronze harness is isolated under `examples/synthetic_bronze/` and is never part of the core job. Canonical docs: `docs/design/` (architecture v0.2), `docs/planning/` (blueprint v0.1 + Excel work plan = task source of truth). Run evidence lives in `docs/evidence/`.
 
 ## Hard rules (never violate)
 
@@ -21,7 +21,7 @@ Agentic Target Modeling MVP on Databricks Free Edition. Recommendation-only syst
 - `prompts/` — versioned agent system prompts (one file per agent, `NN_agent_name.md`).
 - `knowledge_packs/` — synthetic ontology, COTS-like references, standards, rules.
 - `evals/` — judges and labelled reviewer-decision set.
-- `src/workflows/source_intelligence/` — numbered workflow entry-point notebooks (`NN_purpose.py`), Free Edition serverless only.
+- `src/workflows/source_intelligence/` — numbered workflow entry-point notebooks (`NN_purpose.py`).
 - `examples/synthetic_bronze/` — optional demo/test fixture creation; separate job, never a core dependency.
 - `tests/unit`, `tests/validation` — validation covers retry/invalidation scenarios.
 - `.agents/skills/` — reusable task skills; check for a matching skill before improvising a workflow.
@@ -31,7 +31,8 @@ Agentic Target Modeling MVP on Databricks Free Edition. Recommendation-only syst
 - Naming: `snake_case` files, numbered execution order (`00_`, `01_`), no tool-specific names or folders. Everything must run from plain Databricks notebooks/jobs — no vendor-specific agent framework assumed.
 - Python: PEP 8, stdlib + PySpark + Databricks SDK only unless a dependency already exists in the repo.
 - Config: single environment; DAB/job parameters supply source and output scope, and `src/workflows/source_intelligence/00_config.py` validates them and owns governed versions/thresholds. No hardcoded catalog/schema names elsewhere.
-- Free Edition limits: 1 SQL warehouse (2X-Small), max 5 concurrent job tasks (design sequential), 1 vector search endpoint (scope via metadata filters), manual knowledge-pack upload.
+- Platform neutrality: design for the full Databricks platform; never bake current PoC-environment quotas (warehouse size, job concurrency, endpoint counts) into designs, contracts, or documentation. Runtime quotas are handled operationally (parameters, sequential scheduling), not architecturally.
+- Rule changes are expected while building. When a governing rule changes, add a dated one-line entry to `docs/planning/RULES_LOG.md` (what changed, why, decided by whom) — then move on.
 
 ## Token economy
 
