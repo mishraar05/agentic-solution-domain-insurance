@@ -21,6 +21,8 @@ Required widgets
 ``MODIFIED`` and otherwise optional.
 """
 
+# COMMAND ----------
+
 # MAGIC %run ./00_config
 
 # COMMAND ----------

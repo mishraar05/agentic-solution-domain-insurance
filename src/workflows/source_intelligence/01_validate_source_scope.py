@@ -15,6 +15,8 @@ has no persisted output; successful completion is the precondition consumed by
 the next job task.
 """
 
+# COMMAND ----------
+
 # MAGIC %run ./00_config
 
 # COMMAND ----------

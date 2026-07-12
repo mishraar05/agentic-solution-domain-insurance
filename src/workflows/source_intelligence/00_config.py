@@ -24,6 +24,8 @@ does not create infrastructure or create, ingest, overwrite, or populate any
 source/Bronze table. Source tables are external read-only prerequisites.
 """
 
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC # 00 — Source Intelligence configuration
 # MAGIC

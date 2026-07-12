@@ -22,6 +22,8 @@ scoped by ``run_id``, and retry-idempotent. Every recommendation remains
 Run after ``01_validate_source_scope.py`` and before review routing.
 """
 
+# COMMAND ----------
+
 # MAGIC %run ./00_config
 
 # COMMAND ----------

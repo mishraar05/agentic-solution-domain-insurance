@@ -20,6 +20,8 @@ latest run for the configured engagement is used and recorded in the workbook.
 Run this notebook manually after review, not as part of the five-task core job.
 """
 
+# COMMAND ----------
+
 # MAGIC %run ./00_config
 
 # COMMAND ----------

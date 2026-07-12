@@ -17,6 +17,8 @@ duplicates.
 Run after ``02_build_source_dictionary.py`` and before Phase 2 validation.
 """
 
+# COMMAND ----------
+
 # MAGIC %run ./00_config
 
 # COMMAND ----------

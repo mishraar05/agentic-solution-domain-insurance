@@ -18,6 +18,8 @@ them, change reviewer decisions, deploy schemas, or mutate source/Bronze data.
 Run it after ``03_create_review_queue.py``.
 """
 
+# COMMAND ----------
+
 # MAGIC %run ./00_config
 
 # COMMAND ----------

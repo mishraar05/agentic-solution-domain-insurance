@@ -5,7 +5,7 @@
 
 ## Completed locally
 
-- 81 pure-Python unit and validation tests pass.
+- 83 pure-Python unit and validation tests pass.
 - The 19-record synthetic evaluation set reaches 100% classification coverage.
 - Expected semantics, privacy, keys, known relationships, and review routes match 19/19 labels.
 - Contradicted confidence components remain explicit and excluded from scoring.
