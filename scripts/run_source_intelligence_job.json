@@ -5,7 +5,8 @@
       "task_key": "config",
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/00_config",
-        "source": "WORKSPACE"
+        "source": "WORKSPACE",
+        "base_parameters": { "run_id": "si_job_{{job.run_id}}" }
       }
     },
     {
@@ -13,7 +14,8 @@
       "depends_on": [{ "task_key": "config" }],
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/01_validate_source_scope",
-        "source": "WORKSPACE"
+        "source": "WORKSPACE",
+        "base_parameters": { "run_id": "si_job_{{job.run_id}}" }
       }
     },
     {
@@ -21,7 +23,8 @@
       "depends_on": [{ "task_key": "source_preflight" }],
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/02_build_source_dictionary",
-        "source": "WORKSPACE"
+        "source": "WORKSPACE",
+        "base_parameters": { "run_id": "si_job_{{job.run_id}}" }
       }
     },
     {
@@ -29,7 +32,8 @@
       "depends_on": [{ "task_key": "dictionary" }],
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/03_create_review_queue",
-        "source": "WORKSPACE"
+        "source": "WORKSPACE",
+        "base_parameters": { "run_id": "si_job_{{job.run_id}}" }
       }
     },
     {
@@ -37,7 +41,8 @@
       "depends_on": [{ "task_key": "review_queue" }],
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/04_validate_mvp",
-        "source": "WORKSPACE"
+        "source": "WORKSPACE",
+        "base_parameters": { "run_id": "si_job_{{job.run_id}}" }
       }
     }
   ]

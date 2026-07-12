@@ -19,10 +19,14 @@ class ConfidenceResult:
 
 def compute_confidence(naming_strength, type_strength, relationship_strength, cots_match_strength=None, standard_consistency=None):
     """Compute governed confidence score from components."""
+    def _component(value, key):
+        availability = "AVAILABLE" if value is not None else "NOT_AVAILABLE"
+        return {"value": value, "availability": availability, "weight": WEIGHTS[key]}
+
     components = {
-        "naming_strength": {"value": naming_strength, "availability": "AVAILABLE", "weight": WEIGHTS["naming_strength"]},
-        "type_strength": {"value": type_strength, "availability": "AVAILABLE", "weight": WEIGHTS["type_strength"]},
-        "relationship_strength": {"value": relationship_strength, "availability": "AVAILABLE", "weight": WEIGHTS["relationship_strength"]},
+        "naming_strength": _component(naming_strength, "naming_strength"),
+        "type_strength": _component(type_strength, "type_strength"),
+        "relationship_strength": _component(relationship_strength, "relationship_strength"),
     }
     if cots_match_strength is not None:
         components["cots_match_strength"] = {"value": cots_match_strength, "availability": "AVAILABLE", "weight": WEIGHTS["cots_match_strength"]}

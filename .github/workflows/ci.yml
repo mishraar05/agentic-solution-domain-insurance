@@ -1,0 +1,34 @@
+name: ci
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install test dependencies
+        run: pip install pytest
+      - name: Run unit and validation tests (pure Python; no Databricks connection)
+        run: pytest tests/ -q
+        env:
+          PYTHONPATH: src
+      - name: Validate contracts are parseable and cross-referenced
+        run: |
+          python - <<'EOF'
+          import sys
+          sys.path.insert(0, "src")
+          from source_intelligence.contract_validation import load_contract, validate_records
+          for name in ("source_intelligence_run.json", "source_object_observation.json",
+                       "source_attribute_observation.json", "profile_evidence.json",
+                       "relationship_candidate.json", "policy_violation_event.json",
+                       "review_decision.json", "common.json"):
+              load_contract(name)
+          from source_intelligence.policy import reject_prohibited_evidence
+          validate_records([reject_prohibited_evidence("t", "c")], "policy_violation_event.json")
+          print("contracts OK")
+          EOF

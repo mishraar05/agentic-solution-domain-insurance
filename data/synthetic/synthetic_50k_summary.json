@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-07-12T12:12:32Z",
+  "total_records_per_table": 50000,
+  "null_rate": 0.07,
+  "orphan_fk_rate": 0.02,
+  "duplicate_id_rate": 0.01,
+  "tables": {
+    "bronze_policyholder_50k.json": {
+      "records": 50000,
+      "columns": 5,
+      "primary_key": "party_id",
+      "pii_columns": [
+        "display_name"
+      ]
+    },
+    "bronze_policy_50k.json": {
+      "records": 50000,
+      "columns": 8,
+      "primary_key": "policy_id",
+      "foreign_keys": [
+        "insured_party_id"
+      ]
+    },
+    "bronze_claim_50k.json": {
+      "records": 50000,
+      "columns": 6,
+      "primary_key": "claim_id",
+      "foreign_keys": [
+        "policy_id"
+      ]
+    }
+  },
+  "edge_cases": {
+    "null_values": "~7.000000000000001% in nullable fields (party_type, display_name, contact_channel, claimed_amount)",
+    "orphan_fks": "~2.0% of foreign keys point to non-existent parent records",
+    "duplicate_ids": "~1.0% of IDs are intentional duplicates",
+    "type_boundaries": "claimed_amount ranges from 0.01 to 999999.99 with some nulls",
+    "date_boundaries": "effective_date spans 3 years; expiration_date = effective_date + 180/365/730 days",
+    "privacy_patterns": "display_name contains realistic name patterns; contact_channel includes EMAIL/PHONE tokens",
+    "domain_variety": "10 product codes, 6 policy statuses, 3 party types, 6 claim statuses",
+    "ambiguous_columns": "contact_channel has 7 distinct values including None",
+    "relationship_testing": "insured_party_id links to party_id; claim.policy_id links to policy.policy_id"
+  }
+}

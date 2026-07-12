@@ -16,15 +16,15 @@
 | WP-E | Machine-readable labelled set | COMPLETE |
 | WP-F | Extract deterministic Source Intelligence core | COMPLETE |
 | WP-G | Governed confidence implementation | COMPLETE |
-| WP-I | Unit and validation tests | COMPLETE |
-| WP-J | CI and quality gates | COMPLETE |
+| WP-C | Skill layer corrections | COMPLETE |
+| WP-H | Expanded executable synthetic fixtures | COMPLETE |
 
 ## Work packages remaining
 
 | WP | Description | Status |
 |---|---|---|
-| WP-C | Skill layer corrections (rename to advance-next-step) | PENDING |
-| WP-H | Expanded synthetic fixtures (edge cases) | PENDING |
+| WP-I | Full contract and producer validation suite | PARTIAL |
+| WP-J | CI and quality gates | PENDING |
 
 ## Schemas and versions
 
@@ -39,18 +39,22 @@
 | `review_decision.json` | 1.0.0 | Reviewer decisions with rationale |
 | `policy_violation_event.json` | 1.0.0 | Sanitized prohibited-evidence rejections |
 | `labelled_set.schema.json` | 1.0.0 | Evaluation set schema |
+| `expanded_synthetic_fixtures.schema.json` | 1.0.0 | Executable edge-case fixture schema |
 
 ## Test and CI results
 
-- **Unit tests:** 28/28 passed (0.18s)
-- **CI workflow:** `.github/workflows/ci.yml` - runs on push/PR, pure-Python only, no secrets
-- **CI checks:** unit tests, contract schema validation, labelled set validation, leakage scan
+- **Local tests:** 53/53 passed, including unit and validation scenarios
+- **Expanded fixture validation:** dependency-free schema subset validation, positive loading, and negative required-field rejection
+- **Leakage validation:** prohibited sentinel injected as source input and confirmed absent from sanitized event output and captured logs
+- **CI workflow:** not implemented; `.github/workflows/ci.yml` does not exist
+- **Remaining validation gap:** all producer outputs are not yet validated against the complete contract suite
 
 ## Labelled-set coverage
 
 - **Records:** 19 (initial census from MVP synthetic Bronze tables)
 - **Stratification dimensions:** domain, privacy, ambiguity, key role, relationship, pattern type, review route
 - **Coverage:** fixture acceptance only - not generalization evidence. Expansion to 100+ records is a planning target.
+- **Executable edge cases:** 15 scenarios with real rows and machine-readable expected outcomes; these supplement but do not enlarge the labelled calibration set.
 
 ## Deterministic core modules
 
@@ -97,7 +101,7 @@ Phase 2 producers (Databricks notebooks that use the deterministic core) may be 
 
 ## Next steps
 
-1. **WP-C:** Rename `insurance-lake-next-steps` to `advance-next-step` router skill
-2. **WP-H:** Expand synthetic fixtures with edge cases
-3. **Phase 2 producers:** Implement Databricks notebooks that use `src/source_intelligence/` modules
+1. **Phase 2 producers:** Implement Databricks notebooks that use `src/source_intelligence/` modules
+2. **Contract enforcement:** Validate every producer output against the complete contract suite before persistence
+3. **CI:** Add a local-safe workflow for tests, schema checks, and leakage scanning without Databricks credentials
 4. **Databricks validation:** Run producers in-workspace and capture evidence

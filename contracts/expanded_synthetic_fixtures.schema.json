@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/expanded_synthetic_fixtures.schema.json",
+  "title": "Expanded synthetic Source Intelligence fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "set_name", "description", "fixtures"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "set_name": {"const": "expanded_synthetic_fixtures_v1"},
+    "description": {"type": "string", "minLength": 1},
+    "fixtures": {
+      "type": "array",
+      "minItems": 15,
+      "items": {"$ref": "#/$defs/fixture"}
+    }
+  },
+  "$defs": {
+    "column": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "physical_type", "nullable"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "physical_type": {"type": "string", "minLength": 1},
+        "nullable": {"type": "boolean"}
+      }
+    },
+    "table": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "columns", "rows"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "columns": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/column"}},
+        "rows": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tables"],
+      "properties": {
+        "tables": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/table"}},
+        "comparison_tables": {"type": "array", "items": {"$ref": "#/$defs/table"}},
+        "run_attempts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["attempt", "status"],
+            "properties": {
+              "attempt": {"type": "integer", "minimum": 1},
+              "status": {"enum": ["FAILED", "SUCCEEDED"]}
+            }
+          }
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["processing_action", "issues", "approval_state"],
+      "properties": {
+        "processing_action": {"enum": ["ANALYZE", "REJECT"]},
+        "issues": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "approval_state": {"const": "PROPOSED"},
+        "privacy_class": {"enum": ["INTERNAL", "PERSONAL_DATA"]},
+        "reviewer_role": {"type": ["string", "null"]},
+        "review_reason_contains": {"type": ["string", "null"]},
+        "type_strength_max": {"type": "number", "minimum": 0, "maximum": 1},
+        "relationship_target": {"type": ["string", "null"]},
+        "idempotency": {"enum": ["SAME_INPUT_SAME_KEY", "CHANGED_INPUT_NEW_KEY", "RETRY_SAME_KEY"]},
+        "violation_reason_code": {"type": "string"},
+        "raw_value_must_not_persist": {"type": "boolean"}
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixture_id", "category", "description", "target", "input", "expected"],
+      "properties": {
+        "fixture_id": {"type": "string", "pattern": "^F[0-9]{3}$"},
+        "category": {
+          "enum": ["null_empty", "duplicate_identifiers", "missing_pk", "orphan_fk", "incompatible_types", "conflicting_signals", "unknown_column", "ambiguous_mapping", "personal_data", "prohibited_evidence", "date_boundary", "amount_boundary", "idempotency", "changed_input", "failure_retry"]
+        },
+        "description": {"type": "string", "minLength": 1},
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["table", "column"],
+          "properties": {
+            "table": {"type": "string", "minLength": 1},
+            "column": {"type": "string", "minLength": 1},
+            "relationship_target": {"type": "string"}
+          }
+        },
+        "input": {"$ref": "#/$defs/input"},
+        "expected": {"$ref": "#/$defs/expected"}
+      }
+    }
+  }
+}

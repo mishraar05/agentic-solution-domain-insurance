@@ -3,11 +3,21 @@
 # MAGIC # 00 — Source Intelligence configuration
 # MAGIC
 # MAGIC The core solution consumes existing source-aligned tables. It never creates,
-# MAGIC overwrites, ingests, or populates Bronze/source data.
+# MAGIC overwrites, ingests, or populates Bronze/source data, and it never provisions
+# MAGIC infrastructure: the output schema must already exist (platform-provisioned).
+# MAGIC
+# MAGIC **Run context:** one `run_id` job parameter is shared by every task in a job
+# MAGIC run (set it to `si_job_{{job.run_id}}` in the job definition). Interactive
+# MAGIC runs without the parameter generate a timestamp-based run ID.
 
 # COMMAND ----------
 
+import os
+import re
+import sys
 from datetime import datetime, timezone
+
+ENGAGEMENT_ID = "free-edition-synthetic-mvp"
 
 # Existing source tables supplied by the client/platform data pipeline.
 SOURCE_CATALOG = "workspace"
@@ -23,9 +33,43 @@ OUTPUT_SCHEMA = "agentic_insurance_mvp"
 CATALOG = OUTPUT_CATALOG
 SCHEMA = OUTPUT_SCHEMA
 
-RUN_ID = datetime.now(timezone.utc).strftime("si_%Y%m%dT%H%M%SZ")
-ARTIFACT_VERSION = "0.2.0"
+ARTIFACT_VERSION = "0.3.0"
+SCHEMA_VERSION = "1.0.0"
 LOW_CONFIDENCE_THRESHOLD = 0.75
+EVIDENCE_COVERAGE_FLOOR = 0.60
+
+# COMMAND ----------
+
+# Single run context for the whole job (contract pattern: si_<ts> | si_job_<id>).
+RUN_ID_PATTERN = re.compile(r"^si_(\d{8}T\d{6}Z|job_\d+)$")
+
+
+def _resolve_run_id() -> str:
+    try:
+        dbutils.widgets.text("run_id", "")
+        candidate = dbutils.widgets.get("run_id").strip()
+    except Exception:
+        candidate = ""
+    if candidate:
+        if not RUN_ID_PATTERN.match(candidate):
+            raise ValueError(
+                f"run_id job parameter {candidate!r} violates the contract pattern "
+                "si_<yyyymmdd>T<hhmmss>Z or si_job_<digits>."
+            )
+        return candidate
+    return datetime.now(timezone.utc).strftime("si_%Y%m%dT%H%M%SZ")
+
+
+RUN_ID = _resolve_run_id()
+
+# COMMAND ----------
+
+# Make the deterministic core importable from workspace files.
+_REPO_SRC = os.path.abspath(os.path.join(os.getcwd(), ".."))
+if _REPO_SRC not in sys.path:
+    sys.path.insert(0, _REPO_SRC)
+
+# COMMAND ----------
 
 
 def _quoted_table(catalog: str, schema: str, table_name: str) -> str:
@@ -48,8 +92,14 @@ def fq_table(table_name: str) -> str:
     return fq_output_table(table_name)
 
 
-spark.sql(
-    f"CREATE SCHEMA IF NOT EXISTS `{OUTPUT_CATALOG}`.`{OUTPUT_SCHEMA}`"
+# Validate — never create — the output destination (recommendation-only boundary).
+_output_schemas = {
+    row.databaseName
+    for row in spark.sql(f"SHOW SCHEMAS IN `{OUTPUT_CATALOG}`").collect()
+}
+assert OUTPUT_SCHEMA in _output_schemas, (
+    f"Output schema `{OUTPUT_CATALOG}`.`{OUTPUT_SCHEMA}` does not exist. "
+    "Provision it separately (platform step); the core solution performs no DDL."
 )
 
 print(f"Run ID: {RUN_ID}")

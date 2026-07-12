@@ -1,5 +1,6 @@
 {
-  "": "https://agentic-insurance/contracts/common.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/common.json",
   "title": "Common Definitions",
   "description": "Reusable definitions for all Source Intelligence contracts",
   "definitions": {
@@ -10,8 +11,8 @@
     },
     "run_id": {
       "type": "string",
-      "pattern": "^mvp_\\d{8}T\\d{6}Z$",
-      "description": "UTC timestamp-based run identifier"
+      "pattern": "^si_(\\d{8}T\\d{6}Z|job_\\d+)$",
+      "description": "Run identifier: si_<UTC timestamp> or si_job_<Databricks job run id>"
     },
     "artifact_version": {
       "type": "string",

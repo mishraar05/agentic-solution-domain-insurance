@@ -39,7 +39,7 @@ def classify_naming(table_name, column_name):
 
     if name in EXACT_MATCHES:
         proposed_name, ontology_concept, domain, naming_strength = EXACT_MATCHES[name]
-        reason = "Approved MVP naming rule"
+        reason = "Deterministic candidate rule (not steward-approved)"
 
     return proposed_name, ontology_concept, domain, naming_strength, reason
 

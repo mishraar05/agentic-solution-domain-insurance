@@ -1,22 +1,97 @@
-﻿{
+{
   "schema_version": "1.0.0",
   "set_name": "expanded_synthetic_fixtures_v1",
-  "description": "Expanded synthetic fixtures for edge-case testing. All data is synthetic. Contains FORBIDDEN_TEST_SENTINEL for leakage testing only.",
+  "description": "Executable synthetic edge-case fixtures. FORBIDDEN_TEST_SENTINEL is test input only and must never appear in generated output or logs.",
   "fixtures": [
-    {"fixture_id": "F001", "category": "null_empty", "description": "Column with null values in non-key field", "source_table": "bronze_policy", "source_column": "policy_status", "physical_type": "StringType()", "nullable": true, "test_scenario": "Null policy_status should not break classification"},
-    {"fixture_id": "F002", "category": "duplicate_identifiers", "description": "Duplicate policy_id values", "source_table": "bronze_policy", "source_column": "policy_id", "physical_type": "StringType()", "nullable": false, "test_scenario": "Duplicate PK should be flagged for review"},
-    {"fixture_id": "F003", "category": "missing_pk", "description": "Table with no clear primary key", "source_table": "bronze_coverage", "source_column": "coverage_id", "physical_type": "StringType()", "nullable": true, "test_scenario": "Nullable PK candidate should reduce confidence"},
-    {"fixture_id": "F004", "category": "orphan_fk", "description": "Foreign key with no matching parent", "source_table": "bronze_claim", "source_column": "policy_id", "physical_type": "StringType()", "nullable": false, "test_scenario": "Orphan FK should be flagged for architect review"},
-    {"fixture_id": "F005", "category": "incompatible_types", "description": "FK type mismatch between child and parent", "source_table": "bronze_claim", "source_column": "policy_id", "physical_type": "IntegerType()", "nullable": false, "test_scenario": "Type mismatch should reduce relationship strength"},
-    {"fixture_id": "F006", "category": "conflicting_signals", "description": "Column name suggests date but type is string", "source_table": "bronze_policy", "source_column": "effective_date", "physical_type": "StringType()", "nullable": false, "test_scenario": "Name/type conflict should reduce type_strength"},
-    {"fixture_id": "F007", "category": "unknown_column", "description": "Column with no known pattern match", "source_table": "bronze_policy", "source_column": "underwriting_code", "physical_type": "StringType()", "nullable": true, "test_scenario": "Unknown column should get low confidence and route to steward"},
-    {"fixture_id": "F008", "category": "ambiguous_mapping", "description": "Column could map to multiple concepts", "source_table": "bronze_policyholder", "source_column": "contact_channel", "physical_type": "StringType()", "nullable": true, "test_scenario": "Ambiguous column should get low confidence and route to steward"},
-    {"fixture_id": "F009", "category": "personal_data", "description": "Column name suggests PII", "source_table": "bronze_policyholder", "source_column": "email_address", "physical_type": "StringType()", "nullable": true, "test_scenario": "PII column name should trigger privacy review"},
-    {"fixture_id": "F010", "category": "prohibited_evidence", "description": "Fixture containing FORBIDDEN_TEST_SENTINEL for leakage testing", "source_table": "bronze_claim", "source_column": "loss_narrative", "physical_type": "StringType()", "nullable": true, "test_scenario": "Prohibited evidence should be rejected before profiling. Sentinel must never appear in persisted output or logs.", "sentinel": "FORBIDDEN_TEST_SENTINEL"},
-    {"fixture_id": "F011", "category": "date_boundary", "description": "Date column with boundary values", "source_table": "bronze_policy", "source_column": "effective_date", "physical_type": "DateType()", "nullable": false, "test_scenario": "Date boundaries (min/max) should be handled correctly"},
-    {"fixture_id": "F012", "category": "amount_boundary", "description": "Decimal column with zero and large values", "source_table": "bronze_claim", "source_column": "claimed_amount", "physical_type": "DecimalType(12,2)", "nullable": false, "test_scenario": "Amount boundaries (0.00, 999999999.99) should be handled correctly"},
-    {"fixture_id": "F013", "category": "idempotency", "description": "Repeat run with same input should produce same output", "source_table": "bronze_policy", "source_column": "policy_id", "physical_type": "StringType()", "nullable": false, "test_scenario": "Same input should produce identical confidence scores and routing"},
-    {"fixture_id": "F014", "category": "changed_input", "description": "Changed input should produce different version", "source_table": "bronze_policy", "source_column": "policy_status", "physical_type": "StringType()", "nullable": false, "test_scenario": "Changed column type should produce different artifact version"},
-    {"fixture_id": "F015", "category": "failure_retry", "description": "Controlled failure and retry scenario", "source_table": "bronze_claim", "source_column": "claim_id", "physical_type": "StringType()", "nullable": false, "test_scenario": "Failed run should be retried with same idempotency key"}
+    {
+      "fixture_id": "F001", "category": "null_empty", "description": "Nullable business attribute contains null and empty values.",
+      "target": {"table": "policy_source", "column": "policy_status"},
+      "input": {"tables": [{"name": "policy_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}, {"name": "policy_status", "physical_type": "StringType()", "nullable": true}], "rows": [{"policy_id": "SYN-P1", "policy_status": null}, {"policy_id": "SYN-P2", "policy_status": ""}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": ["NULL_OR_EMPTY_VALUE"], "approval_state": "PROPOSED", "reviewer_role": "DOMAIN_STEWARD", "review_reason_contains": "incomplete"}
+    },
+    {
+      "fixture_id": "F002", "category": "duplicate_identifiers", "description": "Two rows contain the same primary-key candidate.",
+      "target": {"table": "policy_source", "column": "policy_id"},
+      "input": {"tables": [{"name": "policy_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_id": "SYN-DUP"}, {"policy_id": "SYN-DUP"}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": ["DUPLICATE_IDENTIFIER"], "approval_state": "PROPOSED", "reviewer_role": "DATA_ARCHITECT", "review_reason_contains": "duplicate"}
+    },
+    {
+      "fixture_id": "F003", "category": "missing_pk", "description": "Candidate key is nullable and contains no usable identifier.",
+      "target": {"table": "coverage_source", "column": "coverage_id"},
+      "input": {"tables": [{"name": "coverage_source", "columns": [{"name": "coverage_id", "physical_type": "StringType()", "nullable": true}], "rows": [{"coverage_id": null}, {"coverage_id": null}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": ["MISSING_PRIMARY_KEY"], "approval_state": "PROPOSED", "reviewer_role": "DATA_ARCHITECT", "review_reason_contains": "primary key"}
+    },
+    {
+      "fixture_id": "F004", "category": "orphan_fk", "description": "Child references a policy absent from the parent table.",
+      "target": {"table": "claim_source", "column": "policy_id", "relationship_target": "policy_source.policy_id"},
+      "input": {"tables": [{"name": "claim_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_id": "SYN-MISSING"}]}, {"name": "policy_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_id": "SYN-P1"}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": ["ORPHAN_FOREIGN_KEY"], "approval_state": "PROPOSED", "reviewer_role": "DATA_ARCHITECT", "review_reason_contains": "orphan", "relationship_target": "policy_source.policy_id"}
+    },
+    {
+      "fixture_id": "F005", "category": "incompatible_types", "description": "Child and parent relationship columns use incompatible types.",
+      "target": {"table": "claim_source", "column": "policy_id", "relationship_target": "policy_source.policy_id"},
+      "input": {"tables": [{"name": "claim_source", "columns": [{"name": "policy_id", "physical_type": "IntegerType()", "nullable": false}], "rows": [{"policy_id": 101}]}, {"name": "policy_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_id": "101"}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": ["RELATIONSHIP_TYPE_MISMATCH"], "approval_state": "PROPOSED", "reviewer_role": "DATA_ARCHITECT", "review_reason_contains": "type mismatch", "type_strength_max": 0.5, "relationship_target": "policy_source.policy_id"}
+    },
+    {
+      "fixture_id": "F006", "category": "conflicting_signals", "description": "Date-like name conflicts with a string physical type.",
+      "target": {"table": "policy_source", "column": "effective_date"},
+      "input": {"tables": [{"name": "policy_source", "columns": [{"name": "effective_date", "physical_type": "StringType()", "nullable": false}], "rows": [{"effective_date": "not-a-date"}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": ["NAME_TYPE_CONTRADICTION"], "approval_state": "PROPOSED", "reviewer_role": "DOMAIN_STEWARD", "review_reason_contains": "contradiction", "type_strength_max": 0.5}
+    },
+    {
+      "fixture_id": "F007", "category": "unknown_column", "description": "Attribute has no approved semantic pattern.",
+      "target": {"table": "policy_source", "column": "underwriting_code"},
+      "input": {"tables": [{"name": "policy_source", "columns": [{"name": "underwriting_code", "physical_type": "StringType()", "nullable": true}], "rows": [{"underwriting_code": "SYN-X"}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": ["UNKNOWN_SEMANTIC_PATTERN"], "approval_state": "PROPOSED", "reviewer_role": "DOMAIN_STEWARD", "review_reason_contains": "unknown"}
+    },
+    {
+      "fixture_id": "F008", "category": "ambiguous_mapping", "description": "Attribute name has multiple plausible meanings.",
+      "target": {"table": "party_source", "column": "contact_channel"},
+      "input": {"tables": [{"name": "party_source", "columns": [{"name": "contact_channel", "physical_type": "StringType()", "nullable": true}], "rows": [{"contact_channel": "SYN-CHANNEL"}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": ["AMBIGUOUS_SEMANTIC_PATTERN"], "approval_state": "PROPOSED", "reviewer_role": "DOMAIN_STEWARD", "review_reason_contains": "ambiguous"}
+    },
+    {
+      "fixture_id": "F009", "category": "personal_data", "description": "Column name indicates personal data without exposing real values.",
+      "target": {"table": "party_source", "column": "email_address"},
+      "input": {"tables": [{"name": "party_source", "columns": [{"name": "email_address", "physical_type": "StringType()", "nullable": true}], "rows": [{"email_address": "synthetic@example.invalid"}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": ["PERSONAL_DATA_INDICATOR"], "approval_state": "PROPOSED", "privacy_class": "PERSONAL_DATA", "reviewer_role": "PRIVACY_STEWARD", "review_reason_contains": "privacy"}
+    },
+    {
+      "fixture_id": "F010", "category": "prohibited_evidence", "description": "Prohibited narrative input must be rejected and sanitized.",
+      "target": {"table": "claim_source", "column": "loss_narrative"},
+      "input": {"tables": [{"name": "claim_source", "columns": [{"name": "loss_narrative", "physical_type": "StringType()", "nullable": true}], "rows": [{"loss_narrative": "FORBIDDEN_TEST_SENTINEL"}]}]},
+      "expected": {"processing_action": "REJECT", "issues": ["PROHIBITED_EVIDENCE"], "approval_state": "PROPOSED", "reviewer_role": "PRIVACY_STEWARD", "review_reason_contains": "prohibited", "violation_reason_code": "PROHIBITED_NARRATIVE", "raw_value_must_not_persist": true}
+    },
+    {
+      "fixture_id": "F011", "category": "date_boundary", "description": "Date input contains supported lower and upper boundaries.",
+      "target": {"table": "policy_source", "column": "effective_date"},
+      "input": {"tables": [{"name": "policy_source", "columns": [{"name": "effective_date", "physical_type": "DateType()", "nullable": false}], "rows": [{"effective_date": "1900-01-01"}, {"effective_date": "9999-12-31"}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": [], "approval_state": "PROPOSED", "reviewer_role": null, "review_reason_contains": null}
+    },
+    {
+      "fixture_id": "F012", "category": "amount_boundary", "description": "Decimal input contains zero and maximum supported values.",
+      "target": {"table": "claim_source", "column": "claimed_amount"},
+      "input": {"tables": [{"name": "claim_source", "columns": [{"name": "claimed_amount", "physical_type": "DecimalType(12,2)", "nullable": false}], "rows": [{"claimed_amount": "0.00"}, {"claimed_amount": "9999999999.99"}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": [], "approval_state": "PROPOSED", "reviewer_role": null, "review_reason_contains": null}
+    },
+    {
+      "fixture_id": "F013", "category": "idempotency", "description": "Canonical input repeated without change produces the same key.",
+      "target": {"table": "policy_source", "column": "policy_id"},
+      "input": {"tables": [{"name": "policy_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_id": "SYN-IDEMPOTENT"}]}], "comparison_tables": [{"name": "policy_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_id": "SYN-IDEMPOTENT"}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": [], "approval_state": "PROPOSED", "idempotency": "SAME_INPUT_SAME_KEY"}
+    },
+    {
+      "fixture_id": "F014", "category": "changed_input", "description": "Changed physical type produces a new canonical input key.",
+      "target": {"table": "policy_source", "column": "policy_status"},
+      "input": {"tables": [{"name": "policy_source", "columns": [{"name": "policy_status", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_status": "ACTIVE"}]}], "comparison_tables": [{"name": "policy_source", "columns": [{"name": "policy_status", "physical_type": "IntegerType()", "nullable": false}], "rows": [{"policy_status": 1}]}]},
+      "expected": {"processing_action": "ANALYZE", "issues": ["INPUT_VERSION_CHANGED"], "approval_state": "PROPOSED", "idempotency": "CHANGED_INPUT_NEW_KEY"}
+    },
+    {
+      "fixture_id": "F015", "category": "failure_retry", "description": "Retry reuses the same input-derived idempotency key.",
+      "target": {"table": "claim_source", "column": "claim_id"},
+      "input": {"tables": [{"name": "claim_source", "columns": [{"name": "claim_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"claim_id": "SYN-RETRY"}]}], "run_attempts": [{"attempt": 1, "status": "FAILED"}, {"attempt": 2, "status": "SUCCEEDED"}]},
+      "expected": {"processing_action": "ANALYZE", "issues": [], "approval_state": "PROPOSED", "idempotency": "RETRY_SAME_KEY"}
+    }
   ]
 }
