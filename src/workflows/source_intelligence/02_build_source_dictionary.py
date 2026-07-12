@@ -54,6 +54,10 @@ from source_intelligence.contract_validation import validate_records
 from source_intelligence.cots_patterns import match_cots_pattern
 from source_intelligence.naming import classify_naming
 from source_intelligence.privacy import classify_privacy
+from source_intelligence.persistence import (
+    LEGACY_CONFIDENCE_FIELDS,
+    plan_existing_schema_alignment,
+)
 from source_intelligence.relationships import (
     KNOWN_RELATIONSHIPS, compute_relationship_strength, infer_key_role,
     infer_relationship,
@@ -185,20 +189,63 @@ rows = [
 
 phase2_attributes_df = spark.createDataFrame(rows, schema=dictionary_schema)
 dictionary_df = phase2_attributes_df.drop("evidence_references")
+for legacy_field in LEGACY_CONFIDENCE_FIELDS:
+    dictionary_df = dictionary_df.withColumn(
+        legacy_field,
+        F.get_json_object(
+            F.col("confidence_components"),
+            f"$.{legacy_field}.value",
+        ).cast("double"),
+    )
+
+
+def _align_legacy_dictionary(frame, table_name):
+    """Fit Phase 2 data to an existing Phase 1 dictionary without evolution."""
+    if not spark.catalog.tableExists(table_name):
+        return frame
+    existing_schema = spark.table(table_name).schema
+    incoming_types = {
+        field.name: field.dataType.simpleString()
+        for field in frame.schema.fields
+    }
+    existing_types = {
+        field.name: field.dataType.simpleString()
+        for field in existing_schema.fields
+    }
+    column_order = plan_existing_schema_alignment(
+        incoming_types, existing_types
+    )
+    dropped = [
+        name for name in incoming_types
+        if name not in existing_types
+    ]
+    if dropped:
+        print(
+            "Phase 1 compatibility write excludes Phase 2-only columns: "
+            f"{dropped}"
+        )
+    return frame.select(*column_order)
 
 # Versioned persistence: append run-scoped records; history is never destroyed.
 # Idempotency guard: a retry with the same run_id must not append duplicates.
 _dict_table = fq_table("source_observation_dictionary")
+_dict_exists = spark.catalog.tableExists(_dict_table)
 _already_written = (
-    spark.catalog.tableExists(_dict_table)
+    _dict_exists
     and spark.table(_dict_table).filter(F.col("run_id") == RUN_ID).count() > 0
 )
 if _already_written:
     print(f"Idempotent skip: dictionary rows for run {RUN_ID} already exist.")
 else:
-    (dictionary_df.write.format("delta").mode("append")
-     .option("mergeSchema", "false")
-     .saveAsTable(_dict_table))
+    legacy_dictionary_df = _align_legacy_dictionary(
+        dictionary_df, _dict_table
+    )
+    if _dict_exists:
+        legacy_dictionary_df.write.mode("append").insertInto(_dict_table)
+    else:
+        (legacy_dictionary_df.write.format("delta").mode("append")
+         .option("mergeSchema", "false")
+         .saveAsTable(_dict_table))
 
 _attribute_table = fq_table("source_attribute_observation")
 _attributes_written = (

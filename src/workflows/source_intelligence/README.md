@@ -66,6 +66,9 @@ and skipped before value-level profiling.
 
 - Missing source tables stop step 01.
 - Invalid contracts stop producers before persistence.
+- The Phase 1 dictionary compatibility write aligns to the existing table's
+  column order without schema evolution; missing or incompatible types stop
+  before the append.
 - Missing or inconsistent run-scoped outputs stop step 04.
 - Duplicate records for the same run violate idempotency assertions.
 - Any non-`PROPOSED` recommendation created by the workflow fails validation.

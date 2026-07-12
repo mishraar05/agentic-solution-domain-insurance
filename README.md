@@ -113,6 +113,7 @@ Detailed entry-point behavior, failure modes, and execution guidance are in
 | `evaluation.py` | Compares deterministic predictions and review routes with the labelled synthetic set |
 | `naming.py` | Proposes business names, ontology concepts, and domains from transparent naming rules |
 | `policy.py` | Rejects prohibited evidence before profiling and creates sanitized violation events |
+| `persistence.py` | Validates safe column-order and type alignment for append-only compatibility writes without schema evolution |
 | `privacy.py` | Classifies privacy from transparent column-name rules without exposing source values |
 | `quality.py` | Supplies deterministic fixture-quality and idempotency helpers |
 | `relationships.py` | Infers key roles and known candidate relationships from naming and compatibility evidence |
