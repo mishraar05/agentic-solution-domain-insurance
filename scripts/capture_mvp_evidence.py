@@ -28,11 +28,14 @@ queries = {
         f"FROM {CATALOG}.{SCHEMA}.review_queue "
         f"ORDER BY recommended_reviewer_role, source_table, source_column"
     ),
+    "source_scope": (
+        f"SELECT source_system, source_table, COUNT(*) AS observed_attributes "
+        f"FROM {CATALOG}.{SCHEMA}.source_observation_dictionary "
+        f"GROUP BY source_system, source_table "
+        f"ORDER BY source_system, source_table"
+    ),
     "counts": (
         f"SELECT "
-        f"(SELECT COUNT(*) FROM {CATALOG}.{SCHEMA}.bronze_policy) AS bronze_policy_rows, "
-        f"(SELECT COUNT(*) FROM {CATALOG}.{SCHEMA}.bronze_policyholder) AS bronze_policyholder_rows, "
-        f"(SELECT COUNT(*) FROM {CATALOG}.{SCHEMA}.bronze_claim) AS bronze_claim_rows, "
         f"(SELECT COUNT(*) FROM {CATALOG}.{SCHEMA}.source_observation_dictionary) AS dictionary_rows, "
         f"(SELECT COUNT(*) FROM {CATALOG}.{SCHEMA}.review_queue) AS review_queue_rows"
     ),
