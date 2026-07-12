@@ -23,9 +23,40 @@ The overall confidence score is derived from weighted component evidence - never
 | **COTS pattern match** | Strength of match against authorized product/module/version patterns | 0.10 | 0.0 - 1.0 |
 | **Standard/rule consistency** | Consistency with enterprise standards and governed rules | 0.10 | 0.0 - 1.0 |
 
-**Overall confidence** = Sum(component x weight)
+ **Overall confidence** = Sum(component x weight), renormalized over available components only
 
-## Threshold bands
+## Component availability states
+
+Each component records one of three availability states:
+
+| State | Description | Treatment |
+|---|---|---|
+| `AVAILABLE` | Component has a computed value | Included in weighted sum and normalization |
+| `NOT_AVAILABLE` | Component cannot be computed (e.g., no knowledge packs loaded) | Excluded from sum and normalization; weight counts toward coverage denominator |
+| `CONTRADICTED` | Component has conflicting evidence | Excluded from sum and normalization; routed to review |
+
+**Evidence coverage** = available weight / total weight. If evidence coverage < 0.60, force review regardless of score.
+
+**Renormalization:** The final score is computed as `raw_weighted_sum / available_weight` (not divided by total weight). This ensures absent evidence reduces coverage but does not artificially deflate the score.
+
+**Coverage floor:** `EVIDENCE_COVERAGE_FLOOR = 0.60` (PROPOSED — awaiting calibration). Below this floor, the recommendation is routed to Domain Steward for review regardless of the normalized score.
+
+**Formula version:** `1.0.0` — persisted with every recommendation for traceability.
+
+## COTS sequencing
+
+- **Phase 2:** COTS pattern match is `NOT_AVAILABLE` — no knowledge packs loaded. Deterministic matching against small authorized structured patterns is permitted but not required.
+- **Phase 3:** Governed retrieval and semantic search introduce COTS pattern matching with loaded knowledge packs. The COTS component becomes `AVAILABLE`.
+
+## v1-to-Phase-3 component mapping
+
+| v1 Component | Phase 3 Target |
+|---|---|
+| Naming strength | Naming strength (unchanged) |
+| Type strength | Type strength (unchanged) |
+| Relationship strength | Relationship strength (unchanged) |
+| COTS pattern match | COTS match + retrieval fitness |
+| Standard/rule consistency | Rule consistency + contradiction checks + reviewer-history calibration |
 
 | Band | Range | Routing | Description |
 |---|---|---|---|
