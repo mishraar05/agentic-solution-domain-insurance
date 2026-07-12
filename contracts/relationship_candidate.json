@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/relationship_candidate.json",
+  "title": "Relationship Candidate",
+  "description": "Proposed keys/relationships with evidence and confidence",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "$ref": "common.json#/definitions/schema_version"
+    },
+    "run_id": {
+      "$ref": "common.json#/definitions/run_id"
+    },
+    "artifact_version": {
+      "$ref": "common.json#/definitions/artifact_version"
+    },
+    "engagement_id": {
+      "$ref": "common.json#/definitions/engagement_id"
+    },
+    "source_system": {
+      "$ref": "common.json#/definitions/source_system"
+    },
+    "from_table": {
+      "$ref": "common.json#/definitions/source_table"
+    },
+    "from_column": {
+      "$ref": "common.json#/definitions/source_column"
+    },
+    "to_table": {
+      "$ref": "common.json#/definitions/source_table"
+    },
+    "to_column": {
+      "$ref": "common.json#/definitions/source_column"
+    },
+    "relationship_type": {
+      "type": "string",
+      "enum": [
+        "PRIMARY_KEY",
+        "FOREIGN_KEY",
+        "ONE_TO_ONE",
+        "ONE_TO_MANY",
+        "MANY_TO_ONE"
+      ],
+      "description": "Type of relationship"
+    },
+    "evidence_description": {
+      "type": "string",
+      "description": "Description of evidence supporting this relationship"
+    },
+    "naming_overlap": {
+      "type": "boolean",
+      "description": "Whether naming patterns overlap"
+    },
+    "type_compatible": {
+      "type": "boolean",
+      "description": "Whether data types are compatible"
+    },
+    "overlap_ratio": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Value overlap ratio if computed"
+    },
+    "confidence_score": {
+      "$ref": "common.json#/definitions/confidence_score"
+    },
+    "confidence_reason": {
+      "type": "string"
+    },
+    "observed_or_inferred": {
+      "$ref": "common.json#/definitions/observed_or_inferred"
+    },
+    "assumptions": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contradictions": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "approval_state": {
+      "$ref": "common.json#/definitions/approval_state"
+    },
+    "reviewer_role": {
+      "$ref": "common.json#/definitions/reviewer_role"
+    },
+    "review_rationale": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "$ref": "common.json#/definitions/timestamp_utc"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "artifact_version",
+    "engagement_id",
+    "source_system",
+    "from_table",
+    "from_column",
+    "to_table",
+    "to_column",
+    "relationship_type",
+    "evidence_description",
+    "naming_overlap",
+    "type_compatible",
+    "confidence_score",
+    "confidence_reason",
+    "observed_or_inferred",
+    "approval_state",
+    "created_at"
+  ],
+  "additionalProperties": false
+}

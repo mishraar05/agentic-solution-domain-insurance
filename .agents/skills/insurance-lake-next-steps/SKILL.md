@@ -20,6 +20,7 @@ Advance the project one governed, reviewable vertical slice at a time. Treat Git
 - Use synthetic data and approved public learning material only.
 - Never add client data, PII, claims narratives, proprietary COTS documentation, credentials, tokens, or production connection strings.
 - Keep the solution recommendation-only. Do not deploy schemas, modify source systems, or run transformations against operational data.
+- Treat source/Bronze tables as existing external inputs. Never create or populate them in the core workflow; synthetic setup is a separate optional demo/test process.
 - Keep observations, inferred semantics, evidence, confidence components, assumptions, contradictions, reviewer decisions, run IDs, and artifact versions distinct.
 - Require human review for privacy-relevant, low-confidence, relationship, key, grain, financial-measure, and ontology-extension recommendations.
 - Do not introduce an LLM, vector search, or value-level inspection before deterministic controls and evidence classification are proven.

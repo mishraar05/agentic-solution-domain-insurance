@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/source_object_observation.json",
+  "title": "Source Object Observation",
+  "description": "Object-level schema, profile, and recognition findings",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "$ref": "common.json#/definitions/schema_version"
+    },
+    "run_id": {
+      "$ref": "common.json#/definitions/run_id"
+    },
+    "artifact_version": {
+      "$ref": "common.json#/definitions/artifact_version"
+    },
+    "engagement_id": {
+      "$ref": "common.json#/definitions/engagement_id"
+    },
+    "source_system": {
+      "$ref": "common.json#/definitions/source_system"
+    },
+    "source_table": {
+      "$ref": "common.json#/definitions/source_table"
+    },
+    "object_type": {
+      "type": "string",
+      "enum": [
+        "TABLE",
+        "VIEW"
+      ],
+      "description": "Type of source object"
+    },
+    "column_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "row_count_estimate": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "proposed_domain": {
+      "$ref": "common.json#/definitions/domain"
+    },
+    "proposed_domain_confidence": {
+      "$ref": "common.json#/definitions/confidence_score"
+    },
+    "cots_match_assessment": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "product": {
+          "type": "string"
+        },
+        "module": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "match_strength": {
+          "$ref": "common.json#/definitions/confidence_score"
+        },
+        "customization_candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "profile_summary": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "null_rate_avg": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "distinct_count_total": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "observed_or_inferred": {
+      "$ref": "common.json#/definitions/observed_or_inferred"
+    },
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assumptions": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contradictions": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "open_questions": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "privacy_class": {
+      "$ref": "common.json#/definitions/privacy_class"
+    },
+    "privacy_rationale": {
+      "type": "string"
+    },
+    "approval_state": {
+      "$ref": "common.json#/definitions/approval_state"
+    },
+    "reviewer_role": {
+      "$ref": "common.json#/definitions/reviewer_role"
+    },
+    "review_rationale": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "$ref": "common.json#/definitions/timestamp_utc"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "artifact_version",
+    "engagement_id",
+    "source_system",
+    "source_table",
+    "object_type",
+    "column_count",
+    "proposed_domain",
+    "proposed_domain_confidence",
+    "observed_or_inferred",
+    "privacy_class",
+    "privacy_rationale",
+    "approval_state",
+    "created_at"
+  ],
+  "additionalProperties": false
+}

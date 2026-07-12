@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/policy_violation_event.json",
+  "title": "Policy Violation Event",
+  "description": "Sanitized record of a prohibited-evidence rejection. Contains NO prohibited values.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "$ref": "common.json#/definitions/schema_version"
+    },
+    "run_id": {
+      "$ref": "common.json#/definitions/run_id"
+    },
+    "artifact_version": {
+      "$ref": "common.json#/definitions/artifact_version"
+    },
+    "source_system": {
+      "$ref": "common.json#/definitions/source_system"
+    },
+    "source_table": {
+      "$ref": "common.json#/definitions/source_table"
+    },
+    "source_column": {
+      "$ref": "common.json#/definitions/source_column"
+    },
+    "evidence_class_attempted": {
+      "type": "string",
+      "description": "Class of evidence that was attempted (sanitized)"
+    },
+    "violation_type": {
+      "type": "string",
+      "enum": [
+        "PII_VALUE_INSPECTION",
+        "PROHIBITED_EVIDENCE",
+        "CREDENTIAL_DETECTED",
+        "CLIENT_DATA",
+        "LICENSED_COTS"
+      ],
+      "description": "Type of policy violation"
+    },
+    "action_taken": {
+      "type": "string",
+      "enum": [
+        "REJECTED_BEFORE_PROFILE",
+        "REJECTED_BEFORE_RETENTION",
+        "REJECTED_BEFORE_INDEX",
+        "REJECTED_BEFORE_PROMPT"
+      ],
+      "description": "Where the violation was caught"
+    },
+    "sanitized_description": {
+      "type": "string",
+      "description": "Sanitized description with NO prohibited values"
+    },
+    "routed_to": {
+      "$ref": "common.json#/definitions/reviewer_role"
+    },
+    "created_at": {
+      "$ref": "common.json#/definitions/timestamp_utc"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "artifact_version",
+    "source_system",
+    "source_table",
+    "source_column",
+    "evidence_class_attempted",
+    "violation_type",
+    "action_taken",
+    "sanitized_description",
+    "routed_to",
+    "created_at"
+  ],
+  "additionalProperties": false
+}

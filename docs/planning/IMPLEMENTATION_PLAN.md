@@ -55,29 +55,31 @@ flowchart LR
 
 ## 5. Phase 1 — Free Edition MVP foundation
 
-**Objective:** create a repeatable synthetic environment and durable artifact schema.
+**Objective:** prove the recommendation workflow against configured existing source tables and establish durable artifact schemas. Synthetic source creation is an optional, separate demonstration process and is not part of the solution boundary.
 
 ### Current code deliverables
 
 | Notebook | Responsibility | Output |
 |---|---|---|
-| `00_config.py` | Defines catalog, schema, run ID, version, and threshold. | Reusable configuration. |
-| `01_setup_synthetic_bronze.py` | Creates synthetic Policy, Party, and Claim source structures. | `bronze_policy`, `bronze_policyholder`, `bronze_claim`. |
+| `00_config.py` | Defines existing source scope, output location, run ID, version, and threshold. | Reusable configuration. |
+| `01_validate_source_scope.py` | Verifies configured source tables through read-only metadata access. | Source preflight result. |
 | `02_build_source_dictionary.py` | Runs deterministic source intelligence rules. | `source_observation_dictionary`. |
 | `03_create_review_queue.py` | Routes uncertain, relationship, and privacy items. | `review_queue`. |
 | `04_validate_mvp.py` | Validates artifact completeness and no auto-approval. | Run summary and validation result. |
 
 ### Foundation tasks
 
-- Upload the `databricks_mvp` folder to a Databricks Workspace folder.
-- Update `CATALOG` and `SCHEMA` in `00_config.py` if necessary.
+- Upload `src/databricks/` to a Databricks Workspace folder.
+- Configure `SOURCE_CATALOG`, `SOURCE_SCHEMA`, `SOURCE_TABLES`, and output settings in `00_config.py`.
 - Run the five notebooks in README order.
 - Inspect the data dictionary and reviewer queue.
 - Capture screenshots or query results as the MVP evidence pack.
 
+For demonstrations only, `examples/synthetic_bronze/` may provision a disposable synthetic source in a separate job. The core workflow never invokes it.
+
 ### Phase 1 acceptance gate
 
-- All five Delta tables exist.
+- All configured source tables pass read-only preflight and both recommendation output tables exist.
 - Every dictionary row includes physical type, proposed meaning, confidence, privacy classification, run ID, and approval state.
 - No dictionary row is automatically approved.
 - At least one relationship and one privacy-relevant entry reach the review queue.

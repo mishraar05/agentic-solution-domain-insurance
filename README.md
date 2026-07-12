@@ -1,30 +1,39 @@
-# insurance-lake
+# Agentic Solution Domain — Insurance
 
-Agentic Target Modeling MVP on Databricks Free Edition — a governed, recommendation-only system that analyzes Bronze metadata and recommends trusted Silver ODS / Gold models for P&C insurance. **Learning build only** (synthetic data, non-commercial); scale-up happens in a customer environment.
+A governed, recommendation-only Source Intelligence and target-modelling solution for P&C insurance on Databricks.
 
-Companion documents: `docs/design/` (Architecture Design v0.2), `docs/planning/` (Pilot Blueprint v0.1, Excel work plan — see its *Free Edition Fit* sheet).
+## Solution boundary
+
+The solution starts from existing source-aligned/Bronze tables provisioned by the client or platform data pipeline. It does not create, ingest, overwrite, or populate Bronze data.
+
+The core workflow performs read-only source preflight and metadata analysis, then writes only solution-owned recommendation and review artifacts.
+
+An optional synthetic demonstration harness lives in `examples/synthetic_bronze/`. It is a separate process and is never a dependency of the core Source Intelligence job.
 
 ## Layout
 
-| Path | Contents | Built by |
-|---|---|---|
-| `docs/architecture/` | Solution architecture deck (agents, harness, memory, guardrails) | — |
-| `docs/planning/` | Work plan (43 tasks, 5 work packages), blueprint, implementation plan | — |
-| `docs/design/` | Approved design document | — |
-| `contracts/` | Structured output contracts (JSON schema) per agent — build these first (task 2.6) | Claude |
-| `prompts/` | Versioned agent system prompts (Orchestrator + 6 specialists) | Claude |
-| `knowledge_packs/` | Ontology, COTS-like references, standards, rules (synthetic/open only) | Claude exemplars, Codex volume |
-| `evals/` | MLflow judges + labelled reviewer-decision set | Claude |
-| `src/databricks/` | Numbered MVP notebooks (00 config → 04 validate) | Codex |
-| `scripts/` | Document generators and utilities | Codex |
-| `config/` | Single environment config (Free Edition = one workspace; env split deferred) | Codex |
-| `tests/` | `unit/` + `validation/` (recovery & invalidation scenarios, task 4.7) | Codex |
-| `data/synthetic/` | Generated synthetic Bronze source data | Codex |
-| `notebooks/exploration/` | Ad-hoc exploration and demos | either |
+| Path | Contents |
+|---|---|
+| `src/databricks/` | Core read-only source analysis and recommendation notebooks |
+| `src/source_intelligence/` | Testable deterministic Source Intelligence logic |
+| `examples/synthetic_bronze/` | Optional isolated demo/test source setup |
+| `contracts/` | Machine-readable output and governance contracts |
+| `tests/` | Unit and validation tests |
+| `evals/` | Labelled evaluation data and judges |
+| `docs/` | Architecture, governance, planning, and evidence |
+| `knowledge_packs/` | Authorized ontology, standards, rules, and COTS-like patterns |
+| `prompts/` | Versioned agent prompts for later gated phases |
+| `.agents/skills/` | Reusable project workflows |
+
+## Core execution
+
+Configure the existing source scope in `src/databricks/00_config.py`, then use `scripts/run_source_intelligence_job.json` or run the numbered notebooks in order. The first executable step validates that configured source tables exist; it never attempts to create them.
 
 ## Rules of the road
 
-- Recommendation-only: no DDL, no deployment, no ingestion code anywhere in this repo (design decision D-04).
-- Agents get read/query/retrieval tools only (D-08); enforced in code on Free Edition.
-- Every agent output must validate against its contract in `contracts/` before it lands in the recommendation repository.
-- `agentic-solution-domain-insurance/` is a separate nested git repo — register as a submodule or fold into `knowledge_packs/`.
+- Recommendation-only: no source deployment, ingestion, migration, or Bronze creation in the core solution.
+- Source access is read/query/retrieval only.
+- Observed facts remain separate from inferred meaning.
+- Structured outputs validate against contracts before persistence.
+- Confidence routes review but never grants approval.
+- Free Edition development uses synthetic data only; organizational data requires approved governance and a controlled environment.

@@ -22,9 +22,6 @@ from pyspark.sql.types import (
     TimestampType,
 )
 
-SOURCE_TABLES = ("bronze_policy", "bronze_policyholder", "bronze_claim")
-
-
 def semantic_for(table_name: str, column_name: str) -> dict:
     """Transparent rule set; replace or augment with governed agent/RAG logic later."""
     name = column_name.lower()
@@ -105,7 +102,7 @@ def relationship_evidence(table_name: str, column_name: str) -> str:
 records = []
 created_at = datetime.now(timezone.utc)
 for table_name in SOURCE_TABLES:
-    source_schema = spark.table(fq_table(table_name)).schema
+    source_schema = spark.table(fq_source_table(table_name)).schema
     for ordinal_position, field in enumerate(source_schema.fields, start=1):
         semantic = semantic_for(table_name, field.name)
         relation = relationship_evidence(table_name, field.name)
@@ -115,7 +112,7 @@ for table_name in SOURCE_TABLES:
         assumptions = None if semantic["ontology_concept_id"] else "Business meaning inferred from naming pattern; steward validation required."
         records.append(Row(
             engagement_id="free-edition-synthetic-mvp",
-            source_system="synthetic_insurance_source",
+            source_system=SOURCE_SYSTEM,
             source_table=table_name,
             source_column=field.name,
             ordinal_position=ordinal_position,

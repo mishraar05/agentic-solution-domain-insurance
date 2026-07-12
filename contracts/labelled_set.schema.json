@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/labelled_set.schema.json",
+  "title": "Labelled Evaluation Set",
+  "description": "Schema for the labelled evaluation set used to measure precision and recall",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "$ref": "common.json#/definitions/schema_version"
+    },
+    "set_name": {
+      "type": "string",
+      "description": "Name of the labelled set"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "record_id": {
+            "type": "string",
+            "description": "Stable record identifier"
+          },
+          "source_table": {
+            "$ref": "common.json#/definitions/source_table"
+          },
+          "source_column": {
+            "$ref": "common.json#/definitions/source_column"
+          },
+          "expected_business_name": {
+            "type": "string"
+          },
+          "expected_ontology_concept": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expected_domain": {
+            "$ref": "common.json#/definitions/domain"
+          },
+          "expected_privacy_class": {
+            "$ref": "common.json#/definitions/privacy_class"
+          },
+          "expected_key_role": {
+            "$ref": "common.json#/definitions/key_role"
+          },
+          "expected_relationship_target": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Expected relationship target table.column or null"
+          },
+          "expected_review_route": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              null,
+              "DATA_ARCHITECT",
+              "DOMAIN_STEWARD",
+              "PRIVACY_STEWARD",
+              "NONE"
+            ]
+          },
+          "lifecycle_state": {
+            "type": "string",
+            "enum": [
+              "RESOLVED",
+              "UNRESOLVED"
+            ],
+            "description": "Whether the expected value is resolved or unresolved"
+          },
+          "strata": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "type": "string"
+              },
+              "privacy": {
+                "type": "string"
+              },
+              "ambiguity": {
+                "type": "string",
+                "enum": [
+                  "KNOWN",
+                  "AMBIGUOUS",
+                  "UNKNOWN"
+                ]
+              },
+              "key_role": {
+                "type": "string"
+              },
+              "relationship": {
+                "type": "string",
+                "enum": [
+                  "YES",
+                  "NO"
+                ]
+              },
+              "pattern_type": {
+                "type": "string",
+                "enum": [
+                  "KNOWN",
+                  "UNKNOWN"
+                ]
+              },
+              "review_route": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "record_id",
+          "source_table",
+          "source_column",
+          "expected_business_name",
+          "expected_domain",
+          "expected_privacy_class",
+          "expected_key_role",
+          "expected_review_route",
+          "lifecycle_state"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "set_name",
+    "records"
+  ],
+  "additionalProperties": false
+}

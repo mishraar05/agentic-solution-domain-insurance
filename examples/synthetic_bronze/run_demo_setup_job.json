@@ -1,0 +1,12 @@
+{
+  "run_name": "synthetic-bronze-demo-setup",
+  "tasks": [
+    {
+      "task_key": "create_demo_source",
+      "notebook_task": {
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/examples/synthetic_bronze/setup_synthetic_bronze",
+        "source": "WORKSPACE"
+      }
+    }
+  ]
+}

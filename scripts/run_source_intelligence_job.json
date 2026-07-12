@@ -1,5 +1,5 @@
 {
-  "run_name": "insurance-lake-mvp-run",
+  "run_name": "agentic-source-intelligence-run",
   "tasks": [
     {
       "task_key": "config",
@@ -9,16 +9,16 @@
       }
     },
     {
-      "task_key": "bronze",
+      "task_key": "source_preflight",
       "depends_on": [{ "task_key": "config" }],
       "notebook_task": {
-        "notebook_path": "/Workspace/agentic-solution-domain-insurance/01_setup_synthetic_bronze",
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/01_validate_source_scope",
         "source": "WORKSPACE"
       }
     },
     {
       "task_key": "dictionary",
-      "depends_on": [{ "task_key": "bronze" }],
+      "depends_on": [{ "task_key": "source_preflight" }],
       "notebook_task": {
         "notebook_path": "/Workspace/agentic-solution-domain-insurance/02_build_source_dictionary",
         "source": "WORKSPACE"

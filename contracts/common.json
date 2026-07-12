@@ -1,0 +1,169 @@
+{
+  "": "https://agentic-insurance/contracts/common.json",
+  "title": "Common Definitions",
+  "description": "Reusable definitions for all Source Intelligence contracts",
+  "definitions": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the contract schema"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^mvp_\\d{8}T\\d{6}Z$",
+      "description": "UTC timestamp-based run identifier"
+    },
+    "artifact_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Version of the artifact produced"
+    },
+    "engagement_id": {
+      "type": "string",
+      "description": "Engagement or pilot identifier"
+    },
+    "source_system": {
+      "type": "string",
+      "description": "Source system name"
+    },
+    "source_table": {
+      "type": "string",
+      "description": "Source table name"
+    },
+    "source_column": {
+      "type": "string",
+      "description": "Source column name"
+    },
+    "ordinal_position": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Column position in the source table"
+    },
+    "physical_type": {
+      "type": "string",
+      "description": "PySpark data type string representation"
+    },
+    "nullable": {
+      "type": "boolean",
+      "description": "Whether the column accepts null values"
+    },
+    "observed_or_inferred": {
+      "type": "string",
+      "enum": [
+        "OBSERVED",
+        "INFERRED"
+      ],
+      "description": "Whether the value was directly observed or inferred"
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Overall confidence score (0.0 to 1.0)"
+    },
+    "confidence_component": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "availability": {
+          "type": "string",
+          "enum": [
+            "AVAILABLE",
+            "NOT_AVAILABLE",
+            "CONTRADICTED"
+          ]
+        },
+        "evidence_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        }
+      },
+      "required": [
+        "value",
+        "availability",
+        "weight"
+      ],
+      "additionalProperties": false
+    },
+    "evidence_coverage": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Available weight divided by total weight"
+    },
+    "privacy_class": {
+      "type": "string",
+      "enum": [
+        "INTERNAL",
+        "PERSONAL_DATA",
+        "SENSITIVE"
+      ],
+      "description": "Privacy classification"
+    },
+    "approval_state": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "APPROVED",
+        "MODIFIED",
+        "REJECTED",
+        "DEFERRED"
+      ],
+      "description": "Approval state of the recommendation"
+    },
+    "reviewer_role": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "DATA_ARCHITECT",
+        "DOMAIN_STEWARD",
+        "PRIVACY_STEWARD"
+      ],
+      "description": "Assigned reviewer role"
+    },
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp"
+    },
+    "key_role": {
+      "type": "string",
+      "enum": [
+        "PRIMARY_KEY_CANDIDATE",
+        "FOREIGN_KEY_CANDIDATE",
+        "NON_KEY"
+      ],
+      "description": "Inferred key role"
+    },
+    "domain": {
+      "type": "string",
+      "enum": [
+        "Policy",
+        "Claims",
+        "Shared",
+        "Billing",
+        "Product",
+        "Coverage",
+        "Reference Data"
+      ],
+      "description": "Insurance domain classification"
+    }
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/source_attribute_observation.json",
+  "title": "Source Attribute Observation",
+  "description": "Attribute-level facts and proposed semantics",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "$ref": "common.json#/definitions/schema_version"
+    },
+    "run_id": {
+      "$ref": "common.json#/definitions/run_id"
+    },
+    "artifact_version": {
+      "$ref": "common.json#/definitions/artifact_version"
+    },
+    "engagement_id": {
+      "$ref": "common.json#/definitions/engagement_id"
+    },
+    "source_system": {
+      "$ref": "common.json#/definitions/source_system"
+    },
+    "source_table": {
+      "$ref": "common.json#/definitions/source_table"
+    },
+    "source_column": {
+      "$ref": "common.json#/definitions/source_column"
+    },
+    "ordinal_position": {
+      "$ref": "common.json#/definitions/ordinal_position"
+    },
+    "physical_type": {
+      "$ref": "common.json#/definitions/physical_type"
+    },
+    "nullable": {
+      "$ref": "common.json#/definitions/nullable"
+    },
+    "key_role": {
+      "$ref": "common.json#/definitions/key_role"
+    },
+    "relationship_evidence": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Inferred relationship description"
+    },
+    "proposed_business_name": {
+      "type": "string",
+      "description": "Proposed business-friendly name"
+    },
+    "ontology_concept_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Proposed ontology concept"
+    },
+    "domain": {
+      "$ref": "common.json#/definitions/domain"
+    },
+    "observed_or_inferred": {
+      "$ref": "common.json#/definitions/observed_or_inferred"
+    },
+    "confidence_score": {
+      "$ref": "common.json#/definitions/confidence_score"
+    },
+    "confidence_components": {
+      "type": "object",
+      "properties": {
+        "naming_strength": {
+          "$ref": "common.json#/definitions/confidence_component"
+        },
+        "type_strength": {
+          "$ref": "common.json#/definitions/confidence_component"
+        },
+        "relationship_strength": {
+          "$ref": "common.json#/definitions/confidence_component"
+        },
+        "cots_match_strength": {
+          "$ref": "common.json#/definitions/confidence_component"
+        },
+        "standard_consistency": {
+          "$ref": "common.json#/definitions/confidence_component"
+        }
+      },
+      "required": [
+        "naming_strength",
+        "type_strength",
+        "relationship_strength",
+        "cots_match_strength",
+        "standard_consistency"
+      ],
+      "additionalProperties": false
+    },
+    "evidence_coverage": {
+      "$ref": "common.json#/definitions/evidence_coverage"
+    },
+    "confidence_reason": {
+      "type": "string"
+    },
+    "formula_version": {
+      "type": "string",
+      "description": "Version of the confidence formula"
+    },
+    "assumptions": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contradictions": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "open_question": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "privacy_class": {
+      "$ref": "common.json#/definitions/privacy_class"
+    },
+    "privacy_rationale": {
+      "type": "string"
+    },
+    "approval_state": {
+      "$ref": "common.json#/definitions/approval_state"
+    },
+    "reviewer_role": {
+      "$ref": "common.json#/definitions/reviewer_role"
+    },
+    "review_rationale": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "$ref": "common.json#/definitions/timestamp_utc"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "artifact_version",
+    "engagement_id",
+    "source_system",
+    "source_table",
+    "source_column",
+    "ordinal_position",
+    "physical_type",
+    "nullable",
+    "key_role",
+    "proposed_business_name",
+    "domain",
+    "observed_or_inferred",
+    "confidence_score",
+    "confidence_components",
+    "evidence_coverage",
+    "confidence_reason",
+    "formula_version",
+    "privacy_class",
+    "privacy_rationale",
+    "approval_state",
+    "created_at"
+  ],
+  "additionalProperties": false
+}

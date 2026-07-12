@@ -1,6 +1,6 @@
 ---
 name: build-source-intelligence-v1
-description: Implement and validate deterministic Source Intelligence Agent v1 for the agentic insurance Databricks project. Use when creating output contracts and Delta schemas, extracting approved metadata and minimized profiles, inferring relationships, classifying insurance domains and privacy, tracking source-intelligence runs, routing recommendations to review, adding synthetic fixtures and unit/validation tests, or evaluating the Phase 2 acceptance gate.
+description: Implement and validate deterministic Source Intelligence Agent v1 for the agentic insurance Databricks project. Use when consuming configured existing source tables through read-only access, creating output contracts, extracting approved metadata and minimized profiles, inferring relationships, classifying domains and privacy, tracking runs, routing recommendations to review, adding isolated synthetic test fixtures, or evaluating the Phase 2 gate.
 ---
 
 # Build Source Intelligence v1
@@ -13,6 +13,7 @@ Replace MVP static rules with a reusable, transparent, deterministic source-anal
 2. Read the Phase 2 section of `docs/planning/IMPLEMENTATION_PLAN.md`, existing notebooks, contracts, tests, and governance decisions.
 3. Require a defined evidence policy before profiling or retaining evidence. Stop and report missing governance rather than inventing permission.
 4. Preserve Phase 1 behavior and evidence while adding the smallest complete vertical slice.
+5. Treat source/Bronze tables as external read-only inputs. Never create, ingest, overwrite, or populate them. Keep synthetic setup in the isolated `examples/synthetic_bronze/` harness.
 
 ## Define contracts before producers
 

@@ -1,54 +1,27 @@
-# Agentic Insurance Domain Solution — Databricks MVP
+# Source Intelligence — Databricks workflow
 
-This starter project implements the first safe, deterministic slice of the architecture:
+The core workflow analyzes existing source-aligned/Bronze tables. Source creation, ingestion, and population are outside the solution boundary.
 
-1. Create synthetic P&C Bronze tables.
-2. Generate a source-observation catalog / proposed source data dictionary.
-3. Create a reviewer work queue for low-confidence, unresolved, or privacy-relevant entries.
-4. Validate the MVP outputs.
+## Core run order
 
-It is designed for Databricks Free Edition and uses only built-in PySpark and Delta tables. It does **not** call an LLM, create a vector index, access external services, or load real data.
+1. `00_config.py` — configure existing source scope and recommendation output.
+2. `01_validate_source_scope.py` — verify configured inputs through read-only metadata access.
+3. `02_build_source_dictionary.py` — produce proposed source observations and semantics.
+4. `03_create_review_queue.py` — route uncertain and governed items.
+5. `04_validate_mvp.py` — validate solution-owned recommendation outputs.
 
-## Safety boundary
-
-Do not upload client data, PII, claims narratives, proprietary COTS documentation, credentials, or production connection strings to Databricks Free Edition. The sample data is entirely synthetic.
-
-## Run order
-
-Upload this folder to a Databricks Workspace folder as source notebooks, then run in order:
-
-1. `00_config.py`
-2. `01_setup_synthetic_bronze.py`
-3. `02_build_source_dictionary.py`
-4. `03_create_review_queue.py`
-5. `04_validate_mvp.py`
-
-Each notebook runs `%run ./00_config`, so it can also be run individually after the configuration notebook has been uploaded alongside it.
-
-## What gets created
-
-The notebooks create this schema in the `workspace` catalog by default:
-
-| Table | Purpose |
-|---|---|
-| `bronze_policy` | Synthetic, source-aligned policy data |
-| `bronze_policyholder` | Synthetic party/policyholder data |
-| `bronze_claim` | Synthetic claims data |
-| `source_observation_dictionary` | Physical metadata plus proposed semantic interpretation and evidence |
-| `review_queue` | Items requiring data-architect, steward, or privacy review |
+The production job is `scripts/run_source_intelligence_job.json`. It never creates or overwrites source tables.
 
 ## Configuration
 
-In `00_config.py`, change `CATALOG` and `SCHEMA` if your workspace uses different names. The Free Edition default is normally the `workspace` catalog.
+Set `SOURCE_CATALOG`, `SOURCE_SCHEMA`, `SOURCE_TABLES`, `SOURCE_SYSTEM`, `OUTPUT_CATALOG`, and `OUTPUT_SCHEMA` in `00_config.py`.
 
-## Expected result
+Source tables are read-only prerequisites. The solution owns only its recommendation artifacts, including `source_observation_dictionary` and `review_queue`.
 
-After the final notebook finishes, query:
+## Optional demo
 
-```sql
-SELECT *
-FROM workspace.agentic_insurance_mvp.source_observation_dictionary
-ORDER BY source_table, ordinal_position;
-```
+`examples/synthetic_bronze/` contains a separate synthetic fixture workflow for demonstrations and integration tests. The core job never depends on it.
 
-The resulting dictionary deliberately separates **observed** physical facts from **inferred** business meaning. It is a recommendation artifact and must be reviewed before being treated as authoritative.
+## Safety boundary
+
+Do not use client data, real PII, claims narratives, proprietary COTS material, credentials, or production connection strings in the Free Edition learning environment. All recommendations remain `PROPOSED` until human review.

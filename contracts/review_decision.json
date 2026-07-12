@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/review_decision.json",
+  "title": "Review Decision",
+  "description": "Reviewer decision on a recommendation",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "$ref": "common.json#/definitions/schema_version"
+    },
+    "run_id": {
+      "$ref": "common.json#/definitions/run_id"
+    },
+    "artifact_version": {
+      "$ref": "common.json#/definitions/artifact_version"
+    },
+    "source_table": {
+      "$ref": "common.json#/definitions/source_table"
+    },
+    "source_column": {
+      "$ref": "common.json#/definitions/source_column"
+    },
+    "recommendation_type": {
+      "type": "string",
+      "enum": [
+        "SEMANTIC_MAPPING",
+        "RELATIONSHIP",
+        "PRIVACY",
+        "KEY_ROLE",
+        "DOMAIN",
+        "ONTOLOGY"
+      ],
+      "description": "Type of recommendation reviewed"
+    },
+    "review_reason": {
+      "type": "string",
+      "description": "Why the item was routed to review"
+    },
+    "recommended_reviewer_role": {
+      "$ref": "common.json#/definitions/reviewer_role"
+    },
+    "reviewer_decision": {
+      "$ref": "common.json#/definitions/approval_state"
+    },
+    "reviewer_rationale": {
+      "type": "string",
+      "description": "Why the reviewer made their decision"
+    },
+    "prior_recommendation_version": {
+      "type": "string",
+      "description": "Version of the recommendation being reviewed"
+    },
+    "invalidation_impact": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Downstream artifacts invalidated by this decision"
+    },
+    "queue_status": {
+      "type": "string",
+      "enum": [
+        "OPEN",
+        "CLOSED"
+      ]
+    },
+    "decided_at": {
+      "$ref": "common.json#/definitions/timestamp_utc"
+    },
+    "queued_at": {
+      "$ref": "common.json#/definitions/timestamp_utc"
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "artifact_version",
+    "source_table",
+    "source_column",
+    "recommendation_type",
+    "review_reason",
+    "recommended_reviewer_role",
+    "reviewer_decision",
+    "reviewer_rationale",
+    "queue_status",
+    "queued_at"
+  ],
+  "additionalProperties": false
+}

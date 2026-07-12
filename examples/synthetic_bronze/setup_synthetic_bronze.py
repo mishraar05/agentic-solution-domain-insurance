@@ -1,12 +1,9 @@
 # Databricks notebook source
-# MAGIC %run ./00_config
-
-# COMMAND ----------
-
 # MAGIC %md
-# MAGIC # 01 — Create synthetic Bronze tables
+# MAGIC # Optional demo — Create synthetic Bronze tables
 # MAGIC
-# MAGIC These tables mimic raw source-aligned P&C structures. All values are synthetic and contain no real customer or claims data.
+# MAGIC This notebook is an isolated demonstration fixture. It is not part of the
+# MAGIC Source Intelligence solution or its production job.
 
 # COMMAND ----------
 
@@ -21,9 +18,21 @@ from pyspark.sql.types import (
 )
 from datetime import date, datetime, timezone
 
+DEMO_CATALOG = "workspace"
+DEMO_SOURCE_SCHEMA = "agentic_insurance_demo_bronze"
+
+
+def demo_table(table_name: str) -> str:
+    return f"`{DEMO_CATALOG}`.`{DEMO_SOURCE_SCHEMA}`.`{table_name}`"
+
+
+spark.sql(
+    f"CREATE SCHEMA IF NOT EXISTS `{DEMO_CATALOG}`.`{DEMO_SOURCE_SCHEMA}`"
+)
+
 
 def overwrite_delta(rows, schema, table_name: str) -> None:
-    spark.createDataFrame(rows, schema=schema).write.format("delta").mode("overwrite").saveAsTable(fq_table(table_name))
+    spark.createDataFrame(rows, schema=schema).write.format("delta").mode("overwrite").saveAsTable(demo_table(table_name))
 
 
 policy_schema = StructType([
@@ -75,4 +84,4 @@ overwrite_delta(claim_rows, claim_schema, "bronze_claim")
 
 print("Created synthetic Bronze tables:")
 for table in ("bronze_policy", "bronze_policyholder", "bronze_claim"):
-    print(f"- {CATALOG}.{SCHEMA}.{table}")
+    print(f"- {DEMO_CATALOG}.{DEMO_SOURCE_SCHEMA}.{table}")

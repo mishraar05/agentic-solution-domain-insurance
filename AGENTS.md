@@ -4,7 +4,7 @@ Rules for any coding or reasoning agent working in this repo (Codex, Claude, GLM
 
 ## Project
 
-Agentic Target Modeling MVP on Databricks Free Edition. Recommendation-only system: analyzes synthetic Bronze metadata and recommends Silver ODS / Gold models, ontology mappings, and STTMs for P&C insurance. Learning build, non-commercial, synthetic data only. Canonical docs: `docs/design/` (architecture v0.2), `docs/planning/` (blueprint v0.1 + Excel work plan = task source of truth). Run evidence lives in `docs/evidence/`.
+Agentic Target Modeling MVP on Databricks Free Edition. Recommendation-only system: analyzes existing source-aligned/Bronze metadata and recommends Silver ODS / Gold models, ontology mappings, and STTMs for P&C insurance. The optional synthetic Bronze harness is isolated under `examples/synthetic_bronze/` and is never part of the core job. Canonical docs: `docs/design/` (architecture v0.2), `docs/planning/` (blueprint v0.1 + Excel work plan = task source of truth). Run evidence lives in `docs/evidence/`.
 
 ## Hard rules (never violate)
 
@@ -13,6 +13,7 @@ Agentic Target Modeling MVP on Databricks Free Edition. Recommendation-only syst
 3. No client data, PII, licensed COTS documentation, credentials, or connection strings anywhere in this repo.
 4. Separate observed facts from inferred meaning in every artifact; unresolved stays unresolved — never invent semantics.
 5. Confidence gates workflow routing only; human approval is required before any artifact is authoritative.
+6. Existing source/Bronze tables are external read-only inputs. Never create, ingest, overwrite, or populate them in the core solution. Synthetic source creation belongs only in the isolated demo/test harness.
 
 ## Layout and ownership
 
@@ -21,6 +22,7 @@ Agentic Target Modeling MVP on Databricks Free Edition. Recommendation-only syst
 - `knowledge_packs/` — synthetic ontology, COTS-like references, standards, rules.
 - `evals/` — judges and labelled reviewer-decision set.
 - `src/databricks/` — numbered notebooks (`NN_purpose.py`), Free Edition serverless only.
+- `examples/synthetic_bronze/` — optional demo/test fixture creation; separate job, never a core dependency.
 - `tests/unit`, `tests/validation` — validation covers retry/invalidation scenarios.
 - `.agents/skills/` — reusable task skills; check for a matching skill before improvising a workflow.
 
