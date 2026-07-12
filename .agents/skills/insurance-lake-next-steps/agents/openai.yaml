@@ -1,0 +1,4 @@
+interface:
+  display_name: "Insurance Lake Next Steps"
+  short_description: "Deliver the governed insurance MVP safely"
+  default_prompt: "Use $insurance-lake-next-steps to identify and complete the next governed MVP step."

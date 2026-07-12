@@ -1,0 +1,44 @@
+{
+  "run_name": "insurance-lake-mvp-run",
+  "tasks": [
+    {
+      "task_key": "config",
+      "notebook_task": {
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/00_config",
+        "source": "WORKSPACE"
+      }
+    },
+    {
+      "task_key": "bronze",
+      "depends_on": [{ "task_key": "config" }],
+      "notebook_task": {
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/01_setup_synthetic_bronze",
+        "source": "WORKSPACE"
+      }
+    },
+    {
+      "task_key": "dictionary",
+      "depends_on": [{ "task_key": "bronze" }],
+      "notebook_task": {
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/02_build_source_dictionary",
+        "source": "WORKSPACE"
+      }
+    },
+    {
+      "task_key": "review_queue",
+      "depends_on": [{ "task_key": "dictionary" }],
+      "notebook_task": {
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/03_create_review_queue",
+        "source": "WORKSPACE"
+      }
+    },
+    {
+      "task_key": "validate",
+      "depends_on": [{ "task_key": "review_queue" }],
+      "notebook_task": {
+        "notebook_path": "/Workspace/agentic-solution-domain-insurance/04_validate_mvp",
+        "source": "WORKSPACE"
+      }
+    }
+  ]
+}

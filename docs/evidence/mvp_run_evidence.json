@@ -1,0 +1,484 @@
+{
+  "captured_at": "2026-07-12T06:22:22.006195+00:00",
+  "catalog": "workspace",
+  "schema": "agentic_insurance_mvp",
+  "warehouse_id": "21014374f253edf2",
+  "profile": "DEV",
+  "results": {
+    "tables": {
+      "columns": [
+        "database",
+        "tableName",
+        "isTemporary"
+      ],
+      "rows": [
+        [
+          "agentic_insurance_mvp",
+          "bronze_claim",
+          "false"
+        ],
+        [
+          "agentic_insurance_mvp",
+          "bronze_policy",
+          "false"
+        ],
+        [
+          "agentic_insurance_mvp",
+          "bronze_policyholder",
+          "false"
+        ],
+        [
+          "agentic_insurance_mvp",
+          "review_queue",
+          "false"
+        ],
+        [
+          "agentic_insurance_mvp",
+          "source_observation_dictionary",
+          "false"
+        ]
+      ],
+      "row_count": 5
+    },
+    "dictionary": {
+      "columns": [
+        "source_table",
+        "source_column",
+        "physical_type",
+        "key_role",
+        "relationship_evidence",
+        "proposed_business_name",
+        "ontology_concept_id",
+        "domain",
+        "confidence_score",
+        "privacy_class",
+        "approval_state",
+        "run_id",
+        "artifact_version"
+      ],
+      "rows": [
+        [
+          "bronze_claim",
+          "claim_id",
+          "StringType()",
+          "PRIMARY_KEY_CANDIDATE",
+          null,
+          "Claim Identifier",
+          "Claim.Identifier",
+          "Claims",
+          "0.95",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_claim",
+          "policy_id",
+          "StringType()",
+          "FOREIGN_KEY_CANDIDATE",
+          "Inferred relationship: bronze_claim.policy_id -> bronze_policy.policy_id",
+          "Policy Identifier",
+          "Policy.Identifier",
+          "Policy",
+          "0.95",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_claim",
+          "loss_date",
+          "DateType()",
+          "NON_KEY",
+          null,
+          "Loss Date",
+          "Claim.LossDate",
+          "Claims",
+          "0.9",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_claim",
+          "claim_status",
+          "StringType()",
+          "NON_KEY",
+          null,
+          "Claim Status",
+          "Claim.Status",
+          "Claims",
+          "0.9",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_claim",
+          "claimed_amount",
+          "DecimalType(12,2)",
+          "NON_KEY",
+          null,
+          "Claimed Amount",
+          "Claim.ClaimedAmount",
+          "Claims",
+          "0.85",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_claim",
+          "source_updated_ts",
+          "TimestampType()",
+          "NON_KEY",
+          null,
+          "Source Updated Timestamp",
+          "Technical.SourceUpdatedTimestamp",
+          "Shared",
+          "0.95",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policy",
+          "policy_id",
+          "StringType()",
+          "PRIMARY_KEY_CANDIDATE",
+          null,
+          "Policy Identifier",
+          "Policy.Identifier",
+          "Policy",
+          "0.95",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policy",
+          "policy_number",
+          "StringType()",
+          "NON_KEY",
+          null,
+          "Policy Number",
+          "Policy.PolicyNumber",
+          "Policy",
+          "0.95",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policy",
+          "policy_status",
+          "StringType()",
+          "NON_KEY",
+          null,
+          "Policy Status",
+          "Policy.Status",
+          "Policy",
+          "0.9",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policy",
+          "effective_date",
+          "DateType()",
+          "NON_KEY",
+          null,
+          "Policy Effective Date",
+          "Policy.EffectiveDate",
+          "Policy",
+          "0.9",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policy",
+          "expiration_date",
+          "DateType()",
+          "NON_KEY",
+          null,
+          "Policy Expiration Date",
+          "Policy.ExpirationDate",
+          "Policy",
+          "0.9",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policy",
+          "product_code",
+          "StringType()",
+          "NON_KEY",
+          null,
+          "Insurance Product Code",
+          "Product.Code",
+          "Shared",
+          "0.85",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policy",
+          "insured_party_id",
+          "StringType()",
+          "FOREIGN_KEY_CANDIDATE",
+          "Inferred relationship: bronze_policy.insured_party_id -> bronze_policyholder.party_id",
+          "Insured Party Identifier",
+          "Party.Identifier",
+          "Shared",
+          "0.85",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policy",
+          "source_updated_ts",
+          "TimestampType()",
+          "NON_KEY",
+          null,
+          "Source Updated Timestamp",
+          "Technical.SourceUpdatedTimestamp",
+          "Shared",
+          "0.95",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policyholder",
+          "party_id",
+          "StringType()",
+          "PRIMARY_KEY_CANDIDATE",
+          null,
+          "Party Identifier",
+          "Party.Identifier",
+          "Shared",
+          "0.95",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policyholder",
+          "party_type",
+          "StringType()",
+          "NON_KEY",
+          null,
+          "Party Type",
+          "Party.Type",
+          "Shared",
+          "0.9",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policyholder",
+          "display_name",
+          "StringType()",
+          "NON_KEY",
+          null,
+          "Display Name",
+          null,
+          "Policy",
+          "0.55",
+          "PERSONAL_DATA",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policyholder",
+          "contact_channel",
+          "StringType()",
+          "NON_KEY",
+          null,
+          "Contact Channel",
+          null,
+          "Policy",
+          "0.55",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ],
+        [
+          "bronze_policyholder",
+          "source_updated_ts",
+          "TimestampType()",
+          "NON_KEY",
+          null,
+          "Source Updated Timestamp",
+          "Technical.SourceUpdatedTimestamp",
+          "Shared",
+          "0.95",
+          "INTERNAL",
+          "PROPOSED",
+          "mvp_20260712T061257Z",
+          "0.1.0"
+        ]
+      ],
+      "row_count": 19
+    },
+    "review_queue": {
+      "columns": [
+        "source_table",
+        "source_column",
+        "proposed_business_name",
+        "domain",
+        "ontology_concept_id",
+        "confidence_score",
+        "privacy_class",
+        "review_reason",
+        "recommended_reviewer_role",
+        "queue_status",
+        "run_id"
+      ],
+      "rows": [
+        [
+          "bronze_claim",
+          "policy_id",
+          "Policy Identifier",
+          "Policy",
+          "Policy.Identifier",
+          "0.95",
+          "INTERNAL",
+          "Inferred relationship requires confirmation",
+          "DATA_ARCHITECT",
+          "OPEN",
+          "mvp_20260712T061257Z"
+        ],
+        [
+          "bronze_policy",
+          "insured_party_id",
+          "Insured Party Identifier",
+          "Shared",
+          "Party.Identifier",
+          "0.85",
+          "INTERNAL",
+          "Inferred relationship requires confirmation",
+          "DATA_ARCHITECT",
+          "OPEN",
+          "mvp_20260712T061257Z"
+        ],
+        [
+          "bronze_policyholder",
+          "contact_channel",
+          "Contact Channel",
+          "Policy",
+          null,
+          "0.55",
+          "INTERNAL",
+          "Confidence below configured threshold",
+          "DOMAIN_STEWARD",
+          "OPEN",
+          "mvp_20260712T061257Z"
+        ],
+        [
+          "bronze_policyholder",
+          "display_name",
+          "Display Name",
+          "Policy",
+          null,
+          "0.55",
+          "PERSONAL_DATA",
+          "Privacy classification requires review",
+          "PRIVACY_STEWARD",
+          "OPEN",
+          "mvp_20260712T061257Z"
+        ]
+      ],
+      "row_count": 4
+    },
+    "counts": {
+      "columns": [
+        "bronze_policy_rows",
+        "bronze_policyholder_rows",
+        "bronze_claim_rows",
+        "dictionary_rows",
+        "review_queue_rows"
+      ],
+      "rows": [
+        [
+          "2",
+          "2",
+          "2",
+          "19",
+          "4"
+        ]
+      ],
+      "row_count": 1
+    },
+    "validation": {
+      "columns": [
+        "dictionary_rows",
+        "null_confidence_rows",
+        "auto_approved_rows",
+        "low_confidence_rows",
+        "personal_data_rows",
+        "relationship_rows"
+      ],
+      "rows": [
+        [
+          "19",
+          "0",
+          "0",
+          "2",
+          "1",
+          "2"
+        ]
+      ],
+      "row_count": 1
+    },
+    "domain_summary": {
+      "columns": [
+        "domain",
+        "approval_state",
+        "count"
+      ],
+      "rows": [
+        [
+          "Claims",
+          "PROPOSED",
+          "4"
+        ],
+        [
+          "Policy",
+          "PROPOSED",
+          "8"
+        ],
+        [
+          "Shared",
+          "PROPOSED",
+          "7"
+        ]
+      ],
+      "row_count": 3
+    }
+  }
+}
