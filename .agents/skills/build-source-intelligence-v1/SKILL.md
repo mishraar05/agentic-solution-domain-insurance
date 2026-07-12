@@ -9,7 +9,7 @@ Replace MVP static rules with a reusable, transparent, deterministic source-anal
 
 ## Confirm prerequisites
 
-1. Work from `D:\agentic-solution-domain-insurance` when available.
+ 1. Discover and work from the repository root.
 2. Read the Phase 2 section of `docs/planning/IMPLEMENTATION_PLAN.md`, existing notebooks, contracts, tests, and governance decisions.
 3. Require a defined evidence policy before profiling or retaining evidence. Stop and report missing governance rather than inventing permission.
 4. Preserve Phase 1 behavior and evidence while adding the smallest complete vertical slice.
