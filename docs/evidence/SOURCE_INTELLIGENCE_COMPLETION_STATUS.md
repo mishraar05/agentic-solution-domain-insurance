@@ -23,7 +23,10 @@ Machine-readable results: `docs/evidence/source_intelligence_local_gate.json`.
 ## Required external completion
 
 Completed external checks: Databricks CLI `1.7.0`, DEV bundle validation, and
-read-only discovery of READY endpoint `databricks-gpt-5-6-luna`.
+read-only discovery of READY, batch-supported endpoint
+`databricks-gpt-oss-20b`. Real-time-only endpoint
+`databricks-gpt-5-6-luna` was rejected after `ai_query` reported it does not
+support batch inference.
 
 Still required:
 

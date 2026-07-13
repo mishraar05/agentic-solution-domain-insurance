@@ -162,8 +162,9 @@ centralizes governed versions and thresholds:
 - `output_catalog` and `output_schema` identify the solution-owned destination;
 - `documentation_model_endpoint` identifies the Databricks-hosted model used by
   the Source Documentation Agent. The bundle default,
-  `databricks-gpt-5-6-luna`, was confirmed `READY` through the configured
-  workspace serving-endpoints API. An actual `ai_query` invocation remains a
+  `databricks-gpt-oss-20b`, was confirmed `READY` through the configured
+  workspace serving-endpoints API and is supported for `ai_query` batch
+  inference with structured output. An actual successful invocation remains a
   separate runtime-evidence requirement;
 - `ARTIFACT_VERSION` and `SCHEMA_VERSION` provide traceability;
 - `LOW_CONFIDENCE_THRESHOLD` and `EVIDENCE_COVERAGE_FLOOR` govern routing.

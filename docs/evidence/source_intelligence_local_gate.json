@@ -31,12 +31,14 @@
     "databricks_cli": "1.7.0",
     "databricks_bundle_validation": "PASS",
     "databricks_bundle_target": "DEV",
-    "documentation_model_endpoint": "databricks-gpt-5-6-luna",
-    "documentation_model_endpoint_state": "READY",
+    "documentation_model_endpoint": "databricks-gpt-oss-20b",
+    "documentation_model_endpoint_state": "READY_BATCH_SUPPORTED",
+    "replaced_model_endpoint": "databricks-gpt-5-6-luna",
+    "replaced_model_failure": "AI_FUNCTION_SESSION_PERMISSION_DENIED: endpoint not supported for batch inference",
     "databricks_job_run": "SKIPPED_BY_USER",
     "producer_spark_checks": "NOT_RUN",
     "fresh_runtime_evidence": "NOT_CAPTURED",
-    "documentation_model_invocation": "NOT_RUN"
+    "documentation_model_invocation": "PENDING_RETRY_WITH_BATCH_SUPPORTED_MODEL"
   },
   "human_validation": {
     "independent_label_review": "PENDING",

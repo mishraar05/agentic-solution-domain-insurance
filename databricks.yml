@@ -32,10 +32,11 @@ variables:
   documentation_model_endpoint:
     description: >-
       Databricks-hosted model endpoint for source documentation proposals.
-      The default was confirmed READY through the workspace serving-endpoints
-      API; endpoint invocation remains subject to workspace permissions and
-      must be evidenced separately.
-    default: databricks-gpt-5-6-luna
+      The default is READY in the configured workspace and is supported by
+      ai_query for batch inference and structured JSON output. Endpoint
+      invocation remains subject to workspace permissions and separate runtime
+      evidence.
+    default: databricks-gpt-oss-20b
 
 targets:
   DEV:
