@@ -110,6 +110,7 @@ def test_dictionary_uses_governed_pack_selection_and_contradiction_routing():
     assert 'naming_contradicted=naming["naming_contradicted"]' in dictionary
     assert '_required_widget("naming_convention")' in config
     assert '_required_widget("rule_effective_date")' in config
+    assert '_required_widget("documentation_max_tokens")' in config
 
 
 def test_every_job_task_supplies_required_shared_config_parameters():

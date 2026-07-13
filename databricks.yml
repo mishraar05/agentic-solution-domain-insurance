@@ -37,6 +37,12 @@ variables:
       invocation remains subject to workspace permissions and separate runtime
       evidence.
     default: databricks-gpt-oss-20b
+  documentation_max_tokens:
+    description: >-
+      Maximum output-token budget for each source documentation proposal.
+      Increase operationally for reasoning models without changing workflow
+      code.
+    default: 2000
 
 targets:
   DEV:

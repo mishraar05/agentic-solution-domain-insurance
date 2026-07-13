@@ -90,6 +90,14 @@ if not re.fullmatch(r"[A-Za-z0-9._-]+", DOCUMENTATION_MODEL_ENDPOINT):
         "documentation_model_endpoint may contain only letters, numbers, dots, "
         "underscores, and hyphens."
     )
+try:
+    DOCUMENTATION_MAX_TOKENS = int(
+        _required_widget("documentation_max_tokens")
+    )
+except ValueError as exc:
+    raise ValueError("documentation_max_tokens must be an integer.") from exc
+if DOCUMENTATION_MAX_TOKENS <= 0:
+    raise ValueError("documentation_max_tokens must be greater than zero.")
 
 # Compatibility aliases for notebooks that only write recommendation artifacts.
 CATALOG = OUTPUT_CATALOG
@@ -252,3 +260,4 @@ print(
 )
 print(f"Recommendation output schema: {OUTPUT_CATALOG}.{OUTPUT_SCHEMA}")
 print(f"Source Documentation model endpoint: {DOCUMENTATION_MODEL_ENDPOINT}")
+print(f"Source Documentation output-token budget: {DOCUMENTATION_MAX_TOKENS}")

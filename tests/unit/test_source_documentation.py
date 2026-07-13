@@ -150,11 +150,17 @@ def test_ai_query_model_error_is_sanitized():
         "UNSUPPORTED_BATCH_ENDPOINT",
     ),
     ("HTTP 429: rate limit exceeded", "RATE_LIMITED"),
+    ('{"error_code":"RESOURCE_EXHAUSTED"}', "RATE_LIMITED"),
     ("JSON schema validation failed", "STRUCTURED_OUTPUT_ERROR"),
+    ('{"error_code":"INVALID_JSON"}', "STRUCTURED_OUTPUT_ERROR"),
     ("maximum context length exceeded", "TOKEN_LIMIT"),
+    ('{"finish_reason":"length"}', "TOKEN_LIMIT"),
     ("deadline exceeded", "TIMEOUT"),
     ("HTTP 403: forbidden", "PERMISSION_DENIED"),
+    ('{"error_code":"PERMISSION_DENIED"}', "PERMISSION_DENIED"),
     ("HTTP 400: invalid request", "INVALID_REQUEST"),
+    ('{"error_code":"BAD_REQUEST"}', "INVALID_REQUEST"),
+    ('{"error_code":"SERVICE_UNAVAILABLE"}', "SERVICE_UNAVAILABLE"),
 ])
 def test_ai_query_model_error_is_safely_classified(
         error_message, reason_code):

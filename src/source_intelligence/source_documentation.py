@@ -57,22 +57,33 @@ def _classify_ai_query_error(error_message):
             "not supported for batch inference", "batch inference unsupported",
         )),
         ("RATE_LIMITED", (
-            "rate limit", "resource exhausted", "too many requests", "429",
+            "rate limit", "rate_limit", "resource exhausted",
+            "resource_exhausted", "too many requests", "429",
         )),
         ("STRUCTURED_OUTPUT_ERROR", (
-            "responseformat", "response format", "json schema",
-            "structured output", "schema validation",
+            "responseformat", "response_format", "response format",
+            "json schema", "json_schema", "structured output",
+            "structured_output", "schema validation", "schema_validation",
+            "invalid json", "invalid_json",
         )),
         ("TOKEN_LIMIT", (
-            "token limit", "max tokens", "maximum context length",
-            "context length exceeded",
+            "token limit", "token_limit", "max tokens", "max_tokens",
+            "maximum context length", "context length exceeded",
+            "finish_reason length", "finish_reason\":\"length",
+            "output truncated", "output_truncated",
         )),
         ("TIMEOUT", ("timeout", "timed out", "deadline exceeded")),
         ("PERMISSION_DENIED", (
-            "permission denied", "unauthorized", "forbidden", "403",
+            "permission denied", "permission_denied", "unauthorized",
+            "forbidden", "403",
         )),
         ("INVALID_REQUEST", (
-            "invalid request", "invalid parameter", "bad request", "400",
+            "invalid request", "invalid_request", "invalid parameter",
+            "invalid_parameter", "bad request", "bad_request", "400",
+        )),
+        ("SERVICE_UNAVAILABLE", (
+            "service unavailable", "service_unavailable", "temporarily "
+            "unavailable", "upstream unavailable", "502", "503",
         )),
     )
     reason_code = "MODEL_INVOCATION_FAILED"

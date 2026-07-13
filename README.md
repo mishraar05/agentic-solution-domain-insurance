@@ -166,6 +166,10 @@ centralizes governed versions and thresholds:
   workspace serving-endpoints API and is supported for `ai_query` batch
   inference with structured output. An actual successful invocation remains a
   separate runtime-evidence requirement;
+- `documentation_max_tokens` controls the per-proposal output budget. The
+  default is `2000`, avoiding the earlier 500-token truncation risk for
+  reasoning models while allowing environments to tune cost and capacity
+  without editing workflow code;
 - `ARTIFACT_VERSION` and `SCHEMA_VERSION` provide traceability;
 - `LOW_CONFIDENCE_THRESHOLD` and `EVIDENCE_COVERAGE_FLOOR` govern routing.
 

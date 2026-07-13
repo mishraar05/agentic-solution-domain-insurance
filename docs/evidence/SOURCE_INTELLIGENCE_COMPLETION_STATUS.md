@@ -5,7 +5,7 @@
 
 ## Completed locally
 
-- 146 pure-Python unit and validation tests pass.
+- 152 pure-Python unit and validation tests pass.
 - Source Documentation Agent tests verify prompt allow-listing, privacy blocking,
   strict structured output, stable provenance, and no auto-approval.
 - The 26-record synthetic evaluation set spans snake_case, camelCase, vendor abbreviations, ambiguous tokens, and opaque names; it reaches 100% proposed-classification coverage.

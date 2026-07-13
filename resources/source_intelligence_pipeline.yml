@@ -19,6 +19,7 @@ resources:
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}
+              documentation_max_tokens: ${var.documentation_max_tokens}
         - task_key: validate_source
           depends_on:
             - task_key: config
@@ -37,6 +38,7 @@ resources:
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}
+              documentation_max_tokens: ${var.documentation_max_tokens}
         - task_key: build_dictionary
           depends_on:
             - task_key: validate_source
@@ -55,6 +57,7 @@ resources:
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}
+              documentation_max_tokens: ${var.documentation_max_tokens}
         - task_key: generate_documentation
           depends_on:
             - task_key: build_dictionary
@@ -73,6 +76,7 @@ resources:
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}
+              documentation_max_tokens: ${var.documentation_max_tokens}
         - task_key: create_queue
           depends_on:
             - task_key: generate_documentation
@@ -91,6 +95,7 @@ resources:
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}
+              documentation_max_tokens: ${var.documentation_max_tokens}
         - task_key: validate
           depends_on:
             - task_key: create_queue
@@ -109,3 +114,4 @@ resources:
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}
+              documentation_max_tokens: ${var.documentation_max_tokens}

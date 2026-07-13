@@ -149,7 +149,8 @@ else:
             "ai_query("
             f"'{endpoint}', prompt, "
             "modelParameters => named_struct("
-            "'max_tokens', 500, 'temperature', 0.0), "
+            f"'max_tokens', {DOCUMENTATION_MAX_TOKENS}, "
+            "'temperature', 0.0), "
             f"responseFormat => '{response_format}', "
             "failOnError => false)"
         )
