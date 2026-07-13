@@ -1,0 +1,90 @@
+# Naming rule pack — token expansion and matching rules for source column names.
+# Replaces hardcoded EXACT_MATCHES: rules are versioned data selected by source
+# characteristics. Every inference records pack id, version, and rule id.
+schema_version: "1.0.0"
+pack_id: naming_rules
+pack_version: "1.1.0"
+status: PROPOSED
+selection:
+  source_systems: ["*"]          # applies to any source unless a more specific pack wins
+  naming_conventions: [snake_case, camelCase, AS400_ABBREVIATED]
+  effective_date: "2026-07-13"
+
+# Token expansions: applied after segmentation. rule_id per token for provenance.
+# Covers spaced/underscored names AND continuous abbreviated names (AS400 style).
+token_expansions:
+  - {rule_id: NT001, token: POL, expansion: policy}
+  - {rule_id: NT002, token: PLCY, expansion: policy}
+  - {rule_id: NT003, token: CLM, expansion: claim}
+  - {rule_id: NT004, token: NBR, expansion: number}
+  - {rule_id: NT005, token: "NO", expansion: number}
+  - {rule_id: NT006, token: NUM, expansion: number}
+  - {rule_id: NT007, token: STS, expansion: status}
+  - {rule_id: NT008, token: STAT, expansion: status}
+  - {rule_id: NT009, token: EFF, expansion: effective}
+  - {rule_id: NT010, token: EXP, expansion: expiration}
+  - {rule_id: NT011, token: DT, expansion: date}
+  - {rule_id: NT012, token: TS, expansion: timestamp}
+  - {rule_id: NT013, token: AMT, expansion: amount}
+  - {rule_id: NT014, token: CD, expansion: code}
+  - {rule_id: NT015, token: TYP, expansion: type}
+  - {rule_id: NT016, token: ID, expansion: identifier}
+  - {rule_id: NT017, token: PRTY, expansion: party}
+  - {rule_id: NT018, token: PRD, expansion: product}
+  - {rule_id: NT019, token: PROD, expansion: product}
+  - {rule_id: NT020, token: COV, expansion: coverage}
+  - {rule_id: NT021, token: PREM, expansion: premium}
+  - {rule_id: NT022, token: WP, expansion: written premium}
+  - {rule_id: NT023, token: EP, expansion: earned premium}
+  - {rule_id: NT024, token: LOB, expansion: line of business}
+  - {rule_id: NT025, token: INS, expansion: insured}
+  - {rule_id: NT026, token: INSD, expansion: insured}
+  - {rule_id: NT027, token: BEN, expansion: beneficiary}
+  - {rule_id: NT028, token: ADDR, expansion: address}
+  - {rule_id: NT029, token: TEL, expansion: telephone}
+  - {rule_id: NT030, token: DOB, expansion: date of birth}
+  - {rule_id: NT031, token: SSN, expansion: social security number}
+  - {rule_id: NT032, token: ACCT, expansion: account}
+  - {rule_id: NT033, token: INV, expansion: invoice}
+  - {rule_id: NT034, token: PMT, expansion: payment}
+  - {rule_id: NT035, token: PAY, expansion: payment}
+  - {rule_id: NT036, token: BAL, expansion: balance}
+  - {rule_id: NT037, token: DED, expansion: deductible}
+  - {rule_id: NT038, token: LMT, expansion: limit}
+  - {rule_id: NT039, token: LIM, expansion: limit}
+  - {rule_id: NT040, token: RSV, expansion: reserve}
+  - {rule_id: NT041, token: RES, expansion: reserve}
+  - {rule_id: NT042, token: LOSS, expansion: loss}
+  - {rule_id: NT043, token: OCC, expansion: occurrence}
+  - {rule_id: NT044, token: CAT, expansion: catastrophe}
+  - {rule_id: NT045, token: SUBRO, expansion: subrogation}
+  - {rule_id: NT046, token: SALV, expansion: salvage}
+  - {rule_id: NT047, token: VIN, expansion: vehicle identification number}
+  - {rule_id: NT048, token: VEH, expansion: vehicle}
+  - {rule_id: NT049, token: DRV, expansion: driver}
+  - {rule_id: NT050, token: TXN, expansion: transaction}
+  - {rule_id: NT051, token: TRANS, expansion: transaction}
+  - {rule_id: NT052, token: CAN, expansion: cancellation}
+  - {rule_id: NT053, token: CNCL, expansion: cancellation}
+  - {rule_id: NT054, token: REN, expansion: renewal}
+  - {rule_id: NT055, token: ENDT, expansion: endorsement}
+  - {rule_id: NT056, token: AGT, expansion: agent}
+  - {rule_id: NT057, token: BRK, expansion: broker}
+  - {rule_id: NT058, token: GRP, expansion: group}
+  - {rule_id: NT059, token: UPD, expansion: updated}
+  - {rule_id: NT060, token: SRC, expansion: source}
+  # EXP is intentionally multi-hypothesis. Context must disambiguate it;
+  # deterministic classification must never select one expansion by pack order.
+  - {rule_id: NT061, token: EXP, expansion: expense}
+  - {rule_id: NT062, token: EXP, expansion: exposure}
+
+# Matching config: expanded names are matched against ontology concept names,
+# synonyms, and physical_name_variants. Strengths by match quality.
+matching:
+  rule_id: NM001
+  strengths:
+    variant_exact: 0.95       # raw name equals an ontology physical_name_variant
+    expanded_exact: 0.90      # expanded name equals concept name or synonym
+    expanded_partial: 0.70    # all expanded tokens appear in one concept's name/synonyms
+    token_overlap: 0.55       # majority token overlap; needs review
+  fallback_strength: 0.40     # nothing matched; UNRESOLVED semantics

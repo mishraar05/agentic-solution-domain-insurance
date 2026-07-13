@@ -116,16 +116,14 @@ Detailed entry-point behavior, failure modes, and execution guidance are in
 | `cots_patterns.py` | Represents authorized deterministic COTS-pattern matching; unavailable evidence stays explicit |
 | `dictionary_export.py` | Builds the governed Excel data-dictionary report consumed by the optional publication workflow |
 | `evaluation.py` | Compares deterministic predictions and review routes with the labelled synthetic set |
-| `naming.py` | Proposes business names, ontology concepts, and domains from transparent naming rules |
+| `knowledge_classifier.py` | Resolves versioned rule packs by source context, evaluates every governed token hypothesis, fails closed on ambiguity, and emits per-rule and pack-selection provenance |
 | `policy.py` | Rejects prohibited evidence before profiling and creates sanitized violation events |
 | `persistence.py` | Validates safe column-order and type alignment for append-only compatibility writes without schema evolution |
-| `privacy.py` | Classifies privacy from transparent column-name rules without exposing source values |
 | `quality.py` | Supplies deterministic fixture-quality and idempotency helpers |
 | `relationships.py` | Infers key roles and known candidate relationships from naming and compatibility evidence |
 | `review_lifecycle.py` | Creates role-authorized human decisions and suppresses unchanged rejected recommendations |
 | `routing.py` | Routes privacy, key, relationship, contradiction, unmapped, incomplete, and low-confidence items |
 | `source_documentation.py` | Builds allow-listed prompts, validates strict LLM output, and creates non-authoritative descriptions and glossary proposals |
-| `types.py` | Scores compatibility between physical types and proposed semantics |
 
 Business rules belong in these modules. Workflow notebooks should contain only
 Spark-facing extraction, serialization, sequencing, and runtime assertions.

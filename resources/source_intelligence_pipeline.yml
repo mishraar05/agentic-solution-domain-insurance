@@ -14,6 +14,8 @@ resources:
               source_schema: ${var.source_schema}
               source_tables: ${var.source_tables}
               source_system: ${var.source_system}
+              naming_convention: ${var.naming_convention}
+              rule_effective_date: ${var.rule_effective_date}
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}
@@ -30,6 +32,8 @@ resources:
               source_schema: ${var.source_schema}
               source_tables: ${var.source_tables}
               source_system: ${var.source_system}
+              naming_convention: ${var.naming_convention}
+              rule_effective_date: ${var.rule_effective_date}
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}
@@ -46,6 +50,8 @@ resources:
               source_schema: ${var.source_schema}
               source_tables: ${var.source_tables}
               source_system: ${var.source_system}
+              naming_convention: ${var.naming_convention}
+              rule_effective_date: ${var.rule_effective_date}
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}
@@ -62,6 +68,8 @@ resources:
               source_schema: ${var.source_schema}
               source_tables: ${var.source_tables}
               source_system: ${var.source_system}
+              naming_convention: ${var.naming_convention}
+              rule_effective_date: ${var.rule_effective_date}
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}
@@ -78,6 +86,8 @@ resources:
               source_schema: ${var.source_schema}
               source_tables: ${var.source_tables}
               source_system: ${var.source_system}
+              naming_convention: ${var.naming_convention}
+              rule_effective_date: ${var.rule_effective_date}
               output_catalog: ${var.output_catalog}
               output_schema: ${var.output_schema}
               documentation_model_endpoint: ${var.documentation_model_endpoint}

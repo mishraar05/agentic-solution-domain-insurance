@@ -7,8 +7,10 @@ does not claim the labels are independently approved. Human relabelling and
 confidence calibration remain separate governance requirements.
 """
 
-from source_intelligence.naming import classify_naming
-from source_intelligence.privacy import classify_privacy
+from source_intelligence.knowledge_classifier import (
+    classify_naming_kb,
+    classify_privacy_kb,
+)
 from source_intelligence.relationships import (
     discover_relationship_candidates,
     infer_key_roles,
@@ -59,10 +61,11 @@ def evaluate_labelled_records(records):
     for label in records:
         table_name = label["source_table"]
         column_name = label["source_column"]
-        business_name, concept, domain, _, _ = classify_naming(
-            table_name, column_name
-        )
-        privacy_class, _ = classify_privacy(column_name)
+        naming = classify_naming_kb(table_name, column_name)
+        business_name = naming["proposed_business_name"]
+        concept = naming["ontology_concept_id"]
+        domain = naming["domain"]
+        privacy_class, _, _ = classify_privacy_kb(column_name)
         key_role = roles[table_name][column_name]
         relationship = relationships.get((table_name, column_name))
         route = route_review(
@@ -95,6 +98,8 @@ def evaluate_labelled_records(records):
         results.append({
             "record_id": label["record_id"],
             "classified": bool(business_name and domain),
+            "ontology_resolved": concept is not None,
+            "naming_contradicted": naming["naming_contradicted"],
             "matches": {
                 field: predicted[field] == expected[field]
                 for field in expected
@@ -107,11 +112,19 @@ def evaluate_labelled_records(records):
         for field in results[0]["matches"]
     } if results else {}
     classified = sum(result["classified"] for result in results)
+    ontology_resolved = sum(result["ontology_resolved"] for result in results)
     return {
         "labelled_records": total,
         "semantic_classification_coverage": (
             classified / total if total else 0.0
         ),
+        "ontology_resolution_coverage": (
+            ontology_resolved / total if total else 0.0
+        ),
+        "naming_contradiction_record_ids": [
+            result["record_id"]
+            for result in results if result["naming_contradicted"]
+        ],
         "field_match_counts": field_matches,
         "field_match_rates": {
             field: matches / total if total else 0.0

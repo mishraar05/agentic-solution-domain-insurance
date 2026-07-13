@@ -1,15 +1,17 @@
 # Source Intelligence Completion Status
 
-**Date:** 2026-07-12  
+**Date:** 2026-07-13
 **Status:** BLOCKED_EXTERNAL — local implementation complete; release gate not passed
 
 ## Completed locally
 
-- 99 pure-Python unit and validation tests pass.
+- 129 pure-Python unit and validation tests pass.
 - Source Documentation Agent tests verify prompt allow-listing, privacy blocking,
   strict structured output, stable provenance, and no auto-approval.
-- The 19-record synthetic evaluation set reaches 100% classification coverage.
-- Expected semantics, privacy, keys, known relationships, and review routes match 19/19 labels.
+- The 26-record synthetic evaluation set spans snake_case, camelCase, vendor abbreviations, ambiguous tokens, and opaque names; it reaches 100% proposed-classification coverage.
+- Expected semantics, privacy, keys, known relationships, contradiction routing, and review routes match 26/26 labels; ontology resolution is 84.62% because four governed cases intentionally remain unresolved.
+- Naming, privacy, and type inference uses versioned packs with stable per-rule evidence provenance; the run record captures active pack versions.
+- Pack selection is reproducible by source system, naming convention, priority, and effective date; ambiguous selection and token expansions fail closed.
 - Contradicted confidence components remain explicit and excluded from scoring.
 - Review decisions link to one queue item, require the routed reviewer role and rationale, and suppress unchanged rejected recommendations.
 - A human-operated review workbench records contract-valid, idempotent decisions without selecting or approving decisions automatically.

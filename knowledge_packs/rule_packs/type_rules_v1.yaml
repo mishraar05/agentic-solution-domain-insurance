@@ -1,0 +1,29 @@
+# Type compatibility rule pack — ontology concept_type x physical type family.
+schema_version: "1.0.0"
+pack_id: type_rules
+pack_version: "1.0.0"
+status: PROPOSED
+selection: {source_systems: ["*"], effective_date: "2026-07-13"}
+
+# Physical type families (matched by substring on the Spark/JDBC type string).
+type_families:
+  STRING: [StringType, VarcharType, CharType, VARCHAR, CHAR, TEXT]
+  NUMERIC: [DecimalType, DoubleType, FloatType, IntegerType, LongType, ShortType, NUMERIC, DECIMAL, INT]
+  DATE: [DateType, DATE]
+  TIMESTAMP: [TimestampType, TIMESTAMP]
+  BOOLEAN: [BooleanType, BOOLEAN, BIT]
+
+# Expected physical family per ontology concept_type. Strengths by agreement.
+compatibility:
+  rule_id: TR001
+  expected:
+    MEASURE: [NUMERIC]
+    DATE: [DATE, TIMESTAMP]
+    STATUS: [STRING]
+    CODE: [STRING, NUMERIC]
+    ATTRIBUTE: [STRING, NUMERIC, DATE, TIMESTAMP, BOOLEAN]
+    ENTITY: [STRING, NUMERIC]
+  strengths:
+    match: 0.85
+    tolerated: 0.55     # family not listed but convertible (e.g., numeric stored as string)
+    mismatch: 0.30      # e.g., a MEASURE arriving as BOOLEAN: contradiction candidate

@@ -4,9 +4,13 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
-from source_intelligence.naming import classify_naming, detect_personal_data
-from source_intelligence.types import check_type_compatibility
-from source_intelligence.privacy import classify_privacy
+from source_intelligence.knowledge_classifier import (
+    check_type_compatibility_kb,
+    classify_naming_kb,
+    classify_privacy_kb,
+    load_pack,
+    provenance_references,
+)
 from source_intelligence.relationships import (
     compute_relationship_strength,
     discover_relationship_candidates,
@@ -20,51 +24,60 @@ from source_intelligence.routing import route_review
 
 class TestNamingClassification:
     def test_exact_match_policy_id(self):
-        name, concept, domain, strength, reason = classify_naming("bronze_policy", "policy_id")
-        assert name == "Policy Identifier"
-        assert concept == "Policy.Identifier"
-        assert domain == "Policy"
-        assert strength == 0.95
+        result = classify_naming_kb("bronze_policy", "policy_id")
+        assert result["proposed_business_name"] == "Policy Identifier"
+        assert result["ontology_concept_id"] == "Policy.Identifier"
+        assert result["domain"] == "Policy"
+        assert result["naming_strength"] == 0.95
 
     def test_exact_match_claim_id(self):
-        name, concept, domain, strength, reason = classify_naming("bronze_claim", "claim_id")
-        assert name == "Claim Identifier"
-        assert concept == "Claim.Identifier"
-        assert domain == "Claims"
-        assert strength == 0.95
+        result = classify_naming_kb("bronze_claim", "claim_id")
+        assert result["proposed_business_name"] == "Claim Identifier"
+        assert result["ontology_concept_id"] == "Claim.Identifier"
+        assert result["domain"] == "Claims"
+        assert result["naming_strength"] == 0.95
 
     def test_unknown_column(self):
-        name, concept, domain, strength, reason = classify_naming("bronze_policyholder", "display_name")
-        assert concept is None
-        assert domain == "Shared"
-        assert strength == 0.55
+        result = classify_naming_kb("bronze_policyholder", "display_name")
+        assert result["ontology_concept_id"] is None
+        assert result["domain"] == "Shared"
+        assert result["naming_strength"] == 0.40
 
     def test_personal_data_detection(self):
-        assert detect_personal_data("display_name") is True
-        assert detect_personal_data("email_address") is True
-        assert detect_personal_data("policy_id") is False
+        assert classify_privacy_kb("display_name")[0] == "PERSONAL_DATA"
+        assert classify_privacy_kb("email_address")[0] == "PERSONAL_DATA"
+        assert classify_privacy_kb("policy_id")[0] == "INTERNAL"
+
+    def test_rule_provenance_has_stable_evidence_references(self):
+        result = classify_naming_kb("POLMAST", "POLNBR")
+        references = provenance_references(result["provenance"])
+        assert "rule:naming_rules:1.1.0:NM001" in references
+        assert any(reference.startswith("pack_selection:") for reference in references)
+        assert references == sorted(set(references))
 
 
 class TestTypeCompatibility:
     def test_date_type_for_date_field(self):
-        assert check_type_compatibility("DateType()", "effective_date") == 0.8
+        assert check_type_compatibility_kb("DateType()", "DATE")[0] == 0.85
 
     def test_string_type_for_id_field(self):
-        assert check_type_compatibility("StringType()", "policy_id") == 0.8
+        assert check_type_compatibility_kb("StringType()", "ENTITY")[0] == 0.85
 
     def test_unknown_type(self):
-        assert check_type_compatibility("UnknownType()", "some_column") == 0.4
+        assert check_type_compatibility_kb("UnknownType()", None)[0] == 0.55
 
 
 class TestPrivacyClassification:
     def test_personal_data(self):
-        privacy_class, rationale = classify_privacy("display_name")
+        privacy_class, rationale, provenance = classify_privacy_kb("display_name")
         assert privacy_class == "PERSONAL_DATA"
-        assert "personal-data" in rationale
+        assert rationale
+        assert provenance[0]["rule_id"] == "PR003"
 
     def test_internal_data(self):
-        privacy_class, rationale = classify_privacy("policy_id")
+        privacy_class, rationale, provenance = classify_privacy_kb("policy_id")
         assert privacy_class == "INTERNAL"
+        assert provenance[0]["rule_id"] == "PR999"
 
 
 class TestRelationshipInference:
@@ -230,7 +243,7 @@ class TestLabelledSet:
             data = json.load(f)
         assert data["schema_version"] == "1.0.0"
         assert data["set_name"] == "source_attributes_v1"
-        assert len(data["records"]) == 19
+        assert len(data["records"]) == 26
 
     def test_labelled_set_has_strata(self):
         import json
@@ -248,12 +261,12 @@ class TestProhibitedEvidence:
     FORBIDDEN_SENTINEL = "FORBIDDEN_TEST_SENTINEL"
 
     def test_sentinel_not_in_naming(self):
-        from source_intelligence.naming import EXACT_MATCHES, PII_TOKENS
-        for key, val in EXACT_MATCHES.items():
-            assert self.FORBIDDEN_SENTINEL not in key
-            assert self.FORBIDDEN_SENTINEL not in str(val)
-        for token in PII_TOKENS:
-            assert self.FORBIDDEN_SENTINEL not in token
+        packs = [
+            load_pack("rule_packs/naming_rules_v1.yaml"),
+            load_pack("rule_packs/privacy_rules_v1.yaml"),
+            load_pack("rule_packs/type_rules_v1.yaml"),
+        ]
+        assert all(self.FORBIDDEN_SENTINEL not in str(pack) for pack in packs)
 
     def test_sentinel_not_in_confidence(self):
         from source_intelligence.confidence import WEIGHTS, FORMULA_VERSION

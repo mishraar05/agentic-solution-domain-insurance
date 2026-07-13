@@ -16,7 +16,7 @@ and must remain independently testable.
 |---|---|---|---|
 | 00 | `00_config.py` | Declares the single environment, validates or creates the shared run identifier, locates the reusable Python package, provides quoted table-name helpers, and verifies that the output schema already exists | None |
 | 01 | `01_validate_source_scope.py` | Lists configured source tables through read-only catalog access and verifies that every table exists with a non-empty schema | None |
-| 02 | `02_build_source_dictionary.py` | Reads schemas, executes deterministic semantics/privacy/confidence rules, collects permitted aggregate profiles, validates logical records, and appends idempotent recommendation outputs | Dictionary, object and attribute observations, profile evidence, relationship candidates |
+| 02 | `02_build_source_dictionary.py` | Reads schemas, applies versioned naming/privacy/type rule packs with per-rule evidence provenance, computes confidence, collects permitted aggregate profiles, validates logical records, and appends idempotent recommendation outputs | Dictionary, object and attribute observations, profile evidence, relationship candidates |
 | 03 | `03_generate_source_documentation.py` | Sends only governance-eligible structural context and minimized aggregates to the configured Databricks model using strict structured output; prohibited context becomes unresolved without a model call | `source_documentation_recommendation` |
 | 04 | `04_create_review_queue.py` | Applies mandatory-review and confidence routing to current-run attributes and routes every documentation recommendation to a Domain Steward | Canonical `source_intelligence_review_queue` plus aligned consumer-facing `review_queue` projection |
 | 05 | `05_validate_source_intelligence.py` | Checks run consistency, completeness, evidence, documentation coverage, relationships, review routing, idempotency, and no auto-approval; then validates and appends the run record | `source_intelligence_run` |
@@ -99,10 +99,12 @@ parameters; do not edit the engine to introduce a source inventory:
 1. Confirm `source_catalog`, `source_schema`, and `source_tables` identify
    existing read-only inputs.
 2. Set a meaningful `source_system` identifier.
-3. Confirm `output_catalog` and `output_schema` identify the solution-owned
+3. Set `naming_convention` to a governed convention or `AUTO`, and pin
+   `rule_effective_date` so pack selection is reproducible.
+4. Confirm `output_catalog` and `output_schema` identify the solution-owned
    recommendation destination.
-4. Change versions in `00_config.py` only when artifact or contract meaning changes.
-5. Do not tune confidence weights or thresholds without governed labelled
+5. Change versions in `00_config.py` only when artifact or contract meaning changes.
+6. Do not tune confidence weights or thresholds without governed labelled
    reviewer evidence and an explicit human decision.
 
 ## Databricks Asset Bundle mapping

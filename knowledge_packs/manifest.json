@@ -29,6 +29,33 @@
       "pack_version": "1.0.0",
       "status": "PROPOSED",
       "owner_role": "DOMAIN_STEWARD"
+    },
+    {
+      "pack_id": "naming_rules",
+      "capability": "naming",
+      "priority": 0,
+      "path": "rule_packs/naming_rules_v1.yaml",
+      "pack_version": "1.1.0",
+      "status": "PROPOSED",
+      "owner_role": "DOMAIN_STEWARD"
+    },
+    {
+      "pack_id": "privacy_rules",
+      "capability": "privacy",
+      "priority": 0,
+      "path": "rule_packs/privacy_rules_v1.yaml",
+      "pack_version": "1.0.0",
+      "status": "PROPOSED",
+      "owner_role": "DOMAIN_STEWARD"
+    },
+    {
+      "pack_id": "type_rules",
+      "capability": "type",
+      "priority": 0,
+      "path": "rule_packs/type_rules_v1.yaml",
+      "pack_version": "1.0.0",
+      "status": "PROPOSED",
+      "owner_role": "DOMAIN_STEWARD"
     }
   ]
 }

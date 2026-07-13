@@ -17,6 +17,12 @@ variables:
   source_system:
     description: Governed source-system identifier
     default: configured_source_system
+  naming_convention:
+    description: Governed source naming convention or AUTO for per-column detection
+    default: AUTO
+  rule_effective_date:
+    description: Latest rule-pack effective date permitted for reproducible selection
+    default: "2026-07-13"
   output_catalog:
     description: Catalog containing solution-owned recommendation outputs
     default: workspace

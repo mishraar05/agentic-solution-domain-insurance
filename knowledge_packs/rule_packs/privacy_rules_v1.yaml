@@ -1,0 +1,30 @@
+# Privacy rule pack — pattern rules with per-rule provenance and exceptions.
+# Replaces the 7 hardcoded substring tokens.
+schema_version: "1.0.0"
+pack_id: privacy_rules
+pack_version: "1.0.0"
+status: PROPOSED
+selection:
+  source_systems: ["*"]
+  effective_date: "2026-07-13"
+
+# Rules evaluated in order; first match wins. match_on: expanded (post token
+# expansion) or raw. classes align with the ontology privacy_sensitivity enum.
+rules:
+  - {rule_id: PR001, match_on: expanded, pattern: "social security number|national identifier|tax identifier", privacy_class: PERSONAL_DATA, rationale: "Government identifier: direct personal data"}
+  - {rule_id: PR002, match_on: expanded, pattern: "date of birth|birth date", privacy_class: PERSONAL_DATA, rationale: "Birth date: direct personal data"}
+  - {rule_id: PR003, match_on: expanded, pattern: "(first|last|middle|display|full) name", privacy_class: PERSONAL_DATA, rationale: "Person name"}
+  - {rule_id: PR004, match_on: expanded, pattern: "email|telephone|phone|mobile", privacy_class: PERSONAL_DATA, rationale: "Contact detail"}
+  - {rule_id: PR005, match_on: expanded, pattern: "address|street|postal", privacy_class: PERSONAL_DATA, rationale: "Address of a person may identify them; classify pending steward review of whether it describes a risk location"}
+  - {rule_id: PR006, match_on: expanded, pattern: "driver|license number", privacy_class: PERSONAL_DATA, rationale: "Licence/driver identifiers"}
+  - {rule_id: PR007, match_on: expanded, pattern: "vehicle identification number", privacy_class: PERSONAL_DATA, rationale: "VIN is a quasi-identifier linkable to an owner"}
+  - {rule_id: PR008, match_on: expanded, pattern: "bank|iban|routing|card number", privacy_class: SENSITIVE, rationale: "Financial account data"}
+  - {rule_id: PR009, match_on: expanded, pattern: "medical|diagnosis|injury description|health", privacy_class: SENSITIVE, rationale: "Health-related content"}
+  - {rule_id: PR010, match_on: raw, pattern: "narrative|note|comment|description_text", privacy_class: SENSITIVE, rationale: "Free text may embed personal or protected content; treat as sensitive until profiled"}
+exceptions:
+  # Business/location terms that would false-positive on the rules above.
+  - {rule_id: PX001, match_on: expanded, pattern: "(risk|property|premises|garaging) (address|location)", privacy_class: INTERNAL, rationale: "Location of the insured object, not a person's residence; steward confirms"}
+default:
+  rule_id: PR999
+  privacy_class: INTERNAL
+  rationale: "No personal-data pattern matched by rule pack"

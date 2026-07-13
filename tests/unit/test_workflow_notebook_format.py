@@ -94,3 +94,16 @@ def test_routing_and_validation_use_canonical_attribute_table():
     assert 'fq_output_table("source_documentation_recommendation")' in validation
     assert 'attributes.filter(F.col("evidence_coverage")' in validation
     assert 'attributes.filter(F.col("formula_version")' in validation
+
+
+def test_dictionary_uses_governed_pack_selection_and_contradiction_routing():
+    dictionary = (
+        WORKFLOW_DIR / "02_build_source_dictionary.py"
+    ).read_text(encoding="utf-8")
+    config = (WORKFLOW_DIR / "00_config.py").read_text(encoding="utf-8")
+    assert 'source_system=SOURCE_SYSTEM' in dictionary
+    assert 'naming_convention=NAMING_CONVENTION' in dictionary
+    assert 'effective_date=RULE_EFFECTIVE_DATE' in dictionary
+    assert 'naming_contradicted=naming["naming_contradicted"]' in dictionary
+    assert '_required_widget("naming_convention")' in config
+    assert '_required_widget("rule_effective_date")' in config

@@ -8,8 +8,11 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from source_intelligence.naming import classify_naming
-from source_intelligence.privacy import classify_privacy
+from source_intelligence.knowledge_classifier import (
+    check_type_compatibility_kb,
+    classify_naming_kb,
+    classify_privacy_kb,
+)
 from source_intelligence.quality import (
     column_values,
     get_column,
@@ -20,7 +23,6 @@ from source_intelligence.quality import (
     relationship_columns,
     review_for_issues,
 )
-from source_intelligence.types import check_type_compatibility
 from tests.fixture_loader import FIXTURE_PATH, SCHEMA_PATH, fixtures_by_id, load_fixtures, load_json
 from tests.schema_validator import validate_instance
 
@@ -88,23 +90,26 @@ def test_name_type_contradiction_reduces_strength(cases):
     fixture = cases["F006"]
     table = get_table(fixture["input"]["tables"], fixture["target"]["table"])
     column = get_column(table, fixture["target"]["column"])
-    strength = check_type_compatibility(column["physical_type"], column["name"])
+    naming = classify_naming_kb(table["name"], column["name"])
+    strength, _ = check_type_compatibility_kb(
+        column["physical_type"], naming["ontology_concept_type"]
+    )
     assert strength <= fixture["expected"]["type_strength_max"]
 
 
 @pytest.mark.parametrize("fixture_id", ["F007", "F008"])
 def test_unknown_and_ambiguous_patterns_remain_unresolved(cases, fixture_id):
     fixture = cases[fixture_id]
-    _, concept, _, strength, _ = classify_naming(
+    naming = classify_naming_kb(
         fixture["target"]["table"], fixture["target"]["column"]
     )
-    assert concept is None
-    assert strength < 0.75
+    assert naming["ontology_concept_id"] is None
+    assert naming["naming_strength"] < 0.75
 
 
 def test_personal_data_fixture_routes_to_privacy(cases):
     fixture = cases["F009"]
-    privacy_class, _ = classify_privacy(fixture["target"]["column"])
+    privacy_class, _, _ = classify_privacy_kb(fixture["target"]["column"])
     reviewer, reason = review_for_issues(["PERSONAL_DATA_INDICATOR"], privacy_class)
     assert privacy_class == fixture["expected"]["privacy_class"]
     assert reviewer == fixture["expected"]["reviewer_role"]

@@ -1,4 +1,4 @@
-"""Validation for Phase 3 knowledge packs: integrity and cross-references."""
+"""Validate governed knowledge-pack integrity and cross-references."""
 import json
 import os
 
@@ -37,12 +37,13 @@ class TestOntologyPack:
             assert concept["domain"] in pack["domains"]
 
     def test_classifier_concepts_present(self):
-        """Concept IDs used by the Source Intelligence classifier must exist."""
+        """Pack-driven classifier results must resolve to ontology concepts."""
         import sys
         sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
-        from source_intelligence.naming import EXACT_MATCHES
+        from source_intelligence.knowledge_classifier import classify_naming_kb
         ids = _ontology_ids()
-        for _, concept_id, _, _ in EXACT_MATCHES.values():
+        for table, column in (("POLMAST", "POLNBR"), ("CLMMAST", "CLMSTS")):
+            concept_id = classify_naming_kb(table, column)["ontology_concept_id"]
             assert concept_id in ids, f"classifier concept {concept_id} missing from ontology"
 
 
@@ -93,6 +94,17 @@ class TestManifest:
             assert pack["pack_id"] == entry["pack_id"]
             assert pack["pack_version"] == entry["pack_version"]
             assert pack["status"] == entry["status"]
+
+    def test_rule_packs_declare_resolvable_capabilities_and_selection(self):
+        manifest = _load("manifest.json")
+        rules = [entry for entry in manifest["packs"] if "capability" in entry]
+        assert {entry["capability"] for entry in rules} == {
+            "naming", "privacy", "type"
+        }
+        for entry in rules:
+            pack = _load(entry["path"])
+            assert pack["selection"]["source_systems"]
+            assert pack["selection"]["effective_date"]
 
 
 class TestLobTaxonomy:

@@ -43,6 +43,7 @@ from pyspark.sql import functions as F
 from pyspark.sql.types import ArrayType, StringType, StructField, StructType, TimestampType
 
 from source_intelligence.contract_validation import validate_records
+from source_intelligence.knowledge_classifier import active_pack_versions
 from source_intelligence.source_documentation import PROMPT_VERSION
 
 # COMMAND ----------
@@ -205,12 +206,20 @@ assert queued_keys >= key_candidates, (
 # COMMAND ----------
 
 completed_at = datetime.now(timezone.utc)
+knowledge_pack_versions = active_pack_versions({
+    "pnc_ontology",
+    "naming_rules",
+    "privacy_rules",
+    "type_rules",
+})
 idempotency_key = hashlib.sha256(json.dumps({
     "source_system": SOURCE_SYSTEM,
     "source_scope": list(SOURCE_TABLES),
     "artifact_version": ARTIFACT_VERSION,
     "schema_version": SCHEMA_VERSION,
-    "knowledge_pack_versions": {},
+    "knowledge_pack_versions": knowledge_pack_versions,
+    "naming_convention": NAMING_CONVENTION or "AUTO",
+    "rule_effective_date": RULE_EFFECTIVE_DATE,
     "documentation_model_endpoint": DOCUMENTATION_MODEL_ENDPOINT,
     "documentation_prompt_version": PROMPT_VERSION,
 }, sort_keys=True).encode()).hexdigest()
@@ -222,7 +231,7 @@ run_record = {
     "engagement_id": ENGAGEMENT_ID,
     "source_system": SOURCE_SYSTEM,
     "source_scope": list(SOURCE_TABLES),
-    "knowledge_pack_versions": {},
+    "knowledge_pack_versions": knowledge_pack_versions,
     "task_contract_version": SCHEMA_VERSION,
     "idempotency_key": idempotency_key,
     "run_status": "SUCCEEDED",

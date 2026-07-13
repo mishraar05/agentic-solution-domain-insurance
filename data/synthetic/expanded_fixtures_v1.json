@@ -37,7 +37,7 @@
       "fixture_id": "F006", "category": "conflicting_signals", "description": "Date-like name conflicts with a string physical type.",
       "target": {"table": "policy_source", "column": "effective_date"},
       "input": {"tables": [{"name": "policy_source", "columns": [{"name": "effective_date", "physical_type": "StringType()", "nullable": false}], "rows": [{"effective_date": "not-a-date"}]}]},
-      "expected": {"processing_action": "ANALYZE", "issues": ["NAME_TYPE_CONTRADICTION"], "approval_state": "PROPOSED", "reviewer_role": "DOMAIN_STEWARD", "review_reason_contains": "contradiction", "type_strength_max": 0.5}
+        "expected": {"processing_action": "ANALYZE", "issues": ["NAME_TYPE_CONTRADICTION"], "approval_state": "PROPOSED", "reviewer_role": "DOMAIN_STEWARD", "review_reason_contains": "contradiction", "type_strength_max": 0.55}
     },
     {
       "fixture_id": "F007", "category": "unknown_column", "description": "Attribute has no approved semantic pattern.",

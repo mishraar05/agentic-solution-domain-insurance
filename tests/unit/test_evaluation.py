@@ -22,8 +22,9 @@ def test_labelled_set_meets_local_classification_and_routing_expectations():
         labels = json.load(handle)["records"]
     result = evaluate_labelled_records(labels)
 
-    assert result["labelled_records"] == 19
+    assert result["labelled_records"] == 26
     assert result["semantic_classification_coverage"] >= 0.90
     assert result["field_match_rates"]["relationship_target"] == 1.0
     assert result["field_match_rates"]["privacy_class"] == 1.0
     assert result["field_match_rates"]["review_route"] == 1.0
+    assert result["naming_contradiction_record_ids"] == ["L025"]

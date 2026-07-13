@@ -16,9 +16,9 @@ class, key role, relationship target, review route, and lifecycle state.
 
 Record modifications directly in `source_attributes_v1.json`, then document the
 reason and affected record IDs below. Do not mark this review complete if the
-reviewer derived labels from `src/source_intelligence/naming.py`, routing code,
-or evaluation output; that would preserve the circularity this gate is intended
-to remove.
+reviewer derived labels from `knowledge_classifier.py`, its rule packs, routing
+code, or evaluation output; that would preserve the circularity this gate is
+intended to remove.
 
 ## Review outcome
 

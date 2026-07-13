@@ -52,8 +52,12 @@ from pyspark.sql.types import (
 from source_intelligence.confidence import compute_confidence
 from source_intelligence.contract_validation import validate_records
 from source_intelligence.cots_patterns import match_cots_pattern
-from source_intelligence.naming import classify_naming
-from source_intelligence.privacy import classify_privacy
+from source_intelligence.knowledge_classifier import (
+    check_type_compatibility_kb,
+    classify_naming_kb,
+    classify_privacy_kb,
+    provenance_references,
+)
 from source_intelligence.persistence import (
     DICTIONARY_PROJECTION_CONFIDENCE_FIELDS,
     plan_existing_schema_alignment,
@@ -64,7 +68,6 @@ from source_intelligence.relationships import (
     infer_key_roles,
     relationship_evidence_by_attribute,
 )
-from source_intelligence.types import check_type_compatibility
 
 # COMMAND ----------
 
@@ -105,11 +108,24 @@ contract_records = []
 for attribute in source_attributes:
     table_name = attribute["source_table"]
     column_name = attribute["source_column"]
-    proposed_name, ontology_concept, domain, naming_strength, naming_reason = (
-        classify_naming(table_name, column_name)
+    naming = classify_naming_kb(
+        table_name,
+        column_name,
+        source_system=SOURCE_SYSTEM,
+        naming_convention=NAMING_CONVENTION,
+        effective_date=RULE_EFFECTIVE_DATE,
     )
-    type_strength = check_type_compatibility(
-        attribute["physical_type"], column_name
+    proposed_name = naming["proposed_business_name"]
+    ontology_concept = naming["ontology_concept_id"]
+    domain = naming["domain"]
+    naming_strength = naming["naming_strength"]
+    naming_reason = naming["reason"]
+    type_strength, type_provenance = check_type_compatibility_kb(
+        attribute["physical_type"],
+        naming["ontology_concept_type"],
+        source_system=SOURCE_SYSTEM,
+        naming_convention=NAMING_CONVENTION,
+        effective_date=RULE_EFFECTIVE_DATE,
     )
     attribute_candidates = candidates_by_attribute.get(
         (table_name, column_name), []
@@ -120,26 +136,42 @@ for attribute in source_attributes:
         if attribute_candidates
         else compute_relationship_strength(table_name, column_name, False)
     )
-    contradictions = "; ".join(sorted({
+    relationship_contradictions = "; ".join(sorted({
         candidate["contradictions"]
         for candidate in attribute_candidates
         if candidate["contradictions"]
     })) or None
     cots = match_cots_pattern(table_name, column_name)
-    privacy_class, privacy_rationale = classify_privacy(column_name)
+    privacy_class, privacy_rationale, privacy_provenance = (
+        classify_privacy_kb(
+            column_name,
+            source_system=SOURCE_SYSTEM,
+            naming_convention=NAMING_CONVENTION,
+            effective_date=RULE_EFFECTIVE_DATE,
+        )
+    )
+    contradictions = "; ".join(filter(None, [
+        naming["contradictions"], relationship_contradictions,
+    ])) or None
+    rule_references = provenance_references(
+        naming["provenance"] + type_provenance + privacy_provenance
+    )
 
     confidence = compute_confidence(
         naming_strength=naming_strength,
         type_strength=type_strength,
         relationship_strength=relationship_strength,
         cots_match_strength=cots["match_strength"],
-        standard_consistency=None,  # standards knowledge pack deferred to Phase 3
-        relationship_contradicted=contradictions is not None,
+        standard_consistency=None,  # governed standards evidence unavailable
+        naming_contradicted=naming["naming_contradicted"],
+        relationship_contradicted=relationship_contradictions is not None,
     )
 
     assumptions = (
-        None if ontology_concept
-        else "Business meaning inferred from naming pattern; steward validation required."
+        None if ontology_concept else (
+            "Deterministic semantics unresolved; closed-candidate semantic "
+            "mapping or steward validation required."
+        )
     )
     contract_records.append({
         "schema_version": SCHEMA_VERSION,
@@ -160,7 +192,8 @@ for attribute in source_attributes:
         "observed_or_inferred": "INFERRED",
         "evidence_references": [
             f"catalog_metadata:{SOURCE_CATALOG}.{SOURCE_SCHEMA}."
-            f"{table_name}.{column_name}"
+            f"{table_name}.{column_name}",
+            *rule_references,
         ],
         "confidence_score": confidence.score,
         "confidence_components": confidence.components,
@@ -170,8 +203,12 @@ for attribute in source_attributes:
         "assumptions": assumptions,
         "contradictions": contradictions,
         "open_question": (
-            None if confidence.score >= LOW_CONFIDENCE_THRESHOLD
-            else "Confirm semantic meaning with data steward."
+            "Resolve naming ambiguity using only the recorded ontology "
+            "candidate set, or leave unresolved."
+            if naming["naming_contradicted"] else (
+                None if confidence.score >= LOW_CONFIDENCE_THRESHOLD
+                else "Confirm semantic meaning with data steward."
+            )
         ),
         "privacy_class": privacy_class,
         "privacy_rationale": privacy_rationale,

@@ -43,7 +43,7 @@
 
 ## Test and CI results
 
-- **Local tests:** 99/99 passed, including unit and validation scenarios
+- **Local tests:** 129/129 passed, including unit and validation scenarios
 - **Expanded fixture validation:** dependency-free schema subset validation, positive loading, and negative required-field rejection
 - **Leakage validation:** prohibited sentinel injected as source input and confirmed absent from sanitized event output and captured logs
 - **CI workflow:** `.github/workflows/ci.yml` runs local-safe tests and parses every contract without Databricks credentials
@@ -51,7 +51,7 @@
 
 ## Labelled-set coverage
 
-- **Records:** 19 (initial census from MVP synthetic Bronze tables)
+- **Records:** 26 (cross-convention, vendor abbreviation, ambiguous-token, and opaque-name coverage)
 - **Stratification dimensions:** domain, privacy, ambiguity, key role, relationship, pattern type, review route
 - **Coverage:** fixture acceptance only - not generalization evidence. Expansion to 100+ records is a planning target.
 - **Executable edge cases:** 15 scenarios with real rows and machine-readable expected outcomes; these supplement but do not enlarge the labelled calibration set.
@@ -60,9 +60,7 @@
 
 | Module | Functions |
 |---|---|
-| `naming.py` | `classify_naming()`, `detect_personal_data()` |
-| `types.py` | `check_type_compatibility()` |
-| `privacy.py` | `classify_privacy()` |
+| `knowledge_classifier.py` | Context-resolved naming, privacy, and type packs; separator/camel/continuous token hypotheses; fail-closed ambiguity; stable rule and selection provenance |
 | `relationships.py` | Runtime-metadata key-role inference, relationship discovery, evidence grouping, and strength calculation |
 | `cots_patterns.py` | `match_cots_pattern()` (returns NOT_AVAILABLE until governed reference patterns exist) |
 | `confidence.py` | `compute_confidence()` with 5 weighted components, evidence coverage, renormalization |

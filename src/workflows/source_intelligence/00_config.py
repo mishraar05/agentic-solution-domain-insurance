@@ -8,9 +8,10 @@ so every task in one Databricks job operates on exactly the same context.
 
 Inputs
 ------
-``run_id`` and the governed source/output scope are Databricks widgets supplied
-by the job definition. Threshold and artifact-version settings are declared
-below because changing them requires versioned code and governance review.
+``run_id``, governed source/output scope, source naming convention, and the
+latest permitted rule-pack effective date are Databricks widgets supplied by
+the job definition. Threshold and artifact-version settings are declared below
+because changing them requires versioned code and governance review.
 
 Provides to downstream notebooks
 ---------------------------------
@@ -68,6 +69,15 @@ SOURCE_TABLES = tuple(
 if not SOURCE_TABLES:
     raise ValueError("source_tables must contain at least one table name.")
 SOURCE_SYSTEM = _required_widget("source_system")
+_naming_convention = _required_widget("naming_convention")
+NAMING_CONVENTION = (
+    None if _naming_convention.upper() == "AUTO" else _naming_convention
+)
+RULE_EFFECTIVE_DATE = _required_widget("rule_effective_date")
+try:
+    datetime.strptime(RULE_EFFECTIVE_DATE, "%Y-%m-%d")
+except ValueError as exc:
+    raise ValueError("rule_effective_date must use YYYY-MM-DD format.") from exc
 
 # Solution-owned recommendation destination supplied independently of source scope.
 OUTPUT_CATALOG = _required_widget("output_catalog")
@@ -85,7 +95,7 @@ if not re.fullmatch(r"[A-Za-z0-9._-]+", DOCUMENTATION_MODEL_ENDPOINT):
 CATALOG = OUTPUT_CATALOG
 SCHEMA = OUTPUT_SCHEMA
 
-ARTIFACT_VERSION = "0.4.0"
+ARTIFACT_VERSION = "0.5.0"
 SCHEMA_VERSION = "1.0.0"
 LOW_CONFIDENCE_THRESHOLD = 0.75
 EVIDENCE_COVERAGE_FLOOR = 0.60
@@ -234,5 +244,11 @@ assert OUTPUT_SCHEMA in _output_schemas, (
 
 print(f"Run ID: {RUN_ID}")
 print(f"Read-only source scope: {SOURCE_CATALOG}.{SOURCE_SCHEMA} {SOURCE_TABLES}")
+print(
+    "Rule-pack selection: "
+    f"source_system={SOURCE_SYSTEM}, "
+    f"naming_convention={NAMING_CONVENTION or 'AUTO'}, "
+    f"effective_date={RULE_EFFECTIVE_DATE}"
+)
 print(f"Recommendation output schema: {OUTPUT_CATALOG}.{OUTPUT_SCHEMA}")
 print(f"Source Documentation model endpoint: {DOCUMENTATION_MODEL_ENDPOINT}")
