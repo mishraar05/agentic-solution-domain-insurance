@@ -111,11 +111,20 @@ def test_structured_response_format_is_strict_and_complete():
     assert set(schema["required"]) == set(schema["properties"])
 
 
-def test_ai_query_documented_wrapper_returns_response():
+@pytest.mark.parametrize("payload_field", ["response", "result"])
+def test_ai_query_documented_wrapper_returns_response(payload_field):
     output = json.dumps(_proposed_output())
     assert extract_ai_query_response({
-        "response": output, "errorMessage": None
+        payload_field: output, "errorMessage": None
     }) == output
+
+
+@pytest.mark.parametrize("payload_field", ["response", "result"])
+def test_ai_query_null_wrapper_payload_is_rejected(payload_field):
+    with pytest.raises(AIQueryInvocationError, match=f"null {payload_field}"):
+        extract_ai_query_response({
+            payload_field: None, "errorMessage": None
+        })
 
 
 def test_ai_query_direct_structured_output_is_contract_eligible():

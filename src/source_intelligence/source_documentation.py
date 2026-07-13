@@ -159,11 +159,12 @@ def model_response_format():
 def extract_ai_query_response(model_result):
     """Normalize documented wrapper and direct structured-output results.
 
-    Databricks normally returns ``response`` plus ``errorMessage`` when
-    ``failOnError`` is false. Some Spark execution paths expose the parsed
-    ``responseFormat`` object directly. Both are accepted only when they lead
-    to the governed model-output contract; endpoint-native ``content`` or
-    ``candidates`` payloads are deliberately not treated as documentation.
+    Databricks returns ``errorMessage`` plus either ``response`` or ``result``
+    when ``failOnError`` is false, depending on the structured-output execution
+    path. Some Spark paths expose the parsed ``responseFormat`` object directly.
+    These shapes are accepted only when they lead to the governed model-output
+    contract; endpoint-native ``content`` or ``candidates`` payloads are
+    deliberately not treated as documentation.
     """
     if model_result is None:
         raise AIQueryInvocationError("ai_query returned a null result.")
@@ -180,11 +181,16 @@ def extract_ai_query_response(model_result):
     if result.get("errorMessage"):
         # Endpoint text may contain request/model details; do not propagate it.
         raise AIQueryInvocationError("ai_query reported a model error.")
-    if "response" in result:
-        response = result["response"]
+    payload_field = next(
+        (field for field in ("response", "result") if field in result),
+        None,
+    )
+    if payload_field:
+        response = result[payload_field]
         if response is None:
             raise AIQueryInvocationError(
-                "ai_query returned a null response without a model error."
+                f"ai_query returned a null {payload_field} without a model "
+                "error."
             )
         if hasattr(response, "asDict"):
             return response.asDict(recursive=True)
