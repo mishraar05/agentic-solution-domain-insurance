@@ -9,9 +9,12 @@ import pytest
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
 from source_intelligence.source_documentation import (
+    AIQueryInvocationError,
+    AIQueryResponseShapeError,
     build_prompt,
     build_prompt_context,
     build_recommendation,
+    extract_ai_query_response,
     is_prompt_eligible,
     load_system_prompt,
     model_response_format,
@@ -106,6 +109,33 @@ def test_structured_response_format_is_strict_and_complete():
     assert response_format["json_schema"]["strict"] is True
     assert schema["additionalProperties"] is False
     assert set(schema["required"]) == set(schema["properties"])
+
+
+def test_ai_query_documented_wrapper_returns_response():
+    output = json.dumps(_proposed_output())
+    assert extract_ai_query_response({
+        "response": output, "errorMessage": None
+    }) == output
+
+
+def test_ai_query_direct_structured_output_is_contract_eligible():
+    output = _proposed_output()
+    assert extract_ai_query_response(output) == output
+
+
+def test_ai_query_model_error_is_sanitized():
+    with pytest.raises(AIQueryInvocationError) as exc_info:
+        extract_ai_query_response({
+            "response": None,
+            "errorMessage": "sensitive endpoint diagnostic",
+        })
+    assert "sensitive endpoint diagnostic" not in str(exc_info.value)
+
+
+@pytest.mark.parametrize("field", ["content", "candidates"])
+def test_ai_query_endpoint_native_payload_is_not_accepted(field):
+    with pytest.raises(AIQueryResponseShapeError, match="Unexpected"):
+        extract_ai_query_response({field: _proposed_output()})
 
 
 def test_recommendation_is_proposed_and_stable():

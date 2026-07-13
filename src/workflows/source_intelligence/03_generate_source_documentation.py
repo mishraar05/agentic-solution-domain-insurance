@@ -50,10 +50,13 @@ from pyspark.sql.types import (
 
 from source_intelligence.contract_validation import validate_records
 from source_intelligence.source_documentation import (
+    AIQueryInvocationError,
+    AIQueryResponseShapeError,
     PROMPT_VERSION,
     build_prompt,
     build_prompt_context,
     build_recommendation,
+    extract_ai_query_response,
     is_prompt_eligible,
     load_system_prompt,
     model_response_format,
@@ -156,11 +159,16 @@ else:
         failed = []
         for result_row in result_rows:
             key = (result_row.source_table, result_row.source_column)
-            result = result_row.model_result.asDict(recursive=True)
-            if result.get("errorMessage"):
+            try:
+                model_outputs[key] = extract_ai_query_response(
+                    result_row.model_result
+                )
+            except AIQueryInvocationError:
                 failed.append(key)
-            else:
-                model_outputs[key] = result["response"]
+            except AIQueryResponseShapeError as exc:
+                raise RuntimeError(
+                    f"Unexpected ai_query response for {key}: {exc}"
+                ) from exc
         if failed:
             raise RuntimeError(
                 f"Model invocation failed for {len(failed)} source columns; "

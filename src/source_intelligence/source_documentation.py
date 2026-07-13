@@ -23,6 +23,14 @@ MODEL_OUTPUT_CONTRACT = "source_documentation_model_output.json"
 RECOMMENDATION_CONTRACT = "source_documentation_recommendation.json"
 
 
+class AIQueryInvocationError(RuntimeError):
+    """An ``ai_query`` row reported an endpoint/model invocation failure."""
+
+
+class AIQueryResponseShapeError(ValueError):
+    """An ``ai_query`` row did not match a governed response shape."""
+
+
 def load_system_prompt(prompt_path=None):
     """Load the versioned system prompt from the repository."""
     path = prompt_path or os.path.abspath(os.path.join(
@@ -146,6 +154,52 @@ def model_response_format():
             "strict": True,
         },
     }
+
+
+def extract_ai_query_response(model_result):
+    """Normalize documented wrapper and direct structured-output results.
+
+    Databricks normally returns ``response`` plus ``errorMessage`` when
+    ``failOnError`` is false. Some Spark execution paths expose the parsed
+    ``responseFormat`` object directly. Both are accepted only when they lead
+    to the governed model-output contract; endpoint-native ``content`` or
+    ``candidates`` payloads are deliberately not treated as documentation.
+    """
+    if model_result is None:
+        raise AIQueryInvocationError("ai_query returned a null result.")
+    if hasattr(model_result, "asDict"):
+        result = model_result.asDict(recursive=True)
+    elif isinstance(model_result, dict):
+        result = dict(model_result)
+    else:
+        raise AIQueryResponseShapeError(
+            "Unexpected ai_query result type: "
+            f"{type(model_result).__name__}."
+        )
+
+    if result.get("errorMessage"):
+        # Endpoint text may contain request/model details; do not propagate it.
+        raise AIQueryInvocationError("ai_query reported a model error.")
+    if "response" in result:
+        response = result["response"]
+        if response is None:
+            raise AIQueryInvocationError(
+                "ai_query returned a null response without a model error."
+            )
+        if hasattr(response, "asDict"):
+            return response.asDict(recursive=True)
+        return response
+
+    required = set(
+        model_response_format()["json_schema"]["schema"]["required"]
+    )
+    if required <= set(result):
+        return result
+    raise AIQueryResponseShapeError(
+        "Unexpected ai_query response fields: "
+        f"{sorted(result)}; expected wrapper fields or governed structured "
+        "output fields."
+    )
 
 
 def unresolved_model_output(reason):
