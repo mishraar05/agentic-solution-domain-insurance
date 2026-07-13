@@ -1,0 +1,103 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Document
+description: Document metadata concepts; document bodies and sensitive narrative content remain prohibited evidence.
+concepts:
+- concept_id: Document.Document
+  name: Document
+  domain: Document
+  definition: Metadata describing a recorded business artefact without retaining its prohibited body content.
+  synonyms: [business document, record]
+  physical_name_variants: [document, document_id, doc_id]
+  relationships: []
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+  typical_attributes: [document_identifier, document_type, issue_date, version_number]
+  steward_notes: Only authorized metadata is retained; raw document bodies are outside this ontology pack.
+- concept_id: Document.PolicyWording
+  name: Policy Wording
+  domain: Document
+  definition: A document classification for standard contractual coverage terms, conditions, and exclusions.
+  synonyms: [wording, policy form]
+  physical_name_variants: [policy_wording, wording_id, form_number]
+  relationships:
+  - type: is_a
+    target: Document.Document
+  - type: describes
+    target: Shared.Coverage
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV, HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE, COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Document.PolicySchedule
+  name: Policy Schedule
+  domain: Document
+  definition: A document classification for policy-specific insured objects, coverages, limits, and dates.
+  synonyms: [schedule, declarations]
+  physical_name_variants: [policy_schedule, schedule_id, declarations_id]
+  relationships:
+  - type: is_a
+    target: Document.Document
+  - type: describes
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV, HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE, COMM_PROPERTY, BOP]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Document.EndorsementDocument
+  name: Endorsement Document
+  domain: Document
+  definition: A document classification recording a governed change to policy terms or coverage.
+  synonyms: [endorsement form, policy amendment]
+  physical_name_variants: [endorsement_document, endorsement_form, amendment_doc]
+  relationships:
+  - type: is_a
+    target: Document.Document
+  - type: describes
+    target: Policy.Endorsement
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV, HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE, COMM_PROPERTY, BOP]
+  privacy_sensitivity: INDIRECT
+  temporality: EVENT
+- concept_id: Document.ClaimDocument
+  name: Claim Document
+  domain: Document
+  definition: Metadata classifying an artefact associated with claim handling or evidence.
+  synonyms: [claim attachment, loss document]
+  physical_name_variants: [claim_document, claim_attachment, loss_doc]
+  relationships:
+  - type: is_a
+    target: Document.Document
+  - type: references
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV, HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE, COMM_PROPERTY, BOP]
+  privacy_sensitivity: DIRECT
+  temporality: EVENT
+  steward_notes: Narratives, medical details, legal notes, images, and document bodies are prohibited from this pack.
+- concept_id: Document.MemberStatement
+  name: Pension Member Statement
+  domain: Document
+  definition: Metadata classifying a statement describing a pension member account, valuation, or projected benefit.
+  synonyms: [annual benefit statement, pension statement]
+  physical_name_variants: [member_statement, benefit_statement, pension_statement]
+  relationships:
+  - type: is_a
+    target: Document.Document
+  - type: describes
+    target: Pensions.Account
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: DIRECT
+  temporality: SNAPSHOT
+  steward_notes: Statement bodies and member values require separate authorization and are not retained here.

@@ -1,0 +1,427 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Policy
+description: Policy administration concepts covering contracts, terms, transactions, dates, status, and premium measures. Preserved from pnc_ontology/1.1.0 with stable concept IDs.
+concepts:
+- concept_id: Policy.Policy
+  name: Policy
+  domain: Policy
+  definition: A contract of insurance between the insurer and one or more insured parties for a defined term.
+  synonyms:
+  - insurance contract
+  - policy contract
+  physical_name_variants:
+  - policy
+  - pol
+  - plcy
+  - policy_master
+  relationships:
+  - type: has_many
+    target: Policy.PolicyTerm
+  - type: has_many
+    target: Policy.PolicyTransaction
+  - type: has_many
+    target: Shared.Coverage
+  - type: references
+    target: Shared.Insured
+  - type: references
+    target: Shared.Producer
+  - type: references
+    target: Shared.Product
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SCD2
+  typical_attributes:
+  - Policy.Identifier
+  - Policy.PolicyNumber
+  - Policy.Status
+  - Product.Code
+  - Policy.EffectiveDate
+  - Policy.ExpirationDate
+  steward_notes: Canonical Silver entity. Distinguish the policy (contract) from its terms (periods) and transactions (changes).
+- concept_id: Policy.Identifier
+  name: Policy Identifier
+  domain: Policy
+  definition: System-assigned unique identifier of a policy.
+  synonyms:
+  - policy id
+  - policy key
+  physical_name_variants:
+  - policy_id
+  - pol_id
+  - policy_pk
+  - public_id
+  relationships:
+  - type: identifies
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: ATTRIBUTE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  steward_notes: Surrogate/system key; never expose as the business identifier.
+- concept_id: Policy.PolicyNumber
+  name: Policy Number
+  domain: Policy
+  definition: Business-facing number printed on policy documents; may change on rewrite.
+  synonyms:
+  - policy no
+  - contract number
+  physical_name_variants:
+  - policy_number
+  - pol_no
+  - plcy_num
+  - policy_nbr
+  relationships:
+  - type: describes
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: ATTRIBUTE
+  lob_applicability: ALL
+  privacy_sensitivity: INDIRECT
+  temporality: STATIC
+  steward_notes: 'Quasi-identifier: joinable to individuals via external documents; mask in analytics extracts by default.'
+- concept_id: Policy.Status
+  name: Policy Status
+  domain: Policy
+  definition: Lifecycle state of the policy.
+  synonyms:
+  - policy state
+  physical_name_variants:
+  - policy_status
+  - pol_stat_cd
+  - status_code
+  relationships:
+  - type: describes
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: STATUS
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  status_values:
+  - QUOTED
+  - BOUND
+  - IN_FORCE
+  - CANCELLED
+  - EXPIRED
+  - LAPSED
+  - REINSTATED
+  - NON_RENEWED
+- concept_id: Policy.EffectiveDate
+  name: Policy Effective Date
+  domain: Policy
+  definition: Date coverage under the policy term begins.
+  synonyms:
+  - inception date
+  - start date
+  physical_name_variants:
+  - effective_date
+  - eff_dt
+  - incept_dt
+  - period_start
+  relationships:
+  - type: describes
+    target: Policy.PolicyTerm
+  lifecycle_state: Standard
+  concept_type: DATE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Policy.ExpirationDate
+  name: Policy Expiration Date
+  domain: Policy
+  definition: Date coverage under the policy term ends.
+  synonyms:
+  - expiry date
+  - end date
+  physical_name_variants:
+  - expiration_date
+  - exp_dt
+  - period_end
+  relationships:
+  - type: describes
+    target: Policy.PolicyTerm
+  lifecycle_state: Standard
+  concept_type: DATE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Policy.PolicyTerm
+  name: Policy Term
+  domain: Policy
+  definition: A bounded coverage period of a policy; renewals create successive terms.
+  synonyms:
+  - policy period
+  - term
+  physical_name_variants:
+  - policy_term
+  - policy_period
+  - term_id
+  relationships:
+  - type: belongs_to
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SCD2
+  typical_attributes:
+  - Policy.EffectiveDate
+  - Policy.ExpirationDate
+  - Policy.WrittenPremium
+  - term_number
+- concept_id: Policy.PolicyTransaction
+  name: Policy Transaction
+  domain: Policy
+  definition: 'A dated change to a policy: new business, endorsement, renewal, cancellation, reinstatement, rewrite, audit.'
+  synonyms:
+  - policy change
+  - transaction
+  physical_name_variants:
+  - policy_txn
+  - pol_trans
+  - transaction
+  relationships:
+  - type: belongs_to
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+  typical_attributes:
+  - transaction_type
+  - transaction_effective_date
+  - Policy.WrittenPremium
+  steward_notes: The premium-bearing grain for most underwriting analytics; keep every transaction, never just latest state.
+- concept_id: Policy.TransactionType
+  name: Policy Transaction Type
+  domain: Policy
+  definition: Classification of a policy transaction.
+  synonyms:
+  - txn type
+  physical_name_variants:
+  - txn_type_cd
+  - trans_type
+  - transaction_code
+  relationships:
+  - type: describes
+    target: Policy.PolicyTransaction
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  status_values:
+  - NEW_BUSINESS
+  - ENDORSEMENT
+  - RENEWAL
+  - CANCELLATION
+  - REINSTATEMENT
+  - REWRITE
+  - AUDIT
+  - NON_RENEWAL
+- concept_id: Policy.Endorsement
+  name: Endorsement
+  domain: Policy
+  definition: A mid-term policy change transaction amending coverage, insureds, or terms.
+  synonyms:
+  - policy change
+  - rider
+  - amendment
+  physical_name_variants:
+  - endorsement
+  - endt
+  - policy_change
+  relationships:
+  - type: is_a
+    target: Policy.PolicyTransaction
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+- concept_id: Policy.Renewal
+  name: Renewal
+  domain: Policy
+  definition: Transaction creating a successive policy term for an expiring policy.
+  synonyms:
+  - renewal transaction
+  physical_name_variants:
+  - renewal
+  - renew_txn
+  relationships:
+  - type: is_a
+    target: Policy.PolicyTransaction
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+  steward_notes: Basis of retention analytics; link expiring and renewing terms explicitly.
+- concept_id: Policy.WrittenPremium
+  name: Written Premium
+  domain: Policy
+  definition: Premium amount booked for a policy transaction, gross or net of reinsurance as qualified.
+  synonyms:
+  - premium written
+  - booked premium
+  physical_name_variants:
+  - written_premium
+  - wp_amt
+  - premium_amt
+  - direct_written_premium
+  relationships:
+  - type: measures
+    target: Policy.PolicyTransaction
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  steward_notes: Always qualify gross vs net and direct vs assumed; sign convention must handle negative endorsement/cancellation premium.
+- concept_id: Policy.EarnedPremium
+  name: Earned Premium
+  domain: Policy
+  definition: Portion of written premium allocated to expired coverage time.
+  synonyms:
+  - premium earned
+  physical_name_variants:
+  - earned_premium
+  - ep_amt
+  relationships:
+  - type: derives_from
+    target: Policy.WrittenPremium
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SNAPSHOT
+  steward_notes: Usually derived, not sourced; document the earning pattern (daily pro-rata vs monthly).
+- concept_id: Policy.UnearnedPremium
+  name: Unearned Premium
+  domain: Policy
+  definition: Portion of written premium attributable to unexpired coverage time.
+  synonyms:
+  - UPR
+  physical_name_variants:
+  - unearned_premium
+  - upr_amt
+  relationships:
+  - type: derives_from
+    target: Policy.WrittenPremium
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SNAPSHOT
+- concept_id: Policy.Commission
+  name: Commission
+  domain: Policy
+  definition: Compensation payable to the producer for a policy transaction.
+  synonyms:
+  - producer compensation
+  - brokerage
+  physical_name_variants:
+  - commission_amt
+  - comm_pct
+  - commission_rate
+  relationships:
+  - type: measures
+    target: Policy.PolicyTransaction
+  - type: references
+    target: Shared.Producer
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Policy.RatingFactor
+  name: Rating Factor
+  domain: Policy
+  definition: 'An input variable used to price the policy: territory, class code, credit tier, vehicle use.'
+  synonyms:
+  - rating variable
+  - pricing factor
+  physical_name_variants:
+  - rating_factor
+  - rate_factor
+  - class_cd
+  - territory_cd
+  relationships:
+  - type: describes
+    target: Policy.PolicyTerm
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: INDIRECT
+  temporality: STATIC
+  steward_notes: Some factors (credit-based scores) carry regulatory restrictions; classify individually.
+- concept_id: Policy.InsuredObject
+  name: Insured Object / Risk
+  domain: Policy
+  definition: 'The thing or exposure insured: vehicle, dwelling, location, scheduled item.'
+  synonyms:
+  - risk
+  - insured item
+  - covered object
+  physical_name_variants:
+  - risk_unit
+  - insured_object
+  - risk_item
+  relationships:
+  - type: belongs_to
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SCD2
+  typical_attributes:
+  - object_type
+  - description
+  - Shared.Location
+- concept_id: Policy.PoliciesInForce
+  name: Policies In Force
+  domain: Policy
+  definition: Count of policies with active coverage at a point in time.
+  synonyms:
+  - PIF
+  physical_name_variants:
+  - pif_count
+  - inforce_count
+  relationships:
+  - type: measures
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SNAPSHOT
+- concept_id: Policy.Quote
+  name: Quote
+  domain: Policy
+  definition: A priced offer of coverage that may or may not be bound.
+  synonyms:
+  - quotation
+  physical_name_variants:
+  - quote
+  - quote_id
+  - submission
+  relationships:
+  - type: precedes
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+  typical_attributes:
+  - quote_number
+  - quoted_premium
+  - quote_status

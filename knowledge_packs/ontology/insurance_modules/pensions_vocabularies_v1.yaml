@@ -1,0 +1,32 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Pensions
+description: Isolated pensions and retirement controlled vocabularies and reference shapes; jurisdiction-specific tax and regulatory semantics remain unresolved.
+controlled_vocabularies:
+- vocabulary_id: PENSIONS_SCHEME_TYPE
+  name: Pension Scheme Type
+  values: [DEFINED_BENEFIT, DEFINED_CONTRIBUTION, HYBRID, OTHER]
+  steward_note: Jurisdiction-specific scheme classifications require an authorized extension.
+- vocabulary_id: PENSIONS_CONTRIBUTION_TYPE
+  name: Pension Contribution Type
+  values: [MEMBER, EMPLOYER, TRANSFER_IN, ADJUSTMENT, OTHER]
+  steward_note: Tax treatment and payroll basis are deliberately excluded from the generic vocabulary.
+- vocabulary_id: PENSIONS_BENEFIT_TYPE
+  name: Pension Benefit Type
+  values: [RETIREMENT, SURVIVOR, DISABILITY, TRANSFER_OUT, REFUND, OTHER]
+  steward_note: Eligibility and calculation rules require separately governed jurisdictional evidence.
+- vocabulary_id: PENSIONS_MEMBER_STATUS
+  name: Pension Member Status
+  values: [ACTIVE, DEFERRED, RETIRED, TRANSFERRED, DECEASED, UNKNOWN]
+  steward_note: Status transitions require effective dates and steward review.
+reference_shapes:
+- shape_id: PENSION_MEMBER_ACCOUNT_SHAPE
+  root_concept_id: Pensions.Account
+  required_concept_ids: [Pensions.Scheme, Pensions.Member]
+  optional_concept_ids: [Pensions.Employer, Pensions.Contribution, Pensions.FundHolding, Pensions.Valuation, Pensions.Benefit]
+- shape_id: PENSION_BENEFIT_SHAPE
+  root_concept_id: Pensions.Benefit
+  required_concept_ids: [Pensions.Scheme, Pensions.Member]
+  optional_concept_ids: [Pensions.Beneficiary, Pensions.RetirementEvent, Pensions.ProjectedBenefit, Document.MemberStatement]

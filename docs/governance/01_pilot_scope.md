@@ -1,11 +1,11 @@
-﻿# Pilot Scope Decision Record
+# Pilot Scope Decision Record
 
 **Artifact:** `01_pilot_scope.md`
-**Version:** 0.1.0
-**Decision Date:** 2026-07-12
-**Owner:** Data Architect (placeholder - awaiting assignment)
-**Reviewer:** Architecture Lead (placeholder - awaiting assignment)
-**Status:** PROPOSED
+**Version:** 1.0.0
+**Decision Date:** 2026-07-13
+**Owner:** `HUMAN_REVIEWER_01` (Data Architect)
+**Reviewer:** `HUMAN_REVIEWER_01` (Sponsor)
+**Status:** APPROVED
 
 ## Decision
 
@@ -35,10 +35,10 @@
 
 | Exclusion | Rationale |
 |---|---|
-| Billing / Payment tables | Not in synthetic MVP scope; deferred to Phase 3+ |
+| Billing / Payment tables | Not in synthetic MVP scope; deferred to Governed Knowledge Foundation and later capabilities |
 | Coverage / Endorsement tables | Not yet synthesized; deferred |
 | Underwriting / Rating tables | Not in scope for recommendation-only MVP |
-| External source systems | Free Edition uses synthetic data only |
+| External source systems | The synthetic pilot does not use external sources |
 
 ## Rationale
 
@@ -59,3 +59,4 @@ Policy is selected as the first-release scope because:
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1.0 | 2026-07-12 | Initial proposed pilot scope | Agent (Cline) |
+| 1.0.0 | 2026-07-13 | Approved unchanged for the governed pilot | `HUMAN_REVIEWER_01` |

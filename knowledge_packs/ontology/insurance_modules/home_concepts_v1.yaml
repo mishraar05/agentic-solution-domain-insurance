@@ -1,0 +1,151 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Home
+description: Home product concepts for homeowners, renters and condo, and dwelling-fire risks.
+concepts:
+- concept_id: Home.ResidentialRisk
+  name: Residential Risk
+  domain: Home
+  definition: A residential property interest evaluated or covered under a home insurance product.
+  synonyms: [home risk, residential property]
+  physical_name_variants: [residential_risk, home_risk, property_risk]
+  relationships:
+  - type: is_a
+    target: Policy.InsuredObject
+  - type: references
+    target: Shared.Location
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Home.Building
+  name: Residential Building
+  domain: Home
+  definition: The residential structure and governed building components associated with a home risk.
+  synonyms: [dwelling building, residential structure]
+  physical_name_variants: [home_building, dwelling_building, structure_id]
+  relationships:
+  - type: belongs_to
+    target: Home.ResidentialRisk
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [HOMEOWNERS, DWELLING_FIRE]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Home.Contents
+  name: Household Contents
+  domain: Home
+  definition: Personal property kept at or associated with a residential risk.
+  synonyms: [personal contents, household property]
+  physical_name_variants: [contents, household_contents, personal_property]
+  relationships:
+  - type: belongs_to
+    target: Home.ResidentialRisk
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [HOMEOWNERS, RENTERS_CONDO]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Home.Occupancy
+  name: Residential Occupancy
+  domain: Home
+  definition: The occupancy pattern and use of a residential risk.
+  synonyms: [home occupancy, occupancy type]
+  physical_name_variants: [home_occupancy, occupancy_cd, residence_use]
+  relationships:
+  - type: is_a
+    target: Risk.Occupancy
+  - type: describes
+    target: Home.ResidentialRisk
+  lifecycle_state: Specialized
+  concept_type: CODE
+  lob_applicability: [HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Home.Tenure
+  name: Residential Tenure
+  domain: Home
+  definition: The governed ownership or occupancy interest held in a residential risk.
+  synonyms: [ownership status, resident tenure]
+  physical_name_variants: [tenure, ownership_type, resident_type]
+  relationships:
+  - type: describes
+    target: Home.ResidentialRisk
+  lifecycle_state: Specialized
+  concept_type: CODE
+  lob_applicability: [HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Home.Construction
+  name: Residential Construction
+  domain: Home
+  definition: Governed structural characteristics of a residential building relevant to risk assessment.
+  synonyms: [construction type, building construction]
+  physical_name_variants: [home_construction, construction_type, wall_type]
+  relationships:
+  - type: describes
+    target: Home.Building
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [HOMEOWNERS, DWELLING_FIRE]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Home.HomeCoverage
+  name: Home Coverage
+  domain: Home
+  definition: A home-specific specialization of coverage for buildings, contents, liability, or loss of use.
+  synonyms: [residential coverage, household cover]
+  physical_name_variants: [home_coverage, dwelling_coverage, contents_coverage]
+  relationships:
+  - type: is_a
+    target: Shared.Coverage
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Home.AccidentalDamage
+  name: Accidental Damage Coverage
+  domain: Home
+  definition: A home coverage specialization for accidental physical damage subject to product terms.
+  synonyms: [accidental damage, accidental loss cover]
+  physical_name_variants: [accidental_damage, accidental_damage_cov]
+  relationships:
+  - type: is_a
+    target: Home.HomeCoverage
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [HOMEOWNERS, RENTERS_CONDO]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Home.ValuableItem
+  name: Valuable Item
+  domain: Home
+  definition: A household item requiring separate identification, limit, or coverage treatment.
+  synonyms: [scheduled item, high value item]
+  physical_name_variants: [valuable_item, scheduled_property, high_value_item]
+  relationships:
+  - type: belongs_to
+    target: Home.Contents
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [HOMEOWNERS, RENTERS_CONDO]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Home.AlternativeAccommodation
+  name: Alternative Accommodation Coverage
+  domain: Home
+  definition: Coverage for additional living or accommodation costs after an insured residential loss.
+  synonyms: [loss of use, additional living expense]
+  physical_name_variants: [alternative_accommodation, loss_of_use, ale_coverage]
+  relationships:
+  - type: is_a
+    target: Home.HomeCoverage
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [HOMEOWNERS, RENTERS_CONDO]
+  privacy_sensitivity: NONE
+  temporality: SCD2

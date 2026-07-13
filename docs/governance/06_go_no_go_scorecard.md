@@ -1,11 +1,11 @@
 # Go/No-Go Scorecard
 
 **Artifact:** `06_go_no_go_scorecard.md`
-**Version:** 0.1.0
-**Decision Date:** 2026-07-12
-**Owner:** Sponsor (placeholder - awaiting assignment)
-**Reviewer:** Architecture Lead (placeholder - awaiting assignment)
-**Status:** PROPOSED
+**Version:** 1.0.0
+**Decision Date:** 2026-07-13
+**Owner:** `HUMAN_REVIEWER_01` (Sponsor)
+**Reviewer:** `HUMAN_REVIEWER_01` (Data Architect)
+**Status:** APPROVED
 
 ## Purpose
 
@@ -28,7 +28,7 @@ Defines the metrics, baselines, targets, and decision rules for the go/no-go pro
 
 ## Promotion criteria
 
-Before moving from Free Edition to a business trial or paid Databricks workspace:
+Before using organizational data in an authorized customer environment:
 
 1. A named business sponsor and data owner are assigned.
 2. An approved security, privacy, retention, and access-control design exists.
@@ -41,8 +41,8 @@ Before moving from Free Edition to a business trial or paid Databricks workspace
 ## Current status summary
 
 - **MVP foundation:** Complete - all acceptance gate criteria passed
-- **Phase 0 (Governance):** PROPOSED - all artifacts created, awaiting human review and assignment
-- **Source Intelligence v1:** Not started - blocked until pilot governance is reviewed
+- **Pilot Governance:** APPROVED - roles and governance artifacts accepted on 2026-07-13
+- **Source Intelligence v1:** PASSED - runtime and human gates complete; Governed Knowledge Foundation unlocked
 
 ## Open questions
 
@@ -56,3 +56,4 @@ Before moving from Free Edition to a business trial or paid Databricks workspace
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1.0 | 2026-07-12 | Initial proposed go/no-go scorecard | Agent (Cline) |
+| 1.0.0 | 2026-07-13 | Approved as the continuing pilot scorecard; deferred promotion metrics remain future gates | `HUMAN_REVIEWER_01` |

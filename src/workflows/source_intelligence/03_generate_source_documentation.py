@@ -48,7 +48,7 @@ from pyspark.sql.types import (
     ArrayType, StringType, StructField, StructType, TimestampType,
 )
 
-from source_intelligence.contract_validation import validate_records
+from common.contract_validation import validate_records
 from source_intelligence.source_documentation import (
     AIQueryInvocationError,
     AIQueryResponseShapeError,

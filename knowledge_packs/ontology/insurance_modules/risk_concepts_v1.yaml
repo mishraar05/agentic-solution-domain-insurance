@@ -1,0 +1,93 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Risk
+description: Shared risk, peril, hazard, factor, occupancy, and business-activity concepts used by insurance product modules.
+concepts:
+- concept_id: Risk.Risk
+  name: Insurable Risk
+  domain: Risk
+  definition: An uncertain exposure or insured subject that may produce loss and is evaluated for coverage.
+  synonyms: [risk, exposure]
+  physical_name_variants: [risk, risk_id, exposure_id]
+  relationships:
+  - type: references
+    target: Policy.InsuredObject
+  - type: has_many
+    target: Risk.RiskFactor
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Risk.Peril
+  name: Peril
+  domain: Risk
+  definition: A cause or source of loss against which coverage may respond.
+  synonyms: [covered peril, loss cause]
+  physical_name_variants: [peril, peril_cd, cause_cd]
+  relationships:
+  - type: references
+    target: Shared.Coverage
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Risk.Hazard
+  name: Hazard
+  domain: Risk
+  definition: A condition that may increase the probability or severity of loss.
+  synonyms: [risk condition]
+  physical_name_variants: [hazard, hazard_cd, hazard_type]
+  relationships:
+  - type: describes
+    target: Risk.Risk
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Risk.RiskFactor
+  name: Risk Factor
+  domain: Risk
+  definition: A governed characteristic used when evaluating an insurable risk.
+  synonyms: [rating characteristic, underwriting factor]
+  physical_name_variants: [risk_factor, rating_factor, uw_factor]
+  relationships:
+  - type: describes
+    target: Risk.Risk
+  lifecycle_state: Standard
+  concept_type: ATTRIBUTE
+  lob_applicability: ALL
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Risk.Occupancy
+  name: Occupancy
+  domain: Risk
+  definition: The governed manner in which a property, premises, or insured object is used or occupied.
+  synonyms: [occupancy type, use of premises]
+  physical_name_variants: [occupancy, occupancy_cd, use_type]
+  relationships:
+  - type: describes
+    target: Risk.Risk
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: [HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE, COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Risk.BusinessActivity
+  name: Business Activity
+  domain: Risk
+  definition: The trade or operational activity performed by an insured organization at a covered premises.
+  synonyms: [business operation, trade]
+  physical_name_variants: [business_activity, operation_cd, sic_cd, naics_cd]
+  relationships:
+  - type: describes
+    target: Risk.Risk
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2

@@ -1,11 +1,11 @@
 # Confidence Policy
 
 **Artifact:** `04_confidence_policy.md`
-**Version:** 0.1.0
-**Decision Date:** 2026-07-12
-**Owner:** AI/ML Engineer (placeholder - awaiting assignment)
-**Reviewer:** Data Architect (placeholder - awaiting assignment)
-**Status:** PROPOSED
+**Version:** 1.0.0
+**Decision Date:** 2026-07-13
+**Owner:** `HUMAN_REVIEWER_01` (Evaluation Owner)
+**Reviewer:** `HUMAN_REVIEWER_01` (Data Architect)
+**Status:** APPROVED
 
 ## Purpose
 
@@ -39,18 +39,18 @@ Each component records one of three availability states:
 
 **Renormalization:** The final score is computed as `raw_weighted_sum / available_weight` (not divided by total weight). This ensures absent evidence reduces coverage but does not artificially deflate the score.
 
-**Coverage floor:** `EVIDENCE_COVERAGE_FLOOR = 0.60` (PROPOSED — awaiting calibration). Below this floor, the recommendation is routed to Domain Steward for review regardless of the normalized score.
+**Coverage floor:** `EVIDENCE_COVERAGE_FLOOR = 0.60` (APPROVED). Below this floor, the recommendation is routed to Domain Steward for review regardless of the normalized score.
 
 **Formula version:** `1.0.0` — persisted with every recommendation for traceability.
 
 ## COTS sequencing
 
 - **Current deterministic workflow:** COTS pattern match is `NOT_AVAILABLE` — no knowledge packs are loaded. Matching against small authorized structured patterns is permitted but not required.
-- **Phase 3:** Governed retrieval and semantic search introduce COTS pattern matching with loaded knowledge packs. The COTS component becomes `AVAILABLE`.
+- **Governed Knowledge Foundation:** Governed retrieval and semantic search introduce COTS pattern matching with loaded knowledge packs. The COTS component becomes `AVAILABLE`.
 
-## v1-to-Phase-3 component mapping
+## Source-Intelligence-to-Knowledge-Foundation component mapping
 
-| v1 Component | Phase 3 Target |
+| v1 Component | Governed Knowledge Foundation Target |
 |---|---|
 | Naming strength | Naming strength (unchanged) |
 | Type strength | Type strength (unchanged) |
@@ -96,7 +96,7 @@ The confidence policy is testable via:
 ## Open questions
 
 - [ ] Are the component weights appropriate, or should they be tuned after initial review cycles?
-- [ ] Should the COTS pattern match weight be increased once knowledge packs are loaded (Phase 3)?
+- [ ] Should the COTS pattern match weight be increased once knowledge packs are loaded (Governed Knowledge Foundation)?
 - [ ] Should a "very high" band (>= 0.95) have different routing?
 
 ## Change log
@@ -104,3 +104,4 @@ The confidence policy is testable via:
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1.0 | 2026-07-12 | Initial proposed confidence policy | Agent (Cline) |
+| 1.0.0 | 2026-07-13 | Approved existing weights, 0.75 threshold, and 0.60 coverage floor | `HUMAN_REVIEWER_01` |

@@ -1,7 +1,7 @@
 # Source Intelligence Completion Status
 
 **Date:** 2026-07-13
-**Status:** BLOCKED_EXTERNAL — local implementation complete; release gate not passed
+**Status:** PASSED — Source Intelligence gate complete; Governed Knowledge Foundation unlocked
 
 ## Completed locally
 
@@ -20,21 +20,25 @@
 
 Machine-readable results: `docs/evidence/source_intelligence_local_gate.json`.
 
-## Required external completion
+## Runtime and human completion
 
-Completed external checks: Databricks CLI `1.7.0`, DEV bundle validation, and
-read-only discovery of READY, batch-supported endpoint
-`databricks-gpt-oss-20b`. Real-time-only endpoint
-`databricks-gpt-5-6-luna` was rejected after `ai_query` reported it does not
-support batch inference.
+Completed external checks: Databricks CLI `1.7.0`, DEV bundle validation,
+read-only discovery of READY batch-supported endpoint
+`databricks-gpt-oss-20b`, successful structured `ai_query` documentation
+generation, review-queue creation, and terminal Spark validation. Repaired job
+run `318240208993039` completed successfully; final documentation, queue, and
+validation task runs were `605901970335675`, `194173885454049`, and
+`733466458079422` respectively. The validation task proved coverage, privacy
+blocking, review routing, evidence retention, no auto-approval, and
+idempotency before persisting the successful run record.
 
-Still required:
+Human reviewer `HUMAN_REVIEWER_01` approved the generated documentation, all
+26 independent labels, the existing confidence weights, the `0.75` review
+threshold, the `0.60` evidence-coverage floor, the reviewer assignments, and
+the Source Intelligence gate on 2026-07-13. Records `L011`, `L012`, `L025`,
+and `L026` remain intentionally unresolved and continue to require fail-closed
+handling rather than invented semantics.
 
-1. Execute the Source Intelligence job and Spark producer validation; capture run evidence.
-2. Confirm an actual serverless `ai_query` invocation against the configured endpoint.
-3. Have a Domain Steward independently assess generated documentation.
-4. Have a human independently review the labelled set and complete `evals/labelled_set/INDEPENDENT_REVIEW.md`.
-5. Approve or modify the 0.75 confidence threshold and component weights using independently reviewed labels.
-6. Assign named Data Architect, Domain Steward, Privacy Steward, Evaluation Owner, and Sponsor roles; only humans may approve governance artifacts.
-
-Knowledge-driven and target-modelling work remains ineligible until these external gates are evidenced.
+Governed knowledge-pack work is eligible to proceed. Recommendation-only,
+read-only source access, privacy exclusions, evidence minimization, and mandatory
+human approval remain binding.

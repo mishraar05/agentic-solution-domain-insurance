@@ -1,4 +1,0 @@
-interface:
-  display_name: "Define Insurance Pilot Governance"
-  short_description: "Record scope, evidence, reviewers, and gates"
-  default_prompt: "Use $define-insurance-pilot-governance to create the next pilot governance decision artifacts."

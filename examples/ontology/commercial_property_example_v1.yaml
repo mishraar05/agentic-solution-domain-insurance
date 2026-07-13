@@ -1,0 +1,63 @@
+schema_version: 1.0.0
+example_id: SYNTHETIC_COMMERCIAL_PROPERTY_ONTOLOGY_001
+classification: SYNTHETIC_NON_PERSONAL_EXAMPLE
+ontology_pack: insurance_ontology/1.0.0
+product_area: COMMERCIAL_PROPERTY
+line_of_business: COMM_PROPERTY
+reference_shape: COMMERCIAL_PROPERTY_RISK_SHAPE
+privacy_note: >-
+  CommercialProperty.Premises carries no sample_instance even though it is
+  INDIRECT, because it is a grouping concept with no single governed
+  attribute of its own; it is represented only by an opaque
+  synthetic_reference token. Shared.Location is populated at region
+  granularity only, never a full address. No real organization, address, or
+  valuation evidence is included anywhere in this example.
+concept_instances:
+- concept_id: Policy.Policy
+  synthetic_reference: SYNTHETIC_POLICY_COMM_PROPERTY_001
+  sample_instance:
+    policy_number: SYN-CPR-0001
+    status: IN_FORCE
+- concept_id: CommercialProperty.Premises
+  synthetic_reference: SYNTHETIC_PREMISES_001
+- concept_id: Shared.Location
+  synthetic_reference: SYNTHETIC_LOCATION_002
+  sample_instance:
+    region: SYNTHETIC_REGION_002
+- concept_id: CommercialProperty.BusinessActivity
+  synthetic_reference: SYNTHETIC_BUSINESS_ACTIVITY_001
+  sample_instance:
+    business_activity: GENERAL_RETAIL_TRADE
+- concept_id: CommercialProperty.Occupancy
+  synthetic_reference: SYNTHETIC_CP_OCCUPANCY_001
+  sample_instance:
+    occupancy_cd: RETAIL
+- concept_id: CommercialProperty.Construction
+  synthetic_reference: SYNTHETIC_CP_CONSTRUCTION_001
+  sample_instance:
+    construction_class: BRICK_VENEER
+- concept_id: CommercialProperty.PropertyCoverage
+  synthetic_reference: SYNTHETIC_PROPERTY_COVERAGE_001
+  sample_instance:
+    coverage_type: BUILDING_AND_CONTENTS
+    limit_amount: 750000
+- concept_id: CommercialProperty.Stock
+  synthetic_reference: SYNTHETIC_STOCK_001
+  sample_instance:
+    inventory_value_amount: 120000
+- concept_id: CommercialProperty.Equipment
+  synthetic_reference: SYNTHETIC_EQUIPMENT_001
+  sample_instance:
+    plant_value_amount: 85000
+- concept_id: CommercialProperty.ValuationBasis
+  synthetic_reference: SYNTHETIC_VALUATION_BASIS_001
+  sample_instance:
+    valuation_basis: REPLACEMENT_COST
+- concept_id: CommercialProperty.BusinessInterruptionCoverage
+  synthetic_reference: SYNTHETIC_BI_COVERAGE_001
+  sample_instance:
+    business_interruption_basis: GROSS_PROFIT
+- concept_id: CommercialProperty.IndemnityPeriod
+  synthetic_reference: SYNTHETIC_INDEMNITY_PERIOD_001
+  sample_instance:
+    indemnity_months: 12

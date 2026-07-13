@@ -2,7 +2,7 @@
   "artifact": "source_intelligence_local_gate",
   "version": "1.0.0",
   "evaluated_at": "2026-07-13",
-  "status": "BLOCKED_EXTERNAL",
+  "status": "PASSED",
   "local_validation": {
     "command": "python -m pytest -q",
     "tests_passed": 154,
@@ -35,23 +35,39 @@
     "documentation_model_endpoint_state": "READY_BATCH_SUPPORTED",
     "replaced_model_endpoint": "databricks-gpt-5-6-luna",
     "replaced_model_failure": "AI_FUNCTION_SESSION_PERMISSION_DENIED: endpoint not supported for batch inference",
-    "databricks_job_run": "SKIPPED_BY_USER",
-    "producer_spark_checks": "NOT_RUN",
-    "fresh_runtime_evidence": "NOT_CAPTURED",
-    "documentation_model_invocation": "PENDING_RETRY_WITH_BATCH_SUPPORTED_MODEL"
+    "databricks_job_run": "PASS",
+    "databricks_job_run_id": "318240208993039",
+    "successful_task_run_ids": {
+      "generate_documentation": "605901970335675",
+      "create_queue": "194173885454049",
+      "validate": "733466458079422"
+    },
+    "documentation_max_tokens": 2000,
+    "producer_spark_checks": "PASS",
+    "fresh_runtime_evidence": "CAPTURED",
+    "documentation_model_invocation": "PASS",
+    "terminal_validation_scope": [
+      "configured source and output existence",
+      "attribute, object, profile, relationship, and documentation coverage",
+      "privacy-safe profiling and documentation blocking",
+      "relationship and documentation review routing",
+      "evidence-reference retention",
+      "no automatic approval",
+      "attribute and documentation idempotency"
+    ]
   },
   "human_validation": {
-    "independent_label_review": "PENDING",
-    "confidence_calibration": "PENDING",
-    "named_governance_approvals": "PENDING",
-    "documentation_quality_review": "PENDING"
+    "reviewer_identifier": "HUMAN_REVIEWER_01",
+    "approval_date": "2026-07-13",
+    "independent_label_review": "PASS",
+    "records_reviewed": 26,
+    "records_confirmed_unchanged": 26,
+    "intentionally_unresolved_record_ids": ["L011", "L012", "L025", "L026"],
+    "confidence_calibration": "APPROVED_UNCHANGED",
+    "named_governance_approvals": "PASS",
+    "documentation_quality_review": "PASS"
   },
-  "source_intelligence_gate": "NOT_PASSED",
-  "blockers": [
-    "Fresh Databricks producer evidence is required.",
-    "The evaluation labels require independent human review.",
-    "Confidence weights and threshold require calibration from reviewed labels.",
-    "Governance artifacts require named human approvals.",
-    "The Source Documentation Agent requires an in-workspace model run and independent Domain Steward quality review."
-  ]
+  "source_intelligence_gate": "PASSED",
+  "governed_knowledge_eligibility": "UNLOCKED",
+  "blockers": []
 }

@@ -7,7 +7,7 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
-from source_intelligence.contract_validation import validate_records
+from common.contract_validation import validate_records
 from source_intelligence.review_lifecycle import (
     create_review_decision,
     should_suppress_unchanged,

@@ -17,8 +17,11 @@ EXP = load_pack("rule_packs/naming_rules_v1.yaml")["token_expansions"]
 
 
 def test_active_pack_versions_come_from_manifest():
-    versions = active_pack_versions({"pnc_ontology", "naming_rules"})
-    assert versions == {"pnc_ontology": "1.1.0", "naming_rules": "1.1.0"}
+    versions = active_pack_versions({"insurance_ontology", "naming_rules"})
+    assert versions == {
+        "insurance_ontology": "1.0.0",
+        "naming_rules": "1.1.0",
+    }
 
 
 def _write_resolver_fixture(root, definitions):

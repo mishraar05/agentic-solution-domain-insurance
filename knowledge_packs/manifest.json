@@ -3,11 +3,12 @@
   "description": "Registry of governed knowledge packs. Versions recorded here feed knowledge_pack_versions in every source_intelligence_run record.",
   "packs": [
     {
-      "pack_id": "pnc_ontology",
-      "path": "ontology/pnc_ontology_v1.json",
-      "pack_version": "1.1.0",
+      "pack_id": "insurance_ontology",
+      "path": "ontology/insurance_ontology_v1.yaml",
+      "pack_version": "1.0.0",
       "status": "PROPOSED",
-      "owner_role": "DOMAIN_STEWARD"
+      "owner_role": "DOMAIN_STEWARD",
+      "content_sha256": "6cb466cf71673f6f131c06eb97b32dd21758dd47a35caea653ea69afa90cfc28"
     },
     {
       "pack_id": "cots_like_reference",
@@ -15,6 +16,30 @@
       "pack_version": "1.0.0",
       "status": "PROPOSED",
       "owner_role": "DATA_ARCHITECT"
+    },
+    {
+      "pack_id": "cots_like_policy_admin",
+      "path": "cots_reference/cots_like_policy_admin_v1.json",
+      "pack_version": "1.0.0",
+      "status": "PROPOSED",
+      "owner_role": "DATA_ARCHITECT",
+      "content_sha256": "7b1ccb9731fd4e7e200a9b9e1041ec2f5ea938318149324b91f38117eef5022f"
+    },
+    {
+      "pack_id": "cots_like_claims_mgmt",
+      "path": "cots_reference/cots_like_claims_mgmt_v1.json",
+      "pack_version": "1.0.0",
+      "status": "PROPOSED",
+      "owner_role": "DATA_ARCHITECT",
+      "content_sha256": "875c9d7519053e9d21539a88d97ec77b17d58acff77a62575c2cc1dc77feea04"
+    },
+    {
+      "pack_id": "cots_like_billing",
+      "path": "cots_reference/cots_like_billing_v1.json",
+      "pack_version": "1.0.0",
+      "status": "PROPOSED",
+      "owner_role": "DATA_ARCHITECT",
+      "content_sha256": "09dd58d5669db9f16fe5e40e22c6ff4470f1875729a6021703c7d94a3b0e2769"
     },
     {
       "pack_id": "pnc_kpi_catalog",
@@ -26,6 +51,27 @@
     {
       "pack_id": "pnc_lob_taxonomy",
       "path": "lob_taxonomy/pnc_lob_taxonomy_v1.yaml",
+      "pack_version": "1.0.0",
+      "status": "PROPOSED",
+      "owner_role": "DOMAIN_STEWARD"
+    },
+    {
+      "pack_id": "pensions_taxonomy",
+      "path": "lob_taxonomy/pensions_taxonomy_v1.yaml",
+      "pack_version": "1.0.0",
+      "status": "PROPOSED",
+      "owner_role": "PENSIONS_DOMAIN_STEWARD"
+    },
+    {
+      "pack_id": "source_to_ontology_mapping_template",
+      "path": "mapping_templates/source_to_ontology_v1.yaml",
+      "pack_version": "1.0.0",
+      "status": "PROPOSED",
+      "owner_role": "DATA_ARCHITECT"
+    },
+    {
+      "pack_id": "document_term_to_ontology_mapping_template",
+      "path": "mapping_templates/document_term_to_ontology_v1.yaml",
       "pack_version": "1.0.0",
       "status": "PROPOSED",
       "owner_role": "DOMAIN_STEWARD"

@@ -7,7 +7,7 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 
-from source_intelligence.contract_validation import (
+from common.contract_validation import (
     ContractValidationError,
     validate_instance,
 )

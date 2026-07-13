@@ -1,0 +1,209 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Billing
+description: Billing concepts covering accounts, invoices, receivables, payment plans, transactions, and balances. Preserved from pnc_ontology/1.1.0 with stable concept IDs.
+concepts:
+- concept_id: Billing.Account
+  name: Billing Account
+  domain: Billing
+  definition: The account through which policy premiums are billed and collected.
+  synonyms:
+  - account
+  - billing entity
+  physical_name_variants:
+  - billing_account
+  - account_id
+  - acct_no
+  relationships:
+  - type: references
+    target: Shared.Party
+  - type: has_many
+    target: Billing.Invoice
+  - type: references
+    target: Billing.PaymentPlan
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SCD2
+  typical_attributes:
+  - account_number
+  - Billing.Balance
+  - account_status
+- concept_id: Billing.PaymentPlan
+  name: Payment Plan
+  domain: Billing
+  definition: Schedule defining how premium is split into installments.
+  synonyms:
+  - pay plan
+  - installment plan
+  physical_name_variants:
+  - payment_plan
+  - pay_plan_cd
+  - plan_type
+  relationships:
+  - type: describes
+    target: Billing.Account
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  status_values:
+  - FULL_PAY
+  - MONTHLY
+  - QUARTERLY
+  - SEMI_ANNUAL
+  - PAYROLL_DEDUCT
+- concept_id: Billing.Invoice
+  name: Invoice
+  domain: Billing
+  definition: A billed statement of amounts due on an account.
+  synonyms:
+  - bill
+  - statement
+  physical_name_variants:
+  - invoice
+  - invoice_id
+  - bill_no
+  relationships:
+  - type: belongs_to
+    target: Billing.Account
+  - type: has_many
+    target: Billing.Installment
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+  typical_attributes:
+  - invoice_number
+  - invoice_date
+  - due_date
+  - billed_amount
+- concept_id: Billing.Installment
+  name: Installment
+  domain: Billing
+  definition: A scheduled portion of premium due under a payment plan.
+  synonyms:
+  - payment installment
+  physical_name_variants:
+  - installment
+  - instl_no
+  - installment_due
+  relationships:
+  - type: belongs_to
+    target: Billing.Invoice
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+- concept_id: Billing.Charge
+  name: Charge
+  domain: Billing
+  definition: A billable amount (premium, tax, fee) allocated to invoices.
+  synonyms:
+  - fee
+  - billing item
+  physical_name_variants:
+  - charge
+  - charge_amt
+  - fee_amt
+  - tax_amt
+  relationships:
+  - type: belongs_to
+    target: Billing.Account
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+  steward_notes: Separate premium from taxes, surcharges, and fees — combined 'amount' columns are a classic mapping error.
+- concept_id: Billing.Payment
+  name: Billing Payment
+  domain: Billing
+  definition: A payment received against an account or invoice.
+  synonyms:
+  - premium payment
+  - receipt
+  physical_name_variants:
+  - payment
+  - pmt_amt
+  - receipt_amt
+  relationships:
+  - type: belongs_to
+    target: Billing.Account
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: INDIRECT
+  temporality: EVENT
+  typical_attributes:
+  - payment_amount
+  - payment_date
+  - payment_method
+  steward_notes: Payment method details (card/bank identifiers) are restricted; only tokenized references may appear.
+- concept_id: Billing.Disbursement
+  name: Disbursement
+  domain: Billing
+  definition: Money paid out from a billing account, e.g., a premium refund.
+  synonyms:
+  - refund
+  - payout
+  physical_name_variants:
+  - disbursement
+  - refund_amt
+  relationships:
+  - type: belongs_to
+    target: Billing.Account
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+- concept_id: Billing.Delinquency
+  name: Delinquency
+  domain: Billing
+  definition: State and process of overdue amounts, including notices and cancellation triggers.
+  synonyms:
+  - past due
+  - dunning
+  physical_name_variants:
+  - delinquency
+  - past_due_flag
+  - dunning_status
+  relationships:
+  - type: describes
+    target: Billing.Account
+  lifecycle_state: Standard
+  concept_type: STATUS
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SNAPSHOT
+  status_values:
+  - CURRENT
+  - GRACE
+  - NOTICE_SENT
+  - PENDING_CANCEL
+  - CANCELLED_NON_PAY
+- concept_id: Billing.Balance
+  name: Account Balance
+  domain: Billing
+  definition: Net amount owed on a billing account at a point in time.
+  synonyms:
+  - outstanding balance
+  physical_name_variants:
+  - balance_amt
+  - acct_balance
+  - outstanding_amt
+  relationships:
+  - type: measures
+    target: Billing.Account
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SNAPSHOT

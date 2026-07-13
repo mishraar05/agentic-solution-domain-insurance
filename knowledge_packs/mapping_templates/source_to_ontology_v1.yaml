@@ -1,0 +1,31 @@
+schema_version: 1.0.0
+pack_id: source_to_ontology_mapping_template
+pack_version: 1.0.0
+status: PROPOSED
+description: Recommendation-only template for mapping observed source structures to governed ontology concepts.
+template:
+  mapping_id: ''
+  source_system: ''
+  source_object: ''
+  source_attribute: ''
+  observed_physical_type: ''
+  observed_description: ''
+  product_area: ''
+  line_of_business: ''
+  candidate_concept_ids: []
+  proposed_concept_id: null
+  mapping_outcome: UNRESOLVED
+  transformation_recommendation: null
+  validation_recommendation: null
+  evidence_references: []
+  assumptions: []
+  contradictions: []
+  open_questions: []
+  confidence_components: {}
+  approval_state: PROPOSED
+rules:
+- Observed fields and inferred meaning must remain separate.
+- proposed_concept_id must be null when mapping_outcome is UNRESOLVED.
+- A proposed concept must come from candidate_concept_ids and the active ontology version.
+- Transformation text is a recommendation record and must never be executable code.
+- Every proposal requires exact source and knowledge-pack provenance.

@@ -1,0 +1,26 @@
+schema_version: 1.0.0
+pack_id: document_term_to_ontology_mapping_template
+pack_version: 1.0.0
+status: PROPOSED
+description: Metadata-only template for mapping an authorized document term to a governed ontology concept.
+template:
+  mapping_id: ''
+  document_metadata_id: ''
+  document_type: ''
+  product_area: ''
+  line_of_business: ''
+  source_term: ''
+  source_term_variant: ''
+  structural_context: ''
+  candidate_concept_ids: []
+  proposed_concept_id: null
+  mapped_value: null
+  ambiguity_flag: true
+  ambiguity_note: ''
+  evidence_references: []
+  approval_state: PROPOSED
+rules:
+- Raw document bodies are prohibited unless a separate authorization explicitly permits minimized use.
+- A source term never proves coverage inclusion, eligibility, or benefit entitlement by itself.
+- Unsupported or ambiguous terminology remains unresolved.
+- Model confidence is not accepted; deterministic evidence components govern routing.

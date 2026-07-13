@@ -1,0 +1,59 @@
+schema_version: 1.0.0
+example_id: SYNTHETIC_HOME_ONTOLOGY_001
+classification: SYNTHETIC_NON_PERSONAL_EXAMPLE
+ontology_pack: insurance_ontology/1.0.0
+product_area: HOME
+line_of_business: HOMEOWNERS
+reference_shape: HOME_POLICY_RISK_SHAPE
+privacy_note: >-
+  Home.ResidentialRisk carries no sample_instance even though it is INDIRECT,
+  because it is a grouping concept with no single governed attribute of its
+  own; it is represented only by an opaque synthetic_reference token.
+  Shared.Location is populated at region granularity only, never a full
+  address. Every other NONE/INDIRECT concept below is populated with a
+  clearly-synthetic illustrative value.
+concept_instances:
+- concept_id: Policy.Policy
+  synthetic_reference: SYNTHETIC_POLICY_HOME_001
+  sample_instance:
+    policy_number: SYN-HOM-0001
+    status: IN_FORCE
+- concept_id: Home.ResidentialRisk
+  synthetic_reference: SYNTHETIC_HOME_RISK_001
+- concept_id: Shared.Location
+  synthetic_reference: SYNTHETIC_LOCATION_001
+  sample_instance:
+    region: SYNTHETIC_REGION_001
+- concept_id: Home.Building
+  synthetic_reference: SYNTHETIC_BUILDING_001
+  sample_instance:
+    construction_type: FRAME
+    year_built: 1998
+- concept_id: Home.Occupancy
+  synthetic_reference: SYNTHETIC_OCCUPANCY_001
+  sample_instance:
+    occupancy_cd: OWNER_OCCUPIED
+- concept_id: Home.Tenure
+  synthetic_reference: SYNTHETIC_TENURE_001
+  sample_instance:
+    tenure: OWNER
+- concept_id: Home.HomeCoverage
+  synthetic_reference: SYNTHETIC_HOME_COVERAGE_001
+  sample_instance:
+    coverage_type: BUILDING
+    limit_amount: 350000
+    deductible_amount: 1000
+- concept_id: Home.Contents
+  synthetic_reference: SYNTHETIC_CONTENTS_001
+  sample_instance:
+    sum_insured_amount: 40000
+- concept_id: Home.ValuableItem
+  synthetic_reference: SYNTHETIC_VALUABLE_ITEM_001
+  sample_instance:
+    item_type: JEWELLERY
+    scheduled_amount: 5000
+- concept_id: Home.AlternativeAccommodation
+  synthetic_reference: SYNTHETIC_ALTERNATIVE_ACCOMMODATION_001
+  sample_instance:
+    included_flag: true
+    daily_limit_amount: 150

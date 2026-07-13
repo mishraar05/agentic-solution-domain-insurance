@@ -1,0 +1,52 @@
+schema_version: 1.0.0
+example_id: SYNTHETIC_MOTOR_ONTOLOGY_001
+classification: SYNTHETIC_NON_PERSONAL_EXAMPLE
+ontology_pack: insurance_ontology/1.0.0
+product_area: MOTOR
+line_of_business: PERS_AUTO
+reference_shape: MOTOR_POLICY_RISK_SHAPE
+privacy_note: >-
+  Concepts with privacy_sensitivity DIRECT (Motor.Driver, Motor.DriverAssignment,
+  Motor.GaragingLocation) carry no sample_instance and are represented only by
+  an opaque synthetic_reference token. Only NONE/INDIRECT concepts below are
+  populated, and every populated identifier-like value is an explicit
+  synthetic token (SYN-*), never a realistic value.
+concept_instances:
+- concept_id: Policy.Policy
+  synthetic_reference: SYNTHETIC_POLICY_MOTOR_001
+  sample_instance:
+    policy_number: SYN-MTR-0001
+    status: IN_FORCE
+- concept_id: Shared.Vehicle
+  synthetic_reference: SYNTHETIC_VEHICLE_001
+  sample_instance:
+    vin: SYN-VIN-0001
+    make: SyntheticMotors
+    model: Voyager
+    model_year: 2023
+    vehicle_use: COMMUTING
+- concept_id: Motor.Driver
+  synthetic_reference: SYNTHETIC_DRIVER_ROLE_001
+- concept_id: Motor.DriverAssignment
+  synthetic_reference: SYNTHETIC_DRIVER_ASSIGNMENT_001
+- concept_id: Motor.VehicleUse
+  synthetic_reference: SYNTHETIC_VEHICLE_USE_001
+  sample_instance:
+    vehicle_use: COMMUTING
+- concept_id: Motor.MotorCoverage
+  synthetic_reference: SYNTHETIC_MOTOR_COVERAGE_001
+  sample_instance:
+    coverage_type: COMPREHENSIVE
+    limit_amount: 50000
+    deductible_amount: 500
+- concept_id: Motor.NoClaimsDiscount
+  synthetic_reference: SYNTHETIC_NCD_001
+  sample_instance:
+    no_claims_years: 5
+    protected_flag: true
+- concept_id: Motor.RegistrationIdentifier
+  synthetic_reference: SYNTHETIC_REGISTRATION_001
+  sample_instance:
+    registration_number: SYN-REG-0001
+- concept_id: Motor.GaragingLocation
+  synthetic_reference: SYNTHETIC_GARAGING_LOCATION_001

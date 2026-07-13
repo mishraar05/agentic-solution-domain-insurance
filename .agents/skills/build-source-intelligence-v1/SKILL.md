@@ -15,7 +15,7 @@ prompt-eligible context; do not add vector search.
  1. Discover and work from the repository root.
 2. Read the Source Intelligence section of `docs/planning/IMPLEMENTATION_PLAN.md`, existing notebooks, contracts, tests, and governance decisions.
 3. Require a defined evidence policy before profiling or retaining evidence. Stop and report missing governance rather than inventing permission.
-4. Preserve existing consumer projections and evidence while adding the smallest complete vertical slice.
+4. Preserve existing consumer projections and evidence while adding a minimal viable product that includes all necessary features for functionality.
 5. Treat source/Bronze tables as external read-only inputs. Never create, ingest, overwrite, or populate them. Keep synthetic setup in the isolated `examples/synthetic_bronze/` harness.
 
 ## Define contracts before producers

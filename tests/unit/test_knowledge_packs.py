@@ -1,38 +1,68 @@
 """Validate governed knowledge-pack integrity and cross-references."""
-import json
 import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
+
+from governed_knowledge_foundation.knowledge_pack_io import (  # noqa: E402
+    load_federated_ontology,
+    load_knowledge_pack,
+)
 
 PACK_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "knowledge_packs")
 
 
 def _load(rel):
-    with open(os.path.join(PACK_DIR, rel), "r", encoding="utf-8") as handle:
-        if rel.endswith((".yaml", ".yml")):
-            import yaml
-            return yaml.safe_load(handle)
-        return json.load(handle)
+    return load_knowledge_pack(os.path.join(PACK_DIR, rel))
 
 
 def _ontology_ids():
-    return {c["concept_id"] for c in _load("ontology/pnc_ontology_v1.json")["concepts"]}
+    return {
+        c["concept_id"]
+        for c in _load("ontology/insurance_ontology_v1.yaml")["concepts"]
+    }
 
 
 class TestOntologyPack:
+    def test_federated_yaml_is_the_only_registered_canonical_representation(self):
+        yaml_path = os.path.join(
+            PACK_DIR, "ontology", "insurance_ontology_v1.yaml"
+        )
+        json_path = os.path.join(
+            PACK_DIR, "ontology", "insurance_ontology_v1.json"
+        )
+        manifest = _load("manifest.json")
+        entry = next(
+            item for item in manifest["packs"]
+            if item["pack_id"] == "insurance_ontology"
+        )
+
+        assert os.path.isfile(yaml_path)
+        assert not os.path.exists(json_path)
+        assert entry["path"] == "ontology/insurance_ontology_v1.yaml"
+        _, bundle_fingerprint = load_federated_ontology(yaml_path)
+        assert bundle_fingerprint == entry["content_sha256"]
+
     def test_loads_with_unique_concept_ids(self):
-        pack = _load("ontology/pnc_ontology_v1.json")
+        pack = _load("ontology/insurance_ontology_v1.yaml")
         ids = [c["concept_id"] for c in pack["concepts"]]
         assert len(ids) == len(set(ids))
+        assert len(ids) == 124
+        assert sum(
+            len(concept.get("relationships", []))
+            for concept in pack["concepts"]
+        ) == 167
         assert pack["status"] == "PROPOSED"
 
     def test_relationship_targets_resolve(self):
-        pack = _load("ontology/pnc_ontology_v1.json")
+        pack = _load("ontology/insurance_ontology_v1.yaml")
         ids = {c["concept_id"] for c in pack["concepts"]}
         for concept in pack["concepts"]:
             for rel in concept.get("relationships", []):
                 assert rel["target"] in ids, f"{concept['concept_id']} -> {rel['target']}"
 
     def test_domains_are_declared(self):
-        pack = _load("ontology/pnc_ontology_v1.json")
+        pack = _load("ontology/insurance_ontology_v1.yaml")
         for concept in pack["concepts"]:
             assert concept["domain"] in pack["domains"]
 

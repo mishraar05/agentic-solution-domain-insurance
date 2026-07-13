@@ -15,7 +15,7 @@ import hashlib
 import json
 import os
 
-from source_intelligence.contract_validation import validate_records
+from common.contract_validation import validate_records
 
 
 PROMPT_VERSION = "1.0.1"

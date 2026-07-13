@@ -1,0 +1,37 @@
+schema_version: 1.0.0
+example_id: SYNTHETIC_PENSIONS_ONTOLOGY_001
+classification: SYNTHETIC_NON_PERSONAL_EXAMPLE
+ontology_pack: insurance_ontology/1.0.0
+product_area: PENSIONS
+line_of_business: PENSIONS
+reference_shape: PENSION_MEMBER_ACCOUNT_SHAPE
+privacy_note: >-
+  Pensions is the most privacy-sensitive domain in this ontology: most of its
+  concepts are DIRECT (Member, Account, Contribution, FundHolding, Valuation,
+  Benefit, Beneficiary, RetirementEvent, ProjectedBenefit) and carry no
+  sample_instance, only an opaque synthetic_reference token. Employer and
+  PensionAdministrator are INDIRECT but are also left as tokens here rather
+  than populated, because a scheme sponsor or administrator name is
+  organization-identifying context this example does not need to
+  demonstrate. Only Pensions.Scheme and Pensions.InvestmentFund (NONE) carry
+  a sample_instance. No member identity, account value, contribution amount,
+  beneficiary detail, health data, or projection value is included anywhere.
+concept_instances:
+- concept_id: Pensions.Scheme
+  synthetic_reference: SYNTHETIC_SCHEME_001
+  sample_instance:
+    scheme_type: DEFINED_CONTRIBUTION
+- concept_id: Pensions.Employer
+  synthetic_reference: SYNTHETIC_EMPLOYER_001
+- concept_id: Pensions.Member
+  synthetic_reference: SYNTHETIC_MEMBER_ROLE_001
+- concept_id: Pensions.Account
+  synthetic_reference: SYNTHETIC_PENSION_ACCOUNT_001
+- concept_id: Pensions.InvestmentFund
+  synthetic_reference: SYNTHETIC_INVESTMENT_FUND_001
+  sample_instance:
+    fund_code: SYN-FUND-GLOBAL-EQUITY
+- concept_id: Pensions.Benefit
+  synthetic_reference: SYNTHETIC_BENEFIT_001
+- concept_id: Pensions.PensionAdministrator
+  synthetic_reference: SYNTHETIC_ADMINISTRATOR_001

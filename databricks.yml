@@ -4,7 +4,7 @@ bundle:
 variables:
   engagement_id:
     description: Governed engagement or pilot identifier
-    default: free-edition-synthetic-mvp
+    default: synthetic-insurance-mvp
   source_catalog:
     description: Catalog containing existing read-only source tables
     default: workspace

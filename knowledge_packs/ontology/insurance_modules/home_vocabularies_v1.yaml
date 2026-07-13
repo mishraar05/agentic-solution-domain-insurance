@@ -1,0 +1,28 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Home
+description: Home product controlled vocabularies and reference shapes for homeowners, renters and condo, and dwelling-fire risks.
+controlled_vocabularies:
+- vocabulary_id: HOME_OCCUPANCY
+  name: Home Occupancy
+  values: [OWNER_OCCUPIED, TENANT_OCCUPIED, SEASONAL, VACANT, UNOCCUPIED, OTHER]
+  steward_note: Vacancy and unoccupancy are distinct and require source-specific definitions.
+- vocabulary_id: HOME_TENURE
+  name: Home Tenure
+  values: [OWNER, TENANT, LANDLORD, CONDO_OWNER, OTHER]
+  steward_note: Party identity remains governed separately from tenure role.
+- vocabulary_id: HOME_COVERAGE_TYPE
+  name: Home Coverage Type
+  values: [BUILDING, CONTENTS, LIABILITY, ACCIDENTAL_DAMAGE, LOSS_OF_USE, VALUABLE_ITEMS, OTHER]
+  steward_note: Coverage inclusion cannot be inferred from a label alone.
+reference_shapes:
+- shape_id: HOME_POLICY_RISK_SHAPE
+  root_concept_id: Home.ResidentialRisk
+  required_concept_ids: [Shared.Location]
+  optional_concept_ids: [Home.Building, Home.Contents, Home.Occupancy, Home.Tenure, Home.Construction, Home.HomeCoverage]
+- shape_id: HOME_COVERAGE_SHAPE
+  root_concept_id: Home.HomeCoverage
+  required_concept_ids: [Policy.Policy]
+  optional_concept_ids: [Home.AccidentalDamage, Home.ValuableItem, Home.AlternativeAccommodation, Coverage.Limit, Coverage.Deductible]

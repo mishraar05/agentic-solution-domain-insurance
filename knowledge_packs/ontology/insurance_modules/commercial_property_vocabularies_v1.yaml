@@ -1,0 +1,28 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: CommercialProperty
+description: Commercial property controlled vocabularies and reference shapes for premises, buildings, business exposures, property coverage, and business interruption.
+controlled_vocabularies:
+- vocabulary_id: COMMERCIAL_PROPERTY_OCCUPANCY
+  name: Commercial Property Occupancy
+  values: [OFFICE, RETAIL, INDUSTRIAL, WAREHOUSE, HOSPITALITY, MIXED, VACANT, OTHER]
+  steward_note: Business activity and occupancy are separate governed concepts.
+- vocabulary_id: COMMERCIAL_PROPERTY_VALUATION
+  name: Commercial Property Valuation Basis
+  values: [REPLACEMENT_COST, ACTUAL_CASH_VALUE, AGREED_VALUE, MARKET_VALUE, OTHER]
+  steward_note: No basis may be inferred from amount alone.
+- vocabulary_id: BUSINESS_INTERRUPTION_BASIS
+  name: Business Interruption Basis
+  values: [GROSS_PROFIT, GROSS_REVENUE, RENTAL_INCOME, EXTRA_EXPENSE, OTHER]
+  steward_note: Calculation rules require separately governed evidence.
+reference_shapes:
+- shape_id: COMMERCIAL_PROPERTY_RISK_SHAPE
+  root_concept_id: CommercialProperty.Premises
+  required_concept_ids: [Shared.Location]
+  optional_concept_ids: [CommercialProperty.Building, CommercialProperty.BusinessActivity, CommercialProperty.Occupancy, CommercialProperty.Construction, CommercialProperty.Stock, CommercialProperty.Equipment]
+- shape_id: BUSINESS_INTERRUPTION_SHAPE
+  root_concept_id: CommercialProperty.BusinessInterruptionCoverage
+  required_concept_ids: [Policy.Policy, CommercialProperty.BusinessActivity]
+  optional_concept_ids: [CommercialProperty.IndemnityPeriod, Coverage.Limit, Coverage.Deductible]

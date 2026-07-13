@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Governed Knowledge Foundation"
+  short_description: "Build governed COTS and ontology knowledge"
+  default_prompt: "Use $build-governed-knowledge-foundation to implement the next governed knowledge work package."

@@ -1,10 +1,10 @@
-﻿# Source Intelligence Foundation Readiness Report
+# Source Intelligence Foundation Readiness Report
 
 **Artifact:** `SOURCE_INTELLIGENCE_FOUNDATION_READINESS.md`
 **Version:** 0.1.0
 **Date:** 2026-07-12
 **Author:** Agent (Cline)
-**Status:** PROPOSED
+**Status:** SUPERSEDED BY PASSED SOURCE INTELLIGENCE GATE (2026-07-13)
 
 ## Work packages completed
 
@@ -75,22 +75,26 @@
 - **Evidence coverage floor:** 0.60 - below this, forced review
 - **No hardcoded scores** - all confidence values computed from components
 
-## Remaining human approvals
+## Human approvals
 
-| Decision | Owner (placeholder) |
+| Decision | Approved reviewer identifier |
 |---|---|
-| Confirm Policy as first-release scope | Data Architect |
-| Approve evidence classification matrix | Privacy Steward |
-| Assign named reviewers | Architecture Lead |
-| Confirm confidence weights and coverage floor | AI/ML Engineer |
-| Assign evaluation owner | Evaluation Owner |
-| Assign sponsor | Sponsor |
+| Confirm Policy as first-release scope | `HUMAN_REVIEWER_01` |
+| Approve evidence classification matrix | `HUMAN_REVIEWER_01` |
+| Assign named reviewers | `HUMAN_REVIEWER_01` |
+| Confirm confidence weights and coverage floor | `HUMAN_REVIEWER_01` |
+| Assign evaluation owner | `HUMAN_REVIEWER_01` |
+| Assign sponsor | `HUMAN_REVIEWER_01` |
 
-All governance artifacts remain PROPOSED. No artifact is authoritative until human review.
+Governance artifacts were approved on 2026-07-13. Current evidence is recorded
+in `SOURCE_INTELLIGENCE_COMPLETION_STATUS.md` and
+`source_intelligence_local_gate.json`.
 
 ## Decision: May Source Intelligence producers proceed?
 
-**YES - in a PROPOSED capacity.** Contracts, synthetic fixtures, and tests may proceed under PROPOSED governance. Outputs remain non-authoritative. Organizational data, publication, promotion, and approval require approved governance.
+**YES - under approved governance.** Governed Knowledge Foundation may proceed. Outputs remain
+recommendations until their routed human decisions; source access remains
+read-only and prohibited evidence remains prohibited.
 
 Source Intelligence producers (Databricks notebooks that use the deterministic core) may be implemented. Their outputs must:
 1. Validate against contracts before persistence

@@ -1,0 +1,95 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+format: FEDERATED_ONTOLOGY
+description: Repository-authored, vendor-neutral insurance ontology covering Policy, Claims, Billing, shared concepts, Motor, Home, Commercial Property, and an isolated Pensions domain. Recommendation-only synthetic learning content; not derived from licensed material.
+domains:
+- Policy
+- Claims
+- Billing
+- Shared
+- Risk
+- Document
+- Motor
+- Home
+- CommercialProperty
+- Pensions
+product_areas:
+- product_area_id: MOTOR
+  name: Motor Insurance
+  domain: Motor
+  line_of_business_ids:
+  - PERS_AUTO
+  - COMM_AUTO
+  - MOTORCYCLE_RV
+- product_area_id: HOME
+  name: Home Insurance
+  domain: Home
+  line_of_business_ids:
+  - HOMEOWNERS
+  - RENTERS_CONDO
+  - DWELLING_FIRE
+- product_area_id: COMMERCIAL_PROPERTY
+  name: Commercial Property Insurance
+  domain: CommercialProperty
+  line_of_business_ids:
+  - COMM_PROPERTY
+  - BOP
+- product_area_id: PENSIONS
+  name: Pensions and Retirement
+  domain: Pensions
+  line_of_business_ids:
+  - PENSIONS
+enums:
+  concept_type:
+  - ENTITY
+  - ATTRIBUTE
+  - MEASURE
+  - STATUS
+  - DATE
+  - CODE
+  - EVENT
+  privacy_sensitivity:
+  - NONE
+  - INDIRECT
+  - DIRECT
+  temporality:
+    STATIC: slowly changing reference
+    SCD2: track full history in Silver
+    EVENT: immutable event/transaction grain
+    SNAPSHOT: point-in-time balance; requires as-of snapshots
+module_files:
+- domain: Policy
+  path: insurance_modules/policy_concepts_v1.yaml
+- domain: Claims
+  path: insurance_modules/claims_concepts_v1.yaml
+- domain: Billing
+  path: insurance_modules/billing_concepts_v1.yaml
+- domain: Shared
+  path: insurance_modules/shared_concepts_v1.yaml
+- domain: Risk
+  path: insurance_modules/risk_concepts_v1.yaml
+- domain: Document
+  path: insurance_modules/document_concepts_v1.yaml
+- domain: Motor
+  path: insurance_modules/motor_concepts_v1.yaml
+- domain: Home
+  path: insurance_modules/home_concepts_v1.yaml
+- domain: CommercialProperty
+  path: insurance_modules/commercial_property_concepts_v1.yaml
+- domain: Pensions
+  path: insurance_modules/pensions_concepts_v1.yaml
+vocabulary_files:
+- domain: Motor
+  path: insurance_modules/motor_vocabularies_v1.yaml
+- domain: Home
+  path: insurance_modules/home_vocabularies_v1.yaml
+- domain: CommercialProperty
+  path: insurance_modules/commercial_property_vocabularies_v1.yaml
+- domain: Pensions
+  path: insurance_modules/pensions_vocabularies_v1.yaml
+- domain: Risk
+  path: insurance_modules/risk_vocabularies_v1.yaml
+- domain: Document
+  path: insurance_modules/document_vocabularies_v1.yaml

@@ -1,0 +1,16 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Document
+description: Document metadata controlled vocabularies and reference shapes; document bodies and sensitive narrative content remain prohibited evidence.
+controlled_vocabularies:
+- vocabulary_id: DOCUMENT_TYPE
+  name: Document Type
+  values: [POLICY_WORDING, POLICY_SCHEDULE, ENDORSEMENT, CLAIM_DOCUMENT, MEMBER_STATEMENT, OTHER]
+  steward_note: Type classification never authorizes body-content retrieval.
+reference_shapes:
+- shape_id: DOCUMENT_METADATA_SHAPE
+  root_concept_id: Document.Document
+  required_concept_ids: []
+  optional_concept_ids: [Document.PolicyWording, Document.PolicySchedule, Document.EndorsementDocument, Document.ClaimDocument, Document.MemberStatement]

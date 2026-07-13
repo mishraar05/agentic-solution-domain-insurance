@@ -2,9 +2,9 @@
 
 ## 1. Purpose and delivery outcome
 
-Build a governed, recommendation-only solution that analyzes approved source metadata and evidence, creates a reviewable source data dictionary, maps concepts to a P&C ontology, and recommends Silver ODS models, Gold data products, and source-to-target mappings (STTMs).
+Build a governed, recommendation-only solution that analyzes approved source metadata and evidence, creates a reviewable source data dictionary, maps concepts to a federated insurance ontology, and recommends Silver ODS models, Gold data products, and source-to-target mappings (STTMs).
 
-The first implementation is a **Databricks Free Edition-safe MVP** using synthetic data only. It proves the workflow and artifact contracts before any real organizational data is considered.
+The first implementation is an **environment-neutral Databricks MVP** using synthetic data only. It proves the workflow and artifact contracts before any real organizational data is considered.
 
 ### MVP success statement
 
@@ -13,7 +13,7 @@ For one synthetic P&C source and a bounded Policy/Claims scope, the solution pro
 ## 2. Delivery guardrails
 
 - **Recommendation-only:** no agent deploys schemas, runs transformations against operational data, or modifies source systems.
-- **Free Edition safety:** use synthetic data and approved public learning material only. Do not use client data, PII, proprietary COTS documentation, credentials, or production connection strings.
+- **Synthetic development safety:** use synthetic data and approved public learning material only. Do not use client data, PII, proprietary COTS documentation, credentials, or production connection strings.
 - **Evidence first:** physical source observations, semantic inference, confidence, assumptions, and approvals must remain separate fields.
 - **Human authority:** an architect, domain steward, or privacy steward approves material recommendations.
 - **Versioned artifacts:** every run records the source scope, knowledge versions, run ID, artifact version, and reviewer decision.
@@ -23,37 +23,37 @@ For one synthetic P&C source and a bounded Policy/Claims scope, the solution pro
 
 ```mermaid
 flowchart LR
-    A["Phase 0<br/>Decide pilot"] --> B["Phase 1<br/>Foundation"]
-    B --> C["Phase 2<br/>Source Intelligence"]
-    C --> D["Phase 3<br/>COTS & ontology knowledge"]
-    D --> E["Phase 4<br/>Silver and Gold recommendations"]
-    E --> F["Phase 5<br/>STTM, trust and review"]
-    F --> G["Phase 6<br/>Evaluate and promote"]
+    A["Solution Governance<br/>Define controls"] --> B["Solution Foundation<br/>Synthetic foundation"]
+    B --> C["Source Intelligence<br/>Observe and infer sources"]
+    C --> D["Governed Knowledge Foundation<br/>COTS & ontology knowledge"]
+    D --> E["Target Model Recommendations<br/>Silver and Gold recommendations"]
+    E --> F["STTM Trust and Review<br/>STTM, trust and review"]
+    F --> G["Evaluation and Promotion<br/>Evaluate and promote"]
 ```
 
-## 4. Phase 0 — Pilot inception and design decisions
+## 4. Solution Governance — Scope and control decisions
 
 **Objective:** create a controlled build boundary before any source or knowledge asset is added.
 
 | Activity | Deliverable | Owner | Exit condition |
 |---|---|---|---|
-| Select the pilot source | Source/product/module/version decision record | Data architect | One source family and one scope are named. |
+| Select the governed source scope | Source/product/module/version decision record | Data architect | One source family and one scope are named. |
 | Select the domain boundary | Policy or Claims first-release scope | Architect + domain steward | In-scope and excluded objects are explicit. |
 | Define permitted evidence | Evidence-classification matrix | Privacy steward + platform owner | Metadata, profile, sample, and narrative rules are signed off. |
 | Name reviewers | RACI and service-level target | Architecture lead | Architect, domain steward, and privacy reviewer are available. |
 | Define evaluation approach | Labelled test-set plan and confidence policy | Evaluation owner | Review decisions can be used to measure quality. |
-| Define success targets | Pilot scorecard | Sponsor | Quality, cost, latency, and throughput targets are agreed. |
+| Define success targets | Evaluation and promotion scorecard | Sponsor | Quality, cost, latency, and throughput targets are agreed. |
 
 ### Required decisions
 
-1. Which product, module, version, and domain/LOB forms the first pilot?
+1. Which product, module, version, and domain/LOB forms the governed scope?
 2. Which users can read metadata and approved profiles?
 3. Which evidence classes may be indexed, retained, or used as prompt context?
 4. What score requires mandatory review?
 5. What is the expected reviewer turnaround time?
-6. What signals constitute a go/no-go decision after the pilot?
+6. What signals constitute a continue, stop, or promotion decision?
 
-## 5. Phase 1 — Free Edition MVP foundation
+## 5. Solution Foundation — Synthetic MVP foundation
 
 **Objective:** prove the recommendation workflow against configured existing source tables and establish durable artifact schemas. Synthetic source creation is an optional, separate demonstration process and is not part of the solution boundary.
 
@@ -78,7 +78,7 @@ flowchart LR
 
 For demonstrations only, `examples/synthetic_bronze/` may provision a disposable synthetic source in a separate job. The core workflow never invokes it.
 
-### Phase 1 acceptance gate
+### Solution Foundation acceptance gate
 
 - All configured source tables pass read-only preflight and both recommendation output tables exist.
 - Every dictionary row includes physical type, proposed meaning, confidence, privacy classification, run ID, and approval state.
@@ -86,7 +86,7 @@ For demonstrations only, `examples/synthetic_bronze/` may provision a disposable
 - At least one relationship and one privacy-relevant entry reach the review queue.
 - The validation notebook completes successfully.
 
-## 6. Phase 2 — Source Intelligence Agent v1
+## 6. Source Intelligence — Source Intelligence Agent v1
 
 **Objective:** replace the initial static rules with a reusable, transparent source-analysis service.
 
@@ -120,16 +120,20 @@ For demonstrations only, `examples/synthetic_bronze/` may provision a disposable
 - Test missing metadata, conflicting key patterns, and incomplete profiles.
 - Test that disallowed evidence classes are rejected before profiling or retrieval.
 
-### Phase 2 acceptance gate
+### Source Intelligence acceptance gate
 
 - At least 90% of synthetic fields receive a proposed semantic classification.
 - 100% of records retain physical metadata and evidence references.
 - Known primary/foreign-key relationships are proposed with the expected evidence.
 - Low-confidence and privacy-relevant entries are routed to review.
 
-## 7. Phase 3 — Governed COTS knowledge and P&C ontology
+## 7. Governed Knowledge Foundation — Governed COTS knowledge and insurance ontology
 
 **Objective:** add authorized, version-specific knowledge without treating model memory as authoritative.
+
+**Execution package:** [`GOVERNED_KNOWLEDGE_FOUNDATION_WORK_PACKAGE.md`](GOVERNED_KNOWLEDGE_FOUNDATION_WORK_PACKAGE.md)
+
+**Status:** READY — Source Intelligence gate passed on 2026-07-13. The active `insurance_ontology / 1.0.0` bundle covers functional insurance domains plus Motor, Home, Commercial Property, and isolated Pensions; the vendor-neutral synthetic `cots_like_suite / 1.0.0` baseline retains separate Policy Admin, Claims Management, and Billing packs. Real-vendor claims remain prohibited until an exact licensed pack is authorized in a customer environment.
 
 ### Knowledge-pack structure
 
@@ -143,19 +147,19 @@ For demonstrations only, `examples/synthetic_bronze/` may provision a disposable
 
 ### Delivery approach
 
-1. Start with a small approved ontology for Policy, Party, and Claims.
+1. Use the federated ontology root and separately governed domain/product-area modules; unsupported concepts remain unresolved.
 2. Load only authorized, sanitized COTS reference material for one product/module/version.
 3. Version every pack and require a knowledge owner.
 4. Use structured lookup rules before semantic retrieval.
 5. Introduce AI Search only after evidence classification and knowledge-pack controls are proven.
 
-### Phase 3 acceptance gate
+### Governed Knowledge Foundation acceptance gate
 
 - Every COTS match identifies the exact product/module/version knowledge pack used.
 - Unmatched structures are reported as customizations or unresolved; they are never forced into a known pattern.
 - Standard concepts, specializations, source extensions, candidates, and unresolved items use distinct lifecycle states.
 
-## 8. Phase 4 — Ontology, Silver ODS, and Gold recommendation agents
+## 8. Target Model Recommendations — Ontology, Silver ODS, and Gold recommendation agents
 
 **Objective:** move from understanding the source to recommending governed target models.
 
@@ -185,13 +189,13 @@ For demonstrations only, `examples/synthetic_bronze/` may provision a disposable
 - Separate approved business rules from inferred rules.
 - Require review for keys, relationships, grain, derived financial measures, privacy class, and ontology extensions.
 
-### Phase 4 acceptance gate
+### Target Model Recommendations acceptance gate
 
 - Each selected source object has an approved or unresolved ontology mapping.
 - At least one Silver entity and one Gold data product are fully traceable to source observations.
 - Each recommendation has evidence, confidence reasons, assumptions, contradictions, and a reviewer status.
 
-## 9. Phase 5 — STTM, trust evaluation, and human review
+## 9. STTM Trust and Review — STTM, trust evaluation, and human review
 
 **Objective:** complete the governed recommendation lifecycle.
 
@@ -227,13 +231,13 @@ The confidence score must be derived from component evidence rather than LLM sel
 5. Invalidate only downstream dependent artifacts after a material decision changes.
 6. Publish approved artifacts as filtered, versioned context for future runs.
 
-### Phase 5 acceptance gate
+### STTM Trust and Review acceptance gate
 
 - Every material recommendation appears in an approval record.
 - Rejected or modified recommendations retain rationale and do not silently reappear unchanged.
 - An affected Silver decision triggers targeted downstream re-evaluation rather than a full pipeline reset.
 
-## 10. Phase 6 — Evaluation, operationalization, and promotion decision
+## 10. Evaluation and Promotion — Evaluation, operationalization, and promotion decision
 
 **Objective:** decide whether the prototype is ready for a controlled business evaluation environment.
 
@@ -251,7 +255,7 @@ The confidence score must be derived from component evidence rather than LLM sel
 
 ### Promotion criteria
 
-Move from Free Edition to a business trial or paid Databricks workspace before using organizational data. Promotion requires:
+Before using organizational data, move to an authorized customer environment. Promotion requires:
 
 - A named business sponsor and data owner.
 - An approved security, privacy, retention, and access-control design.
@@ -273,7 +277,7 @@ Move from Free Edition to a business trial or paid Databricks workspace before u
 
 ## 12. Immediate next actions
 
-1. Run the five MVP notebooks in Databricks Free Edition.
+1. Run the five MVP notebooks in the configured Databricks workspace.
 2. Save the resulting table counts and screenshots from the validation notebook.
 3. Decide whether the first real pilot will begin with Policy or Claims.
 4. Create the evidence-classification matrix and name the three reviewer roles.

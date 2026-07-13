@@ -1,0 +1,462 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Claims
+description: Claims management concepts covering claims, loss events, reserves, payments, parties, and lifecycle attributes. Preserved from pnc_ontology/1.1.0 with stable concept IDs.
+concepts:
+- concept_id: Claim.Claim
+  name: Claim
+  domain: Claims
+  definition: A demand for payment under a policy arising from a loss event.
+  synonyms:
+  - loss claim
+  physical_name_variants:
+  - claim
+  - clm
+  - claim_master
+  relationships:
+  - type: references
+    target: Policy.Policy
+  - type: has_many
+    target: Claim.Exposure
+  - type: references
+    target: Claim.LossEvent
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SCD2
+  typical_attributes:
+  - Claim.Identifier
+  - Claim.Status
+  - Claim.LossDate
+  - Claim.ReportedDate
+  - Claim.CauseOfLoss
+  steward_notes: Claim-level state changes matter for cycle-time analytics; retain status history, not just current status.
+- concept_id: Claim.Identifier
+  name: Claim Identifier
+  domain: Claims
+  definition: System-assigned unique identifier of a claim.
+  synonyms:
+  - claim id
+  - claim key
+  physical_name_variants:
+  - claim_id
+  - clm_id
+  - claim_no
+  - claim_public_id
+  relationships:
+  - type: identifies
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: ATTRIBUTE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Claim.Status
+  name: Claim Status
+  domain: Claims
+  definition: Lifecycle state of the claim.
+  synonyms:
+  - claim state
+  physical_name_variants:
+  - claim_status
+  - clm_stat_cd
+  - claim_state
+  relationships:
+  - type: describes
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: STATUS
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  status_values:
+  - OPEN
+  - REOPENED
+  - CLOSED
+  - CLOSED_NO_PAY
+  - DENIED
+  - IN_LITIGATION
+  - SUBROGATION
+- concept_id: Claim.LossDate
+  name: Loss Date
+  domain: Claims
+  definition: Date the insured loss event occurred.
+  synonyms:
+  - date of loss
+  - occurrence date
+  - DOL
+  physical_name_variants:
+  - loss_date
+  - loss_dt
+  - dol
+  - occurrence_dt
+  relationships:
+  - type: describes
+    target: Claim.LossEvent
+  lifecycle_state: Standard
+  concept_type: DATE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  steward_notes: Anchor for accident-year analytics; must fall within a policy term for coverage verification.
+- concept_id: Claim.ReportedDate
+  name: Reported Date
+  domain: Claims
+  definition: Date the loss was reported to the insurer.
+  synonyms:
+  - notification date
+  - FNOL date
+  physical_name_variants:
+  - report_date
+  - reported_dt
+  - fnol_dt
+  - notice_dt
+  relationships:
+  - type: describes
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: DATE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Claim.ClosedDate
+  name: Closed Date
+  domain: Claims
+  definition: Date the claim was closed.
+  synonyms:
+  - closure date
+  physical_name_variants:
+  - closed_date
+  - close_dt
+  - closure_dt
+  relationships:
+  - type: describes
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: DATE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Claim.LossEvent
+  name: Loss Event
+  domain: Claims
+  definition: The occurrence giving rise to one or more claims.
+  synonyms:
+  - occurrence
+  - event
+  physical_name_variants:
+  - loss_event
+  - occurrence
+  - event_id
+  relationships:
+  - type: has_many
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+- concept_id: Claim.CatastropheCode
+  name: Catastrophe Code
+  domain: Claims
+  definition: Industry or internal code identifying a catastrophe event a claim belongs to.
+  synonyms:
+  - cat code
+  - PCS code
+  physical_name_variants:
+  - cat_code
+  - catastrophe_cd
+  - pcs_cat_no
+  relationships:
+  - type: describes
+    target: Claim.LossEvent
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  steward_notes: Cat vs non-cat split is mandatory in most loss reporting; keep the code even when null-heavy.
+- concept_id: Claim.CauseOfLoss
+  name: Cause of Loss
+  domain: Claims
+  definition: 'Peril or cause classification of the loss: collision, wind, hail, fire, theft, water.'
+  synonyms:
+  - peril
+  - loss cause
+  physical_name_variants:
+  - cause_of_loss
+  - peril_cd
+  - loss_cause_cd
+  relationships:
+  - type: describes
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Claim.Claimant
+  name: Claimant
+  domain: Claims
+  definition: Party asserting damages under a claim; may or may not be the insured.
+  synonyms:
+  - injured party
+  - third party
+  physical_name_variants:
+  - claimant
+  - claimant_id
+  - third_party_id
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  - type: belongs_to
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: DIRECT
+  temporality: STATIC
+  steward_notes: Claimant data is personal data by default; injury details may be special-category.
+- concept_id: Claim.Exposure
+  name: Exposure
+  domain: Claims
+  definition: A claimant-coverage pairing within a claim tracked for reserving and payment.
+  synonyms:
+  - claim feature
+  - subclaim
+  - claim line
+  physical_name_variants:
+  - exposure
+  - claim_feature
+  - subclaim
+  relationships:
+  - type: belongs_to
+    target: Claim.Claim
+  - type: references
+    target: Shared.Coverage
+  - type: references
+    target: Claim.Claimant
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SCD2
+  typical_attributes:
+  - exposure_type
+  - Claim.Reserve
+  - Claim.Status
+- concept_id: Claim.Reserve
+  name: Reserve
+  domain: Claims
+  definition: Estimated amount set aside for unpaid claim obligations.
+  synonyms:
+  - case reserve
+  - outstanding reserve
+  physical_name_variants:
+  - reserve_amt
+  - case_reserve
+  - os_reserve
+  relationships:
+  - type: measures
+    target: Claim.Exposure
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SNAPSHOT
+  steward_notes: Reserve history (triangles) requires point-in-time snapshots; never keep only the latest value.
+- concept_id: Claim.ReserveType
+  name: Reserve Type
+  domain: Claims
+  definition: 'Classification of a reserve: indemnity, expense, ALAE, ULAE.'
+  synonyms:
+  - reserve category
+  physical_name_variants:
+  - reserve_type_cd
+  - rsv_type
+  relationships:
+  - type: describes
+    target: Claim.Reserve
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  status_values:
+  - INDEMNITY
+  - EXPENSE_ALAE
+  - EXPENSE_ULAE
+  - LEGAL
+- concept_id: Claim.Payment
+  name: Claim Payment
+  domain: Claims
+  definition: An indemnity or expense payment issued against a claim exposure.
+  synonyms:
+  - indemnity payment
+  - loss payment
+  physical_name_variants:
+  - claim_payment
+  - pay_amt
+  - paid_loss
+  relationships:
+  - type: belongs_to
+    target: Claim.Exposure
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+  typical_attributes:
+  - payment_amount
+  - payment_type
+  - payment_date
+  - payee
+- concept_id: Claim.PaymentType
+  name: Claim Payment Type
+  domain: Claims
+  definition: 'Classification of a claim payment: indemnity vs expense; partial vs final.'
+  synonyms:
+  - pay type
+  physical_name_variants:
+  - pay_type_cd
+  - payment_category
+  relationships:
+  - type: describes
+    target: Claim.Payment
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  status_values:
+  - INDEMNITY
+  - EXPENSE_ALAE
+  - EXPENSE_ULAE
+  - MEDICAL
+  - LEGAL
+  - FINAL
+  - PARTIAL
+- concept_id: Claim.ClaimedAmount
+  name: Claimed Amount
+  domain: Claims
+  definition: Amount demanded or estimated for a claim.
+  synonyms:
+  - claim amount
+  - demand amount
+  physical_name_variants:
+  - claimed_amount
+  - claim_amt
+  - demand_amt
+  relationships:
+  - type: measures
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Claim.IncurredLoss
+  name: Incurred Loss
+  domain: Claims
+  definition: Paid losses plus outstanding reserves for a claim or period.
+  synonyms:
+  - incurred
+  physical_name_variants:
+  - incurred_loss
+  - incurred_amt
+  relationships:
+  - type: derives_from
+    target: Claim.Payment
+  - type: derives_from
+    target: Claim.Reserve
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SNAPSHOT
+  steward_notes: Derived measure; state whether net of recoveries and whether LAE is included.
+- concept_id: Claim.LAE
+  name: Loss Adjustment Expense
+  domain: Claims
+  definition: Expenses of investigating and settling claims, allocated (ALAE) or unallocated (ULAE).
+  synonyms:
+  - ALAE
+  - ULAE
+  - adjustment expense
+  physical_name_variants:
+  - lae_amt
+  - alae_amt
+  - ulae_amt
+  relationships:
+  - type: measures
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Claim.Recovery
+  name: Recovery
+  domain: Claims
+  definition: Amounts recovered through subrogation, salvage, or reinsurance.
+  synonyms:
+  - subrogation
+  - salvage
+  physical_name_variants:
+  - recovery_amt
+  - subro_amt
+  - salvage_amt
+  relationships:
+  - type: reduces
+    target: Claim.IncurredLoss
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: EVENT
+  typical_attributes:
+  - recovery_type
+  - recovery_amount
+  - recovery_date
+- concept_id: Claim.Litigation
+  name: Litigation
+  domain: Claims
+  definition: Legal proceedings associated with a claim.
+  synonyms:
+  - lawsuit
+  - legal action
+  physical_name_variants:
+  - litigation
+  - suit_flag
+  - attorney_involved
+  relationships:
+  - type: belongs_to
+    target: Claim.Claim
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: DIRECT
+  temporality: EVENT
+  steward_notes: 'Litigation narratives and attorney details are protected text: metadata only, never index content (D-11).'
+- concept_id: Claim.Adjuster
+  name: Adjuster
+  domain: Claims
+  definition: Person or role responsible for investigating and settling a claim.
+  synonyms:
+  - claim handler
+  - examiner
+  physical_name_variants:
+  - adjuster_id
+  - handler_id
+  - examiner_cd
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: INDIRECT
+  temporality: STATIC

@@ -3,7 +3,7 @@
 **Status:** READY FOR EXECUTION  
 **Repository:** discover from the current Git working tree; never hardcode a machine path  
 **Controlling input:** `docs/planning/CONSOLIDATED_RECOMMENDATIONS.md`  
-**Objective:** close the gap between the approved architecture and the executable deterministic foundation before Phase 3 agentic work begins.
+**Objective:** close the gap between the approved architecture and the executable deterministic foundation before Governed Knowledge Foundation agentic work begins.
 
 ## 1. Operating rules
 
@@ -34,7 +34,7 @@ Baseline and safety audit
   -> Expanded synthetic fixtures
   -> Unit and validation tests
   -> Pure-Python CI
-  -> Documentation and Phase 2 readiness report
+  -> Documentation and Source Intelligence readiness report
 ```
 
 Contracts, synthetic fixtures, and tests may proceed while governance is `PROPOSED`. Synthetic profiling and non-authoritative development artifacts may also proceed. Organizational data, authoritative publication, production promotion, and human approval are prohibited until the applicable governance artifacts are approved.
@@ -47,7 +47,7 @@ Contracts, synthetic fixtures, and tests may proceed while governance is `PROPOS
 
 - Record current branch, remote tracking state, recent commits, and working-tree status.
 - Inspect the untracked root item named `d`. Report its type, size, and content. Remove it only when it is demonstrably an accidental empty artifact and the user authorizes deletion.
-- Validate that Phase 1 evidence remains present and unchanged.
+- Validate that Solution Foundation evidence remains present and unchanged.
 - Confirm all existing skills pass the skill validator before editing.
 
 **Acceptance**
@@ -60,7 +60,7 @@ Contracts, synthetic fixtures, and tests may proceed while governance is `PROPOS
 
 **Files**
 
-- `docs/governance/00_phase0_gate_validation.md`
+- `docs/governance/00_pilot_governance_gate_validation.md`
 - `docs/governance/06_go_no_go_scorecard.md`
 - `docs/governance/04_confidence_policy.md`
 - `docs/planning/IMPLEMENTATION_PLAN.md`
@@ -68,11 +68,11 @@ Contracts, synthetic fixtures, and tests may proceed while governance is `PROPOS
 
 **Actions**
 
-1. Replace contradictory Phase 2 permission language with one rule:
+1. Replace contradictory Source Intelligence permission language with one rule:
    - synthetic development, profiling, fixtures, contracts, and tests may proceed under `PROPOSED` governance;
    - outputs remain non-authoritative;
    - organizational data, publication, promotion, and approval require approved governance.
-2. Add a Phase 0–6 to WP1–5 crosswalk to `IMPLEMENTATION_PLAN.md`. If a phase spans multiple work packages, state that explicitly.
+2. Add a capability sequence to WP1–5 crosswalk to `IMPLEMENTATION_PLAN.md`. If a capability spans multiple work packages, state that explicitly.
 3. Clarify confidence handling for unavailable components:
    - store component state as `AVAILABLE`, `NOT_AVAILABLE`, or `CONTRADICTED`;
    - renormalize over available weights;
@@ -80,14 +80,14 @@ Contracts, synthetic fixtures, and tests may proceed while governance is `PROPOS
    - force review when evidence coverage is below `0.60`;
    - keep weights and the coverage floor `PROPOSED` until calibrated.
 4. Clarify COTS sequencing:
-   - Phase 2 permits deterministic matching against small authorized structured patterns;
-   - Phase 3 introduces governed retrieval and semantic search.
+   - Source Intelligence permits deterministic matching against small authorized structured patterns;
+   - Governed Knowledge Foundation introduces governed retrieval and semantic search.
 5. Replace the arbitrary “100+” labelled-set rule with stratified coverage criteria. Retain 100+ only as a planning target, not a statistical guarantee.
 
 **Acceptance**
 
 - Governance documents no longer disagree about permitted work.
-- Phase and work-package references are navigable and unambiguous.
+- Capability and work-package references are navigable and unambiguous.
 - Confidence missing-evidence behavior is explicit and testable.
 - COTS recognition and retrieval are clearly separated.
 
@@ -95,17 +95,17 @@ Contracts, synthetic fixtures, and tests may proceed while governance is `PROPOS
 
 **Actions**
 
-1. Rename `.agents/skills/insurance-lake-next-steps/` to `.agents/skills/advance-next-step/`.
+1. Rename the legacy next-step helper to `.agents/skills/governed-work-package-router/`.
 2. Update its frontmatter, heading, and `agents/openai.yaml`.
-3. Make `advance-next-step` a short router:
+3. Make `governed-work-package-router` a short router:
    - inspect repository evidence and determine the earliest incomplete gate;
-   - invoke `$define-insurance-pilot-governance` for unresolved governance;
-   - invoke `$build-source-intelligence-v1` for deterministic Phase 2 work;
-   - stop before Phase 3 unless the Phase 2 gate has evidence.
+   - invoke `$establish-insurance-solution-governance` for unresolved governance;
+   - invoke `$build-source-intelligence-v1` for deterministic Source Intelligence work;
+   - stop before Governed Knowledge Foundation unless the Source Intelligence gate has evidence.
 4. Remove duplicated specialist instructions from the router.
 5. Replace hardcoded paths and tool-specific wording in all skills with repository-root discovery and agent-neutral wording.
-6. Add the Phase 3+ expiry condition for the LLM/vector-search restriction.
-7. Add deterministic, authorized COTS-pattern matching to the Source Intelligence skill or explicitly cite its Phase 2 deferral decision.
+6. Add the Governed Knowledge Foundation and later capabilities expiry condition for the LLM/vector-search restriction.
+7. Add deterministic, authorized COTS-pattern matching to the Source Intelligence skill or explicitly cite its Source Intelligence deferral decision.
 8. Ensure the Source Intelligence skill distinguishes prohibited-content rejection from routing a sanitized exception decision.
 9. Validate every skill using the standard skill validator.
 
@@ -212,7 +212,7 @@ Adapt names to existing repository conventions if an equivalent structure alread
 
 - Core rules are importable and testable without executing a Databricks notebook.
 - Notebooks contain orchestration rather than embedded rule tables.
-- Existing Phase 1 outputs remain reproducible or documented migrations explain changes.
+- Existing Solution Foundation outputs remain reproducible or documented migrations explain changes.
 
 ### WP-G — Governed confidence implementation
 
@@ -233,7 +233,7 @@ Adapt names to existing repository conventions if an equivalent structure alread
 4. Force human review below the evidence-coverage floor or when any mandatory trigger applies.
 5. Distinguish absent evidence from contradictory evidence.
 6. Never use confidence to approve a recommendation.
-7. Add a v1-to-Phase-3 component mapping for retrieval fitness, governed rules, contradiction checks, and reviewer-history calibration.
+7. Add a Source-Intelligence-to-Knowledge-Foundation component mapping for retrieval fitness, governed rules, contradiction checks, and reviewer-history calibration.
 
 **Acceptance**
 
@@ -269,7 +269,7 @@ Never use realistic credentials or real personal information. Use obvious sentin
 
 - Every required stratum has at least one fixture.
 - Fixtures remain synthetic and safe to commit.
-- The expansion manifest shows no unaddressed P0 strata.
+- The expansion manifest shows no unaddressed critical strata.
 
 ### WP-I — Unit and validation tests
 
@@ -305,7 +305,7 @@ Never use realistic credentials or real personal information. Use obvious sentin
 **Actions**
 
 1. Add GitHub Actions for pure-Python tests, schema validation, labelled-set validation, and leakage scanning.
-2. Do not connect CI to Databricks Free Edition or store Databricks credentials in GitHub.
+2. Do not connect CI to a Databricks workspace or store Databricks credentials in GitHub.
 3. Keep Databricks validation manual and capture evidence under `docs/evidence/`.
 4. Fail CI on contract errors, unit-test failures, invalid labelled data, or prohibited sentinel leakage.
 
@@ -328,8 +328,8 @@ Never use realistic credentials or real personal information. Use obvious sentin
    - test and CI results;
    - labelled-set coverage;
    - remaining human approvals;
-   - explicit decision on whether Phase 2 producers may proceed.
-5. Do not declare the Phase 2 acceptance gate passed until deterministic producers run and all gate evidence exists.
+   - explicit decision on whether Source Intelligence producers may proceed.
+5. Do not declare the Source Intelligence acceptance gate passed until deterministic producers run and all gate evidence exists.
 
 **Acceptance**
 
@@ -376,4 +376,4 @@ This execution plan is complete when:
 - synthetic edge cases and prohibited-evidence tests exist;
 - unit, validation, and local-safe CI checks pass;
 - implementation-critical documentation is agent-readable;
-- a readiness report identifies remaining human approvals and the next permitted phase.
+- a readiness report identifies remaining human approvals and the next permitted capability.

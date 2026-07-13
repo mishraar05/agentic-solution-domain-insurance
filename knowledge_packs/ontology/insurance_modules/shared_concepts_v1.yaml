@@ -1,0 +1,414 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Shared
+description: Cross-domain concepts reused by Policy, Claims, and Billing, including parties, products, coverages, producers, and technical metadata. Preserved from pnc_ontology/1.1.0 with stable concept IDs.
+concepts:
+- concept_id: Shared.Party
+  name: Party
+  domain: Shared
+  definition: 'A person or organization in any role: insured, claimant, payer, vendor.'
+  synonyms:
+  - contact
+  - customer
+  - person
+  - organization
+  physical_name_variants:
+  - party
+  - contact
+  - customer
+  - person
+  relationships: []
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: DIRECT
+  temporality: SCD2
+  typical_attributes:
+  - Party.Identifier
+  - Party.Type
+  - name
+  - tax_id
+  steward_notes: Hub entity for identity resolution; names, addresses, DOB, and tax IDs are personal data by default.
+- concept_id: Party.Identifier
+  name: Party Identifier
+  domain: Shared
+  definition: System-assigned unique identifier of a party.
+  synonyms:
+  - party id
+  - contact id
+  - customer id
+  physical_name_variants:
+  - party_id
+  - contact_id
+  - cust_id
+  - person_id
+  relationships:
+  - type: identifies
+    target: Shared.Party
+  lifecycle_state: Standard
+  concept_type: ATTRIBUTE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Party.Type
+  name: Party Type
+  domain: Shared
+  definition: 'Classification of a party: person, company, trust.'
+  synonyms:
+  - contact type
+  physical_name_variants:
+  - party_type
+  - contact_type_cd
+  - entity_type
+  relationships:
+  - type: describes
+    target: Shared.Party
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  status_values:
+  - PERSON
+  - COMPANY
+  - TRUST
+  - ESTATE
+  - GOVERNMENT
+- concept_id: Shared.Insured
+  name: Insured
+  domain: Shared
+  definition: The party holding the insurable interest covered by the policy.
+  synonyms:
+  - named insured
+  - policyholder
+  physical_name_variants:
+  - insured
+  - named_insured
+  - policyholder_id
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  - type: references
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: DIRECT
+  temporality: STATIC
+- concept_id: Shared.Producer
+  name: Producer
+  domain: Shared
+  definition: Agent, broker, or channel that sells or services the policy.
+  synonyms:
+  - agent
+  - broker
+  - agency
+  physical_name_variants:
+  - producer
+  - agent_cd
+  - broker_id
+  - agency_no
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: INDIRECT
+  temporality: STATIC
+  typical_attributes:
+  - producer_code
+  - producer_type
+  - license_number
+- concept_id: Shared.Product
+  name: Product
+  domain: Shared
+  definition: An insurance product offering within a line of business.
+  synonyms:
+  - insurance product
+  - offering
+  physical_name_variants:
+  - product
+  - prod_cd
+  - plan
+  relationships:
+  - type: has_many
+    target: Shared.Coverage
+  - type: belongs_to
+    target: Shared.LineOfBusiness
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  typical_attributes:
+  - Product.Code
+  - product_name
+  - Shared.LineOfBusiness
+- concept_id: Product.Code
+  name: Insurance Product Code
+  domain: Shared
+  definition: Code identifying the insurance product.
+  synonyms:
+  - product code
+  - plan code
+  physical_name_variants:
+  - product_code
+  - prod_cd
+  - plan_cd
+  relationships:
+  - type: identifies
+    target: Shared.Product
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Shared.LineOfBusiness
+  name: Line of Business
+  domain: Shared
+  definition: Business classification within a segment; see the LOB taxonomy pack for governed values.
+  synonyms:
+  - LOB
+  - line
+  physical_name_variants:
+  - lob
+  - lob_cd
+  - line_of_business
+  - line_cd
+  relationships:
+  - type: groups
+    target: Shared.Product
+  lifecycle_state: Standard
+  concept_type: CODE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  steward_notes: Governed values live in knowledge_packs/lob_taxonomy; sources map to it, never define it.
+- concept_id: Shared.Coverage
+  name: Coverage
+  domain: Shared
+  definition: A specific protection granted by a policy for defined perils, limits, and deductibles.
+  synonyms:
+  - cover
+  - peril coverage
+  physical_name_variants:
+  - coverage
+  - cov_cd
+  - coverage_part
+  relationships:
+  - type: belongs_to
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: SCD2
+  typical_attributes:
+  - coverage_code
+  - Coverage.Limit
+  - Coverage.Deductible
+- concept_id: Coverage.Limit
+  name: Coverage Limit
+  domain: Shared
+  definition: Maximum amount payable under a coverage.
+  synonyms:
+  - limit of liability
+  physical_name_variants:
+  - limit_amt
+  - cov_limit
+  - occurrence_limit
+  - aggregate_limit
+  relationships:
+  - type: describes
+    target: Shared.Coverage
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  steward_notes: Distinguish per-occurrence, aggregate, and split limits (e.g., 100/300/50 auto).
+- concept_id: Coverage.Deductible
+  name: Deductible
+  domain: Shared
+  definition: Amount of loss retained by the insured before coverage responds.
+  synonyms:
+  - retention
+  - excess
+  physical_name_variants:
+  - deductible_amt
+  - ded_amt
+  - retention_amt
+  relationships:
+  - type: describes
+    target: Shared.Coverage
+  lifecycle_state: Standard
+  concept_type: MEASURE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Shared.Vehicle
+  name: Vehicle
+  domain: Shared
+  definition: A motor vehicle as an insured object or claim object.
+  synonyms:
+  - auto
+  - car
+  - unit
+  physical_name_variants:
+  - vehicle
+  - veh
+  - vin
+  - unit_no
+  relationships:
+  - type: is_a
+    target: Policy.InsuredObject
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability:
+  - PERS_AUTO
+  - COMM_AUTO
+  - MOTORCYCLE_RV
+  privacy_sensitivity: INDIRECT
+  temporality: STATIC
+  typical_attributes:
+  - vin
+  - make
+  - model
+  - model_year
+  - vehicle_use
+  steward_notes: VIN is a quasi-identifier linkable to owners; treat as indirect personal data.
+- concept_id: Shared.Dwelling
+  name: Dwelling
+  domain: Shared
+  definition: A residential structure as an insured object.
+  synonyms:
+  - home
+  - residence
+  - property
+  physical_name_variants:
+  - dwelling
+  - dwelling_id
+  - property_id
+  relationships:
+  - type: is_a
+    target: Policy.InsuredObject
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability:
+  - HOMEOWNERS
+  - RENTERS_CONDO
+  - DWELLING_FIRE
+  privacy_sensitivity: NONE
+  temporality: STATIC
+  typical_attributes:
+  - construction_type
+  - year_built
+  - protection_class
+  - replacement_cost
+- concept_id: Shared.Location
+  name: Location
+  domain: Shared
+  definition: A geographic place relevant to risk, loss, or party.
+  synonyms:
+  - address
+  - site
+  - premises
+  physical_name_variants:
+  - location
+  - address
+  - loc_id
+  - premises
+  relationships: []
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: INDIRECT
+  temporality: STATIC
+  typical_attributes:
+  - address_line
+  - city
+  - state
+  - postal_code
+  - geocode
+  steward_notes: Full street address of a person is personal data; aggregate to ZIP/territory for analytics where possible.
+- concept_id: Technical.SourceUpdatedTimestamp
+  name: Source Updated Timestamp
+  domain: Shared
+  definition: Technical timestamp of the last source-system update to a record.
+  synonyms:
+  - updated ts
+  - last modified
+  physical_name_variants:
+  - source_updated_ts
+  - update_time
+  - last_upd_ts
+  - modified_dt
+  relationships: []
+  lifecycle_state: Standard
+  concept_type: DATE
+  lob_applicability: ALL
+  privacy_sensitivity: NONE
+  temporality: STATIC
+- concept_id: Shared.Person
+  name: Person
+  domain: Shared
+  definition: An individual participating in an insurance or pensions context under one or more governed roles.
+  synonyms: [individual, natural person]
+  physical_name_variants: [person, individual, person_id]
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: DIRECT
+  temporality: SCD2
+- concept_id: Shared.Organization
+  name: Organization
+  domain: Shared
+  definition: A legal, commercial, public, or other organizational party participating in an insurance or pensions context.
+  synonyms: [company, legal entity]
+  physical_name_variants: [organization, company, organisation_id, company_id]
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: ALL
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Shared.Broker
+  name: Broker
+  domain: Shared
+  definition: An intermediary party arranging or servicing insurance business in a governed broker role.
+  synonyms: [intermediary, brokerage]
+  physical_name_variants: [broker, broker_id, intermediary_id]
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  - type: references
+    target: Policy.Policy
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV, HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE, COMM_PROPERTY, BOP]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Shared.Underwriter
+  name: Underwriter
+  domain: Shared
+  definition: A person, organization, or governed role responsible for evaluating and accepting insurance risk.
+  synonyms: [risk underwriter, underwriting authority]
+  physical_name_variants: [underwriter, underwriter_id, uw_id]
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  - type: references
+    target: Risk.Risk
+  lifecycle_state: Standard
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV, HOMEOWNERS, RENTERS_CONDO, DWELLING_FIRE, COMM_PROPERTY, BOP]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2

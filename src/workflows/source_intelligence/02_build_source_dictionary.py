@@ -50,8 +50,8 @@ from pyspark.sql.types import (
 )
 
 from source_intelligence.confidence import compute_confidence
-from source_intelligence.contract_validation import validate_records
-from source_intelligence.cots_patterns import match_cots_pattern
+from common.contract_validation import validate_records
+from governed_knowledge_foundation.cots_patterns import match_cots_pattern
 from source_intelligence.knowledge_classifier import (
     check_type_compatibility_kb,
     classify_naming_kb,

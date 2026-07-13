@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0.0",
+  "record_id": "knowledge_baseline_cots_like_suite_1_0_0",
+  "work_package_id": "BASELINE-AUTHORIZATION",
+  "status": "PROPOSED",
+  "build_status": "COMPLETE",
+  "selected_suite": true,
+  "development_use_active": true,
+  "authoritative_use_active": false,
+  "baselines": [
+    {
+      "product": "cots_like_suite",
+      "module": "policy_admin",
+      "product_version": "1.0.0",
+      "domain": "Policy",
+      "line_of_business": "Personal Lines",
+      "pack_id": "cots_like_policy_admin",
+      "pack_version": "1.0.0",
+      "path": "knowledge_packs/cots_reference/cots_like_policy_admin_v1.json",
+      "content_sha256": "7b1ccb9731fd4e7e200a9b9e1041ec2f5ea938318149324b91f38117eef5022f"
+    },
+    {
+      "product": "cots_like_suite",
+      "module": "claims_mgmt",
+      "product_version": "1.0.0",
+      "domain": "Claims",
+      "line_of_business": "Personal Lines",
+      "pack_id": "cots_like_claims_mgmt",
+      "pack_version": "1.0.0",
+      "path": "knowledge_packs/cots_reference/cots_like_claims_mgmt_v1.json",
+      "content_sha256": "875c9d7519053e9d21539a88d97ec77b17d58acff77a62575c2cc1dc77feea04"
+    },
+    {
+      "product": "cots_like_suite",
+      "module": "billing",
+      "product_version": "1.0.0",
+      "domain": "Billing",
+      "line_of_business": "Personal Lines",
+      "pack_id": "cots_like_billing",
+      "pack_version": "1.0.0",
+      "path": "knowledge_packs/cots_reference/cots_like_billing_v1.json",
+      "content_sha256": "09dd58d5669db9f16fe5e40e22c6ff4470f1875729a6021703c7d94a3b0e2769"
+    }
+  ],
+  "source_classification": "SYNTHETIC_VENDOR_NEUTRAL",
+  "permitted_claim": "SYNTHETIC_COTS_LIKE_RESEMBLANCE_ONLY",
+  "prohibited_claim": "REAL_VENDOR_IDENTIFICATION",
+  "authoring_source": {
+    "pack_id": "cots_like_reference",
+    "pack_version": "1.0.0",
+    "path": "knowledge_packs/cots_reference/cots_like_reference_v1.json",
+    "content_sha256": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"
+  },
+  "evidence_register": [
+    {
+      "evidence_id": "EVIDENCE.KNOWLEDGE.COTS_LIKE_POLICY_ADMIN.1",
+      "classification": "SYNTHETIC_GOVERNED_KNOWLEDGE",
+      "authorization_basis": "Repository-authored vendor-neutral synthetic reference; no licensed product documentation or client material was used.",
+      "retention_class": "VERSION_CONTROLLED_SYNTHETIC_METADATA",
+      "structured_retrieval_eligible_for_development": true,
+      "raw_document_prompt_eligible": false,
+      "vector_index_eligible": false,
+      "raw_document_body_retained": false,
+      "owner_role": "DATA_ARCHITECT",
+      "reviewer_role": "PRIVACY_STEWARD",
+      "evidence_reference": "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"
+    },
+    {
+      "evidence_id": "EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1",
+      "classification": "SYNTHETIC_GOVERNED_KNOWLEDGE",
+      "authorization_basis": "Repository-authored vendor-neutral synthetic Claims structure reference; no licensed documentation, claim narratives, PII, or client material was used.",
+      "retention_class": "VERSION_CONTROLLED_SYNTHETIC_METADATA",
+      "structured_retrieval_eligible_for_development": true,
+      "raw_document_prompt_eligible": false,
+      "vector_index_eligible": false,
+      "raw_document_body_retained": false,
+      "owner_role": "DATA_ARCHITECT",
+      "reviewer_role": "PRIVACY_STEWARD",
+      "evidence_reference": "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"
+    },
+    {
+      "evidence_id": "EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1",
+      "classification": "SYNTHETIC_GOVERNED_KNOWLEDGE",
+      "authorization_basis": "Repository-authored vendor-neutral synthetic Billing structure reference; no licensed documentation, financial identifiers, PII, or client material was used.",
+      "retention_class": "VERSION_CONTROLLED_SYNTHETIC_METADATA",
+      "structured_retrieval_eligible_for_development": true,
+      "raw_document_prompt_eligible": false,
+      "vector_index_eligible": false,
+      "raw_document_body_retained": false,
+      "owner_role": "DATA_ARCHITECT",
+      "reviewer_role": "PRIVACY_STEWARD",
+      "evidence_reference": "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"
+    }
+  ],
+  "prohibited_evidence_classes": [
+    "PROPRIETARY_COTS_DOCUMENTATION",
+    "CLIENT_OR_PRODUCTION_DATA",
+    "PII_VALUES",
+    "CLAIMS_NARRATIVES",
+    "CREDENTIALS_OR_CONNECTION_STRINGS",
+    "UNAPPROVED_PUBLIC_MATERIAL"
+  ],
+  "review_policy": {
+    "status": "DEFERRED",
+    "trigger": "END_TO_END_SOLUTION_READY",
+    "intermediate_human_review_required": false,
+    "all_generated_artifacts_remain_proposed": true,
+    "automatic_authoritative_promotion_permitted": false,
+    "review_workflow_design_required_before_authoritative_use": true
+  },
+  "controlled_substitution": {
+    "allowed_only_in_authorized_environment": true,
+    "requires_exact_product_module_version": true,
+    "requires_document_level_authorization": true,
+    "requires_new_pack_identity_and_fingerprint": true,
+    "cross_version_fallback_permitted": false,
+    "simultaneous_scope_mixing_permitted": false,
+    "real_vendor_claim_permitted_without_active_pack": false
+  },
+  "authoritative_activation_requirements": [
+    "HUMAN_REVIEW_WORKFLOW_DESIGNED",
+    "REQUIRED_HUMAN_DECISIONS_RECORDED",
+    "CONTENT_FINGERPRINT_VERIFIED"
+  ],
+  "development_decision": {
+    "decision": "PROCEED_WITHOUT_INTERMEDIATE_HUMAN_REVIEW",
+    "decided_by_role": "SPONSOR",
+    "decision_date": "2026-07-13",
+    "rationale": "Build and validate the complete non-authoritative solution before designing the human-review workflow."
+  },
+  "open_questions": [
+    "What consolidated human-review workflow should be used after the end-to-end solution is technically complete?"
+  ]
+}

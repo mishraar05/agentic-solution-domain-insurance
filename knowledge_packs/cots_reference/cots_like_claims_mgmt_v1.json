@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0.0",
+  "pack_id": "cots_like_claims_mgmt",
+  "pack_version": "1.0.0",
+  "status": "PROPOSED",
+  "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+  "authoring_source": "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742",
+  "knowledge_document": {
+    "schema_version": "1.0.0",
+    "document_id": "EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1",
+    "title": "Synthetic Claims Management Structure Reference",
+    "evidence_class": "SYNTHETIC_GOVERNED_KNOWLEDGE",
+    "source_classification": "SYNTHETIC_VENDOR_NEUTRAL",
+    "authorization_basis": "Repository-authored vendor-neutral synthetic reference; no licensed product documentation, claim narratives, PII, or client material was used.",
+    "retention_class": "VERSION_CONTROLLED_METADATA",
+    "structured_retrieval_eligible": true,
+    "prompt_eligible": false,
+    "vector_index_eligible": false,
+    "raw_document_body_retained": false,
+    "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+    "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+  },
+  "knowledge_pack_version": {
+    "schema_version": "1.0.0",
+    "pack_id": "cots_like_claims_mgmt",
+    "pack_version": "1.0.0",
+    "pack_status": "DEVELOPMENT",
+    "parent_pack_version": null,
+    "description": "Immutable vendor-neutral synthetic Claims Management recognition pack.",
+    "changelog": ["Initial contract-valid Claims Management object and attribute patterns derived from the authorized synthetic COTS-like reference."],
+    "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+    "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+  },
+  "cots_structure_patterns": [
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.object.cm_claim", "pattern_type": "OBJECT", "source_object_pattern": "cm_claim", "source_attribute_pattern": null, "ontology_concept_id": "Claim.Claim", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed claim object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_claim.claim_public_id", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_claim", "source_attribute_pattern": "claim_public_id", "ontology_concept_id": "Claim.Identifier", "expected_physical_types": ["string"], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed opaque claim identifier attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_claim.policy_ref", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_claim", "source_attribute_pattern": "policy_ref", "ontology_concept_id": "Policy.Identifier", "expected_physical_types": ["string", "long", "bigint"], "required_for_object_match": true, "expected_confidence": 0.85, "match_evidence": ["Exact governed cross-domain policy reference attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_claim.loss_dt", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_claim", "source_attribute_pattern": "loss_dt", "ontology_concept_id": "Claim.LossDate", "expected_physical_types": ["date", "timestamp", "string"], "required_for_object_match": true, "expected_confidence": 0.9, "match_evidence": ["Exact governed loss-date attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_claim.report_dt", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_claim", "source_attribute_pattern": "report_dt", "ontology_concept_id": "Claim.ReportedDate", "expected_physical_types": ["date", "timestamp", "string"], "required_for_object_match": true, "expected_confidence": 0.9, "match_evidence": ["Exact governed reported-date attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_claim.close_dt", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_claim", "source_attribute_pattern": "close_dt", "ontology_concept_id": "Claim.ClosedDate", "expected_physical_types": ["date", "timestamp", "string"], "required_for_object_match": false, "expected_confidence": 0.9, "match_evidence": ["Exact governed claim closed-date attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_claim.claim_state_cd", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_claim", "source_attribute_pattern": "claim_state_cd", "ontology_concept_id": "Claim.Status", "expected_physical_types": ["string"], "required_for_object_match": true, "expected_confidence": 0.9, "match_evidence": ["Exact governed claim status-code attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.object.cm_exposure", "pattern_type": "OBJECT", "source_object_pattern": "cm_exposure", "source_attribute_pattern": null, "ontology_concept_id": "Claim.Exposure", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed claim exposure object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_exposure.coverage_ref", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_exposure", "source_attribute_pattern": "coverage_ref", "ontology_concept_id": "Shared.Coverage", "expected_physical_types": ["string", "long", "bigint"], "required_for_object_match": true, "expected_confidence": 0.85, "match_evidence": ["Exact governed cross-domain coverage reference attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_exposure.claimant_id", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_exposure", "source_attribute_pattern": "claimant_id", "ontology_concept_id": "Party.Identifier", "expected_physical_types": ["string", "long", "bigint"], "required_for_object_match": false, "expected_confidence": 0.85, "match_evidence": ["Exact governed claimant party-identifier attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.object.cm_reserve", "pattern_type": "OBJECT", "source_object_pattern": "cm_reserve", "source_attribute_pattern": null, "ontology_concept_id": "Claim.Reserve", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed claim reserve object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_reserve.reserve_amt", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_reserve", "source_attribute_pattern": "reserve_amt", "ontology_concept_id": "Claim.Reserve", "expected_physical_types": ["decimal", "double", "float", "long"], "required_for_object_match": true, "expected_confidence": 0.9, "match_evidence": ["Exact governed reserve amount attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.object.cm_payment", "pattern_type": "OBJECT", "source_object_pattern": "cm_payment", "source_attribute_pattern": null, "ontology_concept_id": "Claim.Payment", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed claim payment object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_payment.pay_amt", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_payment", "source_attribute_pattern": "pay_amt", "ontology_concept_id": "Claim.Payment", "expected_physical_types": ["decimal", "double", "float", "long"], "required_for_object_match": true, "expected_confidence": 0.9, "match_evidence": ["Exact governed claim payment amount attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_payment.pay_type_cd", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_payment", "source_attribute_pattern": "pay_type_cd", "ontology_concept_id": "Claim.Payment", "expected_physical_types": ["string"], "required_for_object_match": false, "expected_confidence": 0.8, "match_evidence": ["Exact governed claim payment type-code attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.object.cm_recovery", "pattern_type": "OBJECT", "source_object_pattern": "cm_recovery", "source_attribute_pattern": null, "ontology_concept_id": "Claim.Recovery", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed claim recovery object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_recovery.recovery_amt", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_recovery", "source_attribute_pattern": "recovery_amt", "ontology_concept_id": "Claim.Recovery", "expected_physical_types": ["decimal", "double", "float", "long"], "required_for_object_match": true, "expected_confidence": 0.9, "match_evidence": ["Exact governed claim recovery amount attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.attribute.cm_recovery.recovery_type_cd", "pattern_type": "ATTRIBUTE", "source_object_pattern": "cm_recovery", "source_attribute_pattern": "recovery_type_cd", "ontology_concept_id": "Claim.Recovery", "expected_physical_types": ["string"], "required_for_object_match": false, "expected_confidence": 0.8, "match_evidence": ["Exact governed claim recovery type-code attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.extension.attribute_suffix_ext", "pattern_type": "EXTENSION_MARKER", "source_object_pattern": "*", "source_attribute_pattern": "*_ext", "ontology_concept_id": null, "expected_physical_types": [], "required_for_object_match": false, "expected_confidence": 0.9, "match_evidence": ["Authorized synthetic convention for a likely source attribute extension."], "lifecycle_state": "Source extension",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.claims_mgmt.extension.object_prefix_ext", "pattern_type": "EXTENSION_MARKER", "source_object_pattern": "ext_*", "source_attribute_pattern": null, "ontology_concept_id": null, "expected_physical_types": [], "required_for_object_match": false, "expected_confidence": 0.9, "match_evidence": ["Authorized synthetic convention for a likely source object extension."], "lifecycle_state": "Source extension",
+      "scope": {"product": "cots_like_suite", "module": "claims_mgmt", "product_version": "1.0.0", "domain": "Claims", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_claims_mgmt", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_CLAIMS_MGMT.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    }
+  ],
+  "excluded_source_mappings": []
+}

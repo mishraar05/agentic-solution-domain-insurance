@@ -1,11 +1,11 @@
 # Evaluation Plan
 
 **Artifact:** `05_evaluation_plan.md`
-**Version:** 0.1.0
-**Decision Date:** 2026-07-12
-**Owner:** Evaluation Owner (placeholder - awaiting assignment)
-**Reviewer:** AI/ML Engineer (placeholder - awaiting assignment)
-**Status:** PROPOSED
+**Version:** 1.0.0
+**Decision Date:** 2026-07-13
+**Owner:** `HUMAN_REVIEWER_01` (Evaluation Owner)
+**Reviewer:** `HUMAN_REVIEWER_01` (Domain Steward)
+**Status:** APPROVED
 
 ## Purpose
 
@@ -82,3 +82,4 @@ Each review decision is captured with:
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1.0 | 2026-07-12 | Initial proposed evaluation plan | Agent (Cline) |
+| 1.0.0 | 2026-07-13 | Approved with the independently reviewed 26-record labelled set | `HUMAN_REVIEWER_01` |

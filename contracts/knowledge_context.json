@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/knowledge_context.json",
+  "title": "Knowledge Context",
+  "description": "Minimized, exact-scope knowledge selected for one inference request",
+  "type": "object",
+  "properties": {
+    "schema_version": {"$ref": "common.json#/definitions/schema_version"},
+    "context_id": {"type": "string", "pattern": "^knowledge_context_[a-f0-9]{32}$"},
+    "engagement_id": {"$ref": "common.json#/definitions/engagement_id"},
+    "source_system": {"$ref": "common.json#/definitions/source_system"},
+    "effective_at": {"$ref": "common.json#/definitions/effective_date"},
+    "usage_mode": {"type": "string", "enum": ["DEVELOPMENT", "AUTHORITATIVE"]},
+    "required_approval_state": {"type": "string", "enum": ["PROPOSED", "APPROVED"]},
+    "scope": {"$ref": "common.json#/definitions/knowledge_scope"},
+    "pack_id": {"$ref": "common.json#/definitions/pack_id"},
+    "pack_version": {"$ref": "common.json#/definitions/pack_version"},
+    "knowledge_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "record_type": {"type": "string", "enum": ["DOCUMENT", "CONCEPT", "RELATIONSHIP", "PATTERN"]},
+          "record_id": {"type": "string"},
+          "scope": {"$ref": "common.json#/definitions/knowledge_scope"},
+          "pack_id": {"$ref": "common.json#/definitions/pack_id"},
+          "pack_version": {"$ref": "common.json#/definitions/pack_version"},
+          "approval_state": {"$ref": "common.json#/definitions/approval_state"},
+          "effective_from": {"$ref": "common.json#/definitions/effective_date"},
+          "effective_to": {"type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+          "evidence_references": {"$ref": "common.json#/definitions/evidence_references"},
+          "content_fingerprint": {"$ref": "common.json#/definitions/content_fingerprint"}
+        },
+        "required": [
+          "record_type",
+          "record_id",
+          "scope",
+          "pack_id",
+          "pack_version",
+          "approval_state",
+          "effective_from",
+          "effective_to",
+          "evidence_references",
+          "content_fingerprint"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "context_fingerprint": {"$ref": "common.json#/definitions/content_fingerprint"},
+    "created_at": {"$ref": "common.json#/definitions/timestamp_utc"}
+  },
+  "required": [
+    "schema_version",
+    "context_id",
+    "engagement_id",
+    "source_system",
+    "effective_at",
+    "usage_mode",
+    "required_approval_state",
+    "scope",
+    "pack_id",
+    "pack_version",
+    "knowledge_items",
+    "context_fingerprint",
+    "created_at"
+  ],
+  "additionalProperties": false
+}

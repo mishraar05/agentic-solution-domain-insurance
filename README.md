@@ -45,7 +45,11 @@ Configured external source tables (read only)
 src/workflows/source_intelligence/     numbered Databricks entry points
                   |
                   v
-src/source_intelligence/               deterministic reusable Python logic
+src/source_intelligence/               Source Intelligence classification, routing, and reporting logic
+src/governed_knowledge_foundation/     governed ontology, knowledge-pack, and COTS-recognition logic
+                  |                    (both depend on src/common/)
+                  v
+src/common/                            domain-agnostic contract validation
                   |
                   v
 contracts/                             validation before persistence
@@ -61,19 +65,36 @@ The separation is deliberate:
 
 - `src/workflows/source_intelligence/` contains runtime entry points and Spark
   orchestration.
-- `src/source_intelligence/` contains reusable, testable rules and services.
+- `src/source_intelligence/` contains the Source Intelligence pilot's reusable,
+  testable rules and services (classification, confidence, routing, review,
+  reporting).
+- `src/governed_knowledge_foundation/` contains the separately-scoped Governed
+  Knowledge Foundation work package's reusable modules (ontology, knowledge-pack
+  loading and registration, COTS-pattern recognition) — see
+  `docs/planning/GOVERNED_KNOWLEDGE_FOUNDATION_WORK_PACKAGE.md`. Nothing in
+  `src/source_intelligence/` is required by this package; it is a separate,
+  independently testable layer that `knowledge_classifier.py` consumes as a
+  foundation dependency.
+- `src/common/` contains domain-agnostic infrastructure (currently JSON
+  contract validation) shared by both of the above, so neither package depends
+  on the other.
 - `resources/` describes how Databricks Asset Bundles sequence the entry points.
 - `contracts/` defines the logical records that producers must validate.
 
 The LLM boundary and newcomer-oriented flow are documented in
 [`docs/design/SOURCE_DOCUMENTATION_AGENT.md`](docs/design/SOURCE_DOCUMENTATION_AGENT.md).
+The executable Governed Knowledge Foundation scope, task IDs, deliverables,
+and acceptance gate are defined in
+[`docs/planning/GOVERNED_KNOWLEDGE_FOUNDATION_WORK_PACKAGE.md`](docs/planning/GOVERNED_KNOWLEDGE_FOUNDATION_WORK_PACKAGE.md).
 
 ## Repository layout
 
 | Path | Responsibility |
 |---|---|
 | `src/workflows/source_intelligence/` | Numbered Databricks workflow entry points and their detailed workflow README |
-| `src/source_intelligence/` | Deterministic, runtime-independent Source Intelligence modules |
+| `src/source_intelligence/` | Deterministic, runtime-independent Source Intelligence pilot modules |
+| `src/governed_knowledge_foundation/` | Deterministic, runtime-independent Governed Knowledge Foundation modules (ontology, knowledge-pack registry, COTS recognition) |
+| `src/common/` | Domain-agnostic infrastructure shared by both modules above (JSON contract validation) |
 | `resources/` | Databricks job resource definitions; currently one sequential Source Intelligence job |
 | `databricks.yml` | Databricks Asset Bundle root configuration and single `DEV` target |
 | `contracts/` | JSON contracts for observations, profiles, relationships, runs, review work, and policy violations |
@@ -107,16 +128,37 @@ The Databricks job is intentionally sequential. Every task receives the same
 Detailed entry-point behavior, failure modes, and execution guidance are in
 [`src/workflows/source_intelligence/README.md`](src/workflows/source_intelligence/README.md).
 
-## Reusable Source Intelligence modules
+## Reusable modules
+
+Business rules belong in these modules, grouped by which package owns them.
+Workflow notebooks should contain only Spark-facing extraction, serialization,
+sequencing, and runtime assertions.
+
+### `src/common/` — shared infrastructure
+
+| Module | Responsibility |
+|---|---|
+| `contract_validation.py` | Loads contracts, resolves cross-file references, and validates logical records before writes; no ontology or source-intelligence knowledge |
+
+### `src/governed_knowledge_foundation/` — Governed Knowledge Foundation
+
+| Module | Responsibility |
+|---|---|
+| `knowledge_pack_io.py` | Loads standalone and federated governed knowledge packs (rule packs, the insurance ontology) safely, with fail-closed bundle validation and fingerprinting |
+| `knowledge_registry.py` | Validates immutable authored knowledge-pack bundles: pack identity, unique pattern IDs, authorized evidence, resolvable ontology concepts, manifest fingerprints |
+| `knowledge_contract_validation.py` | Cross-field validation and backward-compatibility checks for the seven Governed Knowledge Foundation contracts, beyond what plain JSON Schema expresses |
+| `ontology.py` | Normalizes the authoring-friendly governed ontology into one contract-valid record per concept and per relationship |
+| `cots_patterns.py` | Represents authorized deterministic COTS-pattern matching; unavailable evidence stays explicit |
+
+### `src/source_intelligence/` — Source Intelligence pilot
 
 | Module | Responsibility |
 |---|---|
 | `confidence.py` | Computes reproducible weighted confidence, availability states, contradiction states, and evidence coverage |
-| `contract_validation.py` | Loads contracts, resolves cross-file references, and validates logical records before writes |
-| `cots_patterns.py` | Represents authorized deterministic COTS-pattern matching; unavailable evidence stays explicit |
 | `dictionary_export.py` | Builds the governed Excel data-dictionary report consumed by the optional publication workflow |
 | `evaluation.py` | Compares deterministic predictions and review routes with the labelled synthetic set |
 | `knowledge_classifier.py` | Resolves versioned rule packs by source context, evaluates every governed token hypothesis, fails closed on ambiguity, and emits per-rule and pack-selection provenance |
+| `lakehouse_monitoring_adapter.py` | Adapts Databricks Lakehouse Monitoring column-profile metrics into governed, privacy-filtered evidence |
 | `policy.py` | Rejects prohibited evidence before profiling and creates sanitized violation events |
 | `persistence.py` | Validates safe column-order and type alignment for append-only compatibility writes without schema evolution |
 | `quality.py` | Supplies deterministic fixture-quality and idempotency helpers |
@@ -124,9 +166,6 @@ Detailed entry-point behavior, failure modes, and execution guidance are in
 | `review_lifecycle.py` | Creates role-authorized human decisions and suppresses unchanged rejected recommendations |
 | `routing.py` | Routes privacy, key, relationship, contradiction, unmapped, incomplete, and low-confidence items |
 | `source_documentation.py` | Builds allow-listed prompts, validates strict LLM output, and creates non-authoritative descriptions and glossary proposals |
-
-Business rules belong in these modules. Workflow notebooks should contain only
-Spark-facing extraction, serialization, sequencing, and runtime assertions.
 
 ## Contracts and solution-owned outputs
 
@@ -234,10 +273,11 @@ Local implementation evidence is recorded in:
 - `docs/evidence/source_intelligence_local_gate.json`;
 - `docs/evidence/SOURCE_INTELLIGENCE_FOUNDATION_READINESS.md`.
 
-The Source Intelligence release gate remains incomplete until fresh Databricks runtime
-evidence, independent human relabelling and confidence calibration, and named
-governance approvals exist. Knowledge-driven and target-modelling capabilities
-remain ineligible until that gate is evidenced.
+The Source Intelligence release gate passed on 2026-07-13 after fresh
+Databricks runtime evidence, independent human label review, confidence-policy
+approval, documentation review, and governance approval. Governed knowledge-
+pack work is eligible; all recommendation-only, privacy, evidence,
+and mandatory-human-review controls remain binding.
 
 ## Newcomer starting path
 

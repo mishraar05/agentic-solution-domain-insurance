@@ -1,11 +1,11 @@
 # Reviewer Model and RACI
 
 **Artifact:** `03_reviewer_model.md`
-**Version:** 0.1.0
-**Decision Date:** 2026-07-12
-**Owner:** Architecture Lead (placeholder - awaiting assignment)
-**Reviewer:** Sponsor (placeholder - awaiting assignment)
-**Status:** PROPOSED
+**Version:** 1.0.0
+**Decision Date:** 2026-07-13
+**Owner:** `HUMAN_REVIEWER_01` (Sponsor)
+**Reviewer:** `HUMAN_REVIEWER_01` (Sponsor)
+**Status:** APPROVED
 
 ## Reviewer roles
 
@@ -46,11 +46,12 @@
 2. **Reviewer rationale required:** Every decision (APPROVE, MODIFY, REJECT, DEFER) must include a rationale.
 3. **No silent reappearance:** Rejected or modified recommendations retain their rationale and do not silently reappear unchanged in subsequent runs.
 4. **Targeted invalidation:** When a material decision changes, only downstream dependent artifacts are invalidated - not the entire pipeline.
-5. **Role placeholders:** All roles are placeholders until named humans accept assignment.
+5. **Role assignments:** Primary roles are accepted by non-PII reviewer identifier
+   `HUMAN_REVIEWER_01`; backup-role placeholders remain operational follow-up.
 
 ## Open questions
 
-- [ ] Who fills each reviewer role? (all three are placeholders)
+- [x] Primary reviewer roles accepted by `HUMAN_REVIEWER_01`.
 - [ ] Is the 3-business-day turnaround target realistic for the pilot?
 - [ ] Should the backup roles be formalized or remain ad-hoc?
 
@@ -59,3 +60,4 @@
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1.0 | 2026-07-12 | Initial proposed reviewer model and RACI | Agent (Cline) |
+| 1.0.0 | 2026-07-13 | Reviewer roles accepted under a non-PII human identifier | `HUMAN_REVIEWER_01` |

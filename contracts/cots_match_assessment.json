@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/cots_match_assessment.json",
+  "title": "COTS Match Assessment",
+  "description": "Non-authoritative source-recognition recommendation with exact pack provenance",
+  "type": "object",
+  "properties": {
+    "schema_version": {"$ref": "common.json#/definitions/schema_version"},
+    "assessment_id": {"type": "string", "pattern": "^cots_match_[a-f0-9]{32}$"},
+    "run_id": {"$ref": "common.json#/definitions/run_id"},
+    "engagement_id": {"$ref": "common.json#/definitions/engagement_id"},
+    "source_system": {"$ref": "common.json#/definitions/source_system"},
+    "source_table": {"$ref": "common.json#/definitions/source_table"},
+    "source_column": {"type": ["string", "null"]},
+    "pattern_id": {"type": ["string", "null"]},
+    "ontology_concept_id": {"type": ["string", "null"]},
+    "match_outcome": {"type": "string", "enum": ["MATCHED", "LIKELY_CUSTOM_EXTENSION", "UNRESOLVED"]},
+    "proposed_lifecycle_state": {"$ref": "common.json#/definitions/lifecycle_state"},
+    "confidence_score": {"$ref": "common.json#/definitions/confidence_score"},
+    "confidence_components": {
+      "type": "object",
+      "properties": {
+        "object_name_match": {"$ref": "common.json#/definitions/confidence_component"},
+        "attribute_coverage": {"$ref": "common.json#/definitions/confidence_component"},
+        "type_compatibility": {"$ref": "common.json#/definitions/confidence_component"},
+        "relationship_shape": {"$ref": "common.json#/definitions/confidence_component"},
+        "extension_marker": {"$ref": "common.json#/definitions/confidence_component"}
+      },
+      "required": ["object_name_match", "attribute_coverage", "type_compatibility", "relationship_shape", "extension_marker"],
+      "additionalProperties": false
+    },
+    "assumptions": {"type": "array", "items": {"type": "string"}},
+    "contradictions": {"type": "array", "items": {"type": "string"}},
+    "open_questions": {"type": "array", "items": {"type": "string"}},
+    "scope": {"$ref": "common.json#/definitions/knowledge_scope"},
+    "provenance": {"$ref": "common.json#/definitions/knowledge_provenance"},
+    "approval_state": {"type": "string", "const": "PROPOSED"},
+    "created_at": {"$ref": "common.json#/definitions/timestamp_utc"}
+  },
+  "required": [
+    "schema_version",
+    "assessment_id",
+    "run_id",
+    "engagement_id",
+    "source_system",
+    "source_table",
+    "source_column",
+    "pattern_id",
+    "ontology_concept_id",
+    "match_outcome",
+    "proposed_lifecycle_state",
+    "confidence_score",
+    "confidence_components",
+    "assumptions",
+    "contradictions",
+    "open_questions",
+    "scope",
+    "provenance",
+    "approval_state",
+    "created_at"
+  ],
+  "additionalProperties": false
+}

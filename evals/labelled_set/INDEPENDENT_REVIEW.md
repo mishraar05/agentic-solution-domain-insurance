@@ -1,10 +1,10 @@
 # Independent Label Review Record
 
 **Labelled set:** `source_attributes_v1.json`  
-**Status:** PENDING HUMAN REVIEW  
-**Reviewer:** Unassigned  
+**Status:** APPROVED
+**Reviewer:** `HUMAN_REVIEWER_01`
 **Reviewer role:** Evaluation Owner / Domain Steward  
-**Review date:** Pending  
+**Review date:** 2026-07-13
 
 ## Reviewer instructions
 
@@ -24,14 +24,14 @@ intended to remove.
 
 | Field | Human entry |
 |---|---|
-| Records reviewed | Pending |
-| Records confirmed unchanged | Pending |
-| Records modified | Pending |
-| Modified record IDs | Pending |
-| Unresolved record IDs | Pending |
-| Independent of implementation rules? | Pending — must be YES |
-| Reviewer decision | `APPROVED`, `MODIFIED`, or `DEFERRED` |
-| Rationale | Pending |
+| Records reviewed | 26 |
+| Records confirmed unchanged | 26 |
+| Records modified | 0 |
+| Modified record IDs | None |
+| Unresolved record IDs | `L011`, `L012`, `L025`, `L026` (approved as intentionally unresolved) |
+| Independent of implementation rules? | YES |
+| Reviewer decision | `APPROVED` |
+| Rationale | Human reviewer confirmed all labels and the four explicit unresolved outcomes without changes. |
 
 ## Approval statement
 
@@ -39,5 +39,5 @@ I confirm that I reviewed the labelled set independently of the current
 classifier implementation and that the outcome above accurately records my
 decision.
 
-**Human reviewer name:** Pending  
-**Date:** Pending
+**Human reviewer identifier:** `HUMAN_REVIEWER_01`
+**Date:** 2026-07-13

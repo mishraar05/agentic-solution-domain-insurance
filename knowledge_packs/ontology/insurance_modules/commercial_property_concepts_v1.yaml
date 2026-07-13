@@ -1,0 +1,169 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: CommercialProperty
+description: Commercial property concepts for premises, buildings, business exposures, property coverage, and business interruption.
+concepts:
+- concept_id: CommercialProperty.Premises
+  name: Commercial Premises
+  domain: CommercialProperty
+  definition: A commercial site or location containing insured property or business operations.
+  synonyms: [business premises, insured site]
+  physical_name_variants: [premises, insured_location, commercial_site]
+  relationships:
+  - type: is_a
+    target: Policy.InsuredObject
+  - type: references
+    target: Shared.Location
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: CommercialProperty.Building
+  name: Commercial Building
+  domain: CommercialProperty
+  definition: A commercial structure located at an insured premises.
+  synonyms: [insured building, commercial structure]
+  physical_name_variants: [commercial_building, building_id, structure_id]
+  relationships:
+  - type: belongs_to
+    target: CommercialProperty.Premises
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: CommercialProperty.BusinessActivity
+  name: Insured Business Activity
+  domain: CommercialProperty
+  definition: A business operation or trade conducted at an insured premises.
+  synonyms: [trade, business operation]
+  physical_name_variants: [business_activity, trade_description, operation_cd]
+  relationships:
+  - type: is_a
+    target: Risk.BusinessActivity
+  - type: describes
+    target: CommercialProperty.Premises
+  lifecycle_state: Specialized
+  concept_type: CODE
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: CommercialProperty.Occupancy
+  name: Commercial Occupancy
+  domain: CommercialProperty
+  definition: The governed occupancy and use classification of a commercial premises or building.
+  synonyms: [premises occupancy, occupancy class]
+  physical_name_variants: [commercial_occupancy, occupancy_cd, occupancy_class]
+  relationships:
+  - type: is_a
+    target: Risk.Occupancy
+  - type: describes
+    target: CommercialProperty.Premises
+  lifecycle_state: Specialized
+  concept_type: CODE
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: CommercialProperty.Construction
+  name: Commercial Construction
+  domain: CommercialProperty
+  definition: Governed structural characteristics of a commercial building relevant to property risk.
+  synonyms: [construction class, building construction]
+  physical_name_variants: [commercial_construction, construction_class, frame_type]
+  relationships:
+  - type: describes
+    target: CommercialProperty.Building
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: CommercialProperty.PropertyCoverage
+  name: Commercial Property Coverage
+  domain: CommercialProperty
+  definition: Coverage specialization protecting commercial buildings, stock, equipment, or other property interests.
+  synonyms: [commercial property cover, property section]
+  physical_name_variants: [commercial_property_coverage, property_cov, property_section]
+  relationships:
+  - type: is_a
+    target: Shared.Coverage
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: CommercialProperty.Stock
+  name: Stock
+  domain: CommercialProperty
+  definition: Inventory or goods held for sale, use, or processing at an insured premises.
+  synonyms: [inventory, merchandise]
+  physical_name_variants: [stock, inventory, merchandise_value]
+  relationships:
+  - type: belongs_to
+    target: CommercialProperty.Premises
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SNAPSHOT
+- concept_id: CommercialProperty.Equipment
+  name: Commercial Equipment
+  domain: CommercialProperty
+  definition: Machinery, plant, fixtures, or equipment associated with an insured commercial operation.
+  synonyms: [machinery, plant and equipment]
+  physical_name_variants: [equipment, machinery, plant_value]
+  relationships:
+  - type: belongs_to
+    target: CommercialProperty.Premises
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: CommercialProperty.ValuationBasis
+  name: Property Valuation Basis
+  domain: CommercialProperty
+  definition: The governed basis used to express insured property value or coverage amount.
+  synonyms: [valuation method, value basis]
+  physical_name_variants: [valuation_basis, value_method, settlement_basis]
+  relationships:
+  - type: describes
+    target: CommercialProperty.PropertyCoverage
+  lifecycle_state: Specialized
+  concept_type: CODE
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: CommercialProperty.BusinessInterruptionCoverage
+  name: Business Interruption Coverage
+  domain: CommercialProperty
+  definition: Coverage specialization for insured financial consequences of business interruption following a covered event.
+  synonyms: [business income coverage, time element coverage]
+  physical_name_variants: [business_interruption, business_income_cov, time_element]
+  relationships:
+  - type: is_a
+    target: Shared.Coverage
+  - type: references
+    target: CommercialProperty.BusinessActivity
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: CommercialProperty.IndemnityPeriod
+  name: Business Interruption Indemnity Period
+  domain: CommercialProperty
+  definition: The maximum governed duration for which business interruption loss may be measured under coverage terms.
+  synonyms: [maximum indemnity period, restoration period]
+  physical_name_variants: [indemnity_period, indemnity_months, restoration_period]
+  relationships:
+  - type: describes
+    target: CommercialProperty.BusinessInterruptionCoverage
+  lifecycle_state: Specialized
+  concept_type: ATTRIBUTE
+  lob_applicability: [COMM_PROPERTY, BOP]
+  privacy_sensitivity: NONE
+  temporality: STATIC

@@ -33,7 +33,7 @@ from pyspark.sql import Row
 from pyspark.sql import functions as F
 from pyspark.sql.types import StringType, StructField, StructType, TimestampType
 
-from source_intelligence.contract_validation import validate_records
+from common.contract_validation import validate_records
 from source_intelligence.review_lifecycle import create_review_decision
 
 # COMMAND ----------

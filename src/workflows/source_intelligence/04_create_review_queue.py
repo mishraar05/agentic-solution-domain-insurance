@@ -44,7 +44,7 @@ from pyspark.sql.types import (
     DoubleType, StringType, StructField, StructType, TimestampType,
 )
 
-from source_intelligence.contract_validation import validate_records
+from common.contract_validation import validate_records
 from source_intelligence.persistence import plan_existing_schema_alignment
 from source_intelligence.routing import route_review
 

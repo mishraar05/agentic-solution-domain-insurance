@@ -16,7 +16,7 @@ column names vary by monitor version, so the caller may override KEY_MAP after
 inspecting the actual metric table.
 """
 
-from source_intelligence.contract_validation import validate_records
+from common.contract_validation import validate_records
 
 PRODUCER_TAG = "LAKEHOUSE_MONITORING"
 

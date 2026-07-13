@@ -8,13 +8,12 @@ and every inference carries rule_pack_id, rule_version, and rule_id provenance.
 Handles separator-free abbreviated names (AS400 style, e.g. POLNBR, CLMSTS,
 EFFDT) via greedy longest-match segmentation against the token-expansion rules.
 """
-import json
 import os
 import re
 from datetime import date
 from itertools import product
 
-import yaml
+from governed_knowledge_foundation.knowledge_pack_io import load_knowledge_pack
 
 _PACK_CACHE = {}
 MAX_TOKEN_HYPOTHESES = 32
@@ -36,11 +35,7 @@ def _pack_dir(explicit=None):
 def load_pack(relative_path, pack_dir=None):
     path = os.path.join(_pack_dir(pack_dir), relative_path)
     if path not in _PACK_CACHE:
-        with open(path, "r", encoding="utf-8") as handle:
-            _PACK_CACHE[path] = (
-                yaml.safe_load(handle) if path.endswith((".yaml", ".yml"))
-                else json.load(handle)
-            )
+        _PACK_CACHE[path] = load_knowledge_pack(path)
     return _PACK_CACHE[path]
 
 
@@ -291,7 +286,7 @@ def _unresolved_naming(column_name, proposed, pack, resolution, provenance,
 
 def classify_naming_kb(table_name, column_name, pack_dir=None,
                        naming_pack=None,
-                       ontology_pack="ontology/pnc_ontology_v1.json",
+                       ontology_pack="ontology/insurance_ontology_v1.yaml",
                        source_system="*", naming_convention=None,
                        effective_date=None):
     """Match a column against the ontology using the naming rule pack.

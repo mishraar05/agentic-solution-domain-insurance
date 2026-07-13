@@ -1,0 +1,19 @@
+schema_version: 1.0.0
+pack_id: pensions_taxonomy
+pack_version: 1.0.0
+status: PROPOSED
+description: Repository-authored retirement product taxonomy kept separate from the P&C line-of-business taxonomy.
+ontology_concept: Shared.LineOfBusiness
+segments:
+- segment_id: RETIREMENT
+  name: Retirement and Pensions
+  description: Long-term retirement arrangements, contributions, investments, and benefit entitlements.
+lines_of_business:
+- lob_id: PENSIONS
+  name: Pensions
+  segment: RETIREMENT
+  aliases: [pension, retirement plan, retirement scheme]
+  description: Employer, individual, or other governed arrangements providing retirement contributions, assets, or benefits.
+  typical_products: [defined benefit scheme, defined contribution scheme, hybrid scheme]
+  typical_components: [member account, contribution, fund holding, valuation, retirement benefit, beneficiary]
+  jurisdiction_note: Tax, regulatory, and scheme terminology must be supplied by an authorized jurisdiction-specific extension.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Governed Work Package Router"
+  short_description: "Route the next eligible governed work package"
+  default_prompt: "Use $governed-work-package-router to select and execute the next eligible governed work package."

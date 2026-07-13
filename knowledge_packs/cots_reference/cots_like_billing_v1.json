@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0.0",
+  "pack_id": "cots_like_billing",
+  "pack_version": "1.0.0",
+  "status": "PROPOSED",
+  "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+  "authoring_source": "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742",
+  "knowledge_document": {
+    "schema_version": "1.0.0",
+    "document_id": "EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1",
+    "title": "Synthetic Billing Structure Reference",
+    "evidence_class": "SYNTHETIC_GOVERNED_KNOWLEDGE",
+    "source_classification": "SYNTHETIC_VENDOR_NEUTRAL",
+    "authorization_basis": "Repository-authored vendor-neutral synthetic reference; no licensed product documentation, financial identifiers, PII, or client material was used.",
+    "retention_class": "VERSION_CONTROLLED_METADATA",
+    "structured_retrieval_eligible": true,
+    "prompt_eligible": false,
+    "vector_index_eligible": false,
+    "raw_document_body_retained": false,
+    "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+    "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+  },
+  "knowledge_pack_version": {
+    "schema_version": "1.0.0",
+    "pack_id": "cots_like_billing",
+    "pack_version": "1.0.0",
+    "pack_status": "DEVELOPMENT",
+    "parent_pack_version": null,
+    "description": "Immutable vendor-neutral synthetic Billing recognition pack.",
+    "changelog": ["Initial contract-valid Billing object and attribute patterns derived from the authorized synthetic COTS-like reference."],
+    "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+    "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+  },
+  "cots_structure_patterns": [
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.object.bl_account", "pattern_type": "OBJECT", "source_object_pattern": "bl_account", "source_attribute_pattern": null, "ontology_concept_id": "Billing.Account", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed billing account object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.attribute.bl_account.account_number", "pattern_type": "ATTRIBUTE", "source_object_pattern": "bl_account", "source_attribute_pattern": "account_number", "ontology_concept_id": "Billing.Account", "expected_physical_types": ["string"], "required_for_object_match": true, "expected_confidence": 0.9, "match_evidence": ["Exact governed billing account-number attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.attribute.bl_account.balance_amt", "pattern_type": "ATTRIBUTE", "source_object_pattern": "bl_account", "source_attribute_pattern": "balance_amt", "ontology_concept_id": "Billing.Balance", "expected_physical_types": ["decimal", "double", "float", "long"], "required_for_object_match": false, "expected_confidence": 0.9, "match_evidence": ["Exact governed billing balance amount attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.object.bl_invoice", "pattern_type": "OBJECT", "source_object_pattern": "bl_invoice", "source_attribute_pattern": null, "ontology_concept_id": "Billing.Invoice", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed billing invoice object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.attribute.bl_invoice.invoice_status_cd", "pattern_type": "ATTRIBUTE", "source_object_pattern": "bl_invoice", "source_attribute_pattern": "invoice_status_cd", "ontology_concept_id": "Billing.Invoice", "expected_physical_types": ["string"], "required_for_object_match": false, "expected_confidence": 0.8, "match_evidence": ["Exact governed billing invoice status-code attribute."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.attribute.bl_invoice.due_date", "pattern_type": "ATTRIBUTE", "source_object_pattern": "bl_invoice", "source_attribute_pattern": "due_date", "ontology_concept_id": "Billing.Installment", "expected_physical_types": ["date", "timestamp", "string"], "required_for_object_match": false, "expected_confidence": 0.8, "match_evidence": ["Exact governed installment due-date attribute in the billing invoice structure."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.object.bl_installment", "pattern_type": "OBJECT", "source_object_pattern": "bl_installment", "source_attribute_pattern": null, "ontology_concept_id": "Billing.Installment", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed billing installment object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.object.bl_payment", "pattern_type": "OBJECT", "source_object_pattern": "bl_payment", "source_attribute_pattern": null, "ontology_concept_id": "Billing.Payment", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed billing payment object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.object.bl_disbursement", "pattern_type": "OBJECT", "source_object_pattern": "bl_disbursement", "source_attribute_pattern": null, "ontology_concept_id": "Billing.Disbursement", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed billing disbursement object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.object.bl_delinquency", "pattern_type": "OBJECT", "source_object_pattern": "bl_delinquency", "source_attribute_pattern": null, "ontology_concept_id": "Billing.Delinquency", "expected_physical_types": [], "required_for_object_match": true, "expected_confidence": 0.95, "match_evidence": ["Exact governed billing delinquency object name."], "lifecycle_state": "Standard",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.extension.attribute_suffix_ext", "pattern_type": "EXTENSION_MARKER", "source_object_pattern": "*", "source_attribute_pattern": "*_ext", "ontology_concept_id": null, "expected_physical_types": [], "required_for_object_match": false, "expected_confidence": 0.9, "match_evidence": ["Authorized synthetic convention for a likely source attribute extension."], "lifecycle_state": "Source extension",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    },
+    {
+      "schema_version": "1.0.0", "pattern_id": "PATTERN.cots_like.billing.extension.object_prefix_ext", "pattern_type": "EXTENSION_MARKER", "source_object_pattern": "ext_*", "source_attribute_pattern": null, "ontology_concept_id": null, "expected_physical_types": [], "required_for_object_match": false, "expected_confidence": 0.9, "match_evidence": ["Authorized synthetic convention for a likely source object extension."], "lifecycle_state": "Source extension",
+      "scope": {"product": "cots_like_suite", "module": "billing", "product_version": "1.0.0", "domain": "Billing", "line_of_business": "Personal Lines"},
+      "provenance": {"pack_id": "cots_like_billing", "pack_version": "1.0.0", "effective_from": "2026-07-13", "effective_to": null, "approval_state": "PROPOSED", "owner_role": "DATA_ARCHITECT", "evidence_references": ["EVIDENCE.KNOWLEDGE.COTS_LIKE_BILLING.1", "knowledge_packs/cots_reference/cots_like_reference_v1.json#sha256:9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742"], "content_fingerprint": "9764cf01db7df9f3369fef9d46fa331d220721b8f020d9abe276edfd801e2742", "created_at": "2026-07-13T00:00:00Z"}
+    }
+  ],
+  "excluded_source_mappings": []
+}

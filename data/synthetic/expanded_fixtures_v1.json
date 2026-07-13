@@ -6,7 +6,7 @@
     {
       "fixture_id": "F001", "category": "null_empty", "description": "Nullable business attribute contains null and empty values.",
       "target": {"table": "policy_source", "column": "policy_status"},
-      "input": {"tables": [{"name": "policy_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}, {"name": "policy_status", "physical_type": "StringType()", "nullable": true}], "rows": [{"policy_id": "SYN-P1", "policy_status": null}, {"policy_id": "SYN-P2", "policy_status": ""}]}]},
+      "input": {"tables": [{"name": "policy_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}, {"name": "policy_status", "physical_type": "StringType()", "nullable": true}], "rows": [{"policy_id": "SYN-POLICY-001", "policy_status": null}, {"policy_id": "SYN-POLICY-002", "policy_status": ""}]}]},
       "expected": {"processing_action": "ANALYZE", "issues": ["NULL_OR_EMPTY_VALUE"], "approval_state": "PROPOSED", "reviewer_role": "DOMAIN_STEWARD", "review_reason_contains": "incomplete"}
     },
     {
@@ -24,7 +24,7 @@
     {
       "fixture_id": "F004", "category": "orphan_fk", "description": "Child references a policy absent from the parent table.",
       "target": {"table": "claim_source", "column": "policy_id", "relationship_target": "policy_source.policy_id"},
-      "input": {"tables": [{"name": "claim_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_id": "SYN-MISSING"}]}, {"name": "policy_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_id": "SYN-P1"}]}]},
+      "input": {"tables": [{"name": "claim_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_id": "SYN-MISSING"}]}, {"name": "policy_source", "columns": [{"name": "policy_id", "physical_type": "StringType()", "nullable": false}], "rows": [{"policy_id": "SYN-POLICY-001"}]}]},
       "expected": {"processing_action": "ANALYZE", "issues": ["ORPHAN_FOREIGN_KEY"], "approval_state": "PROPOSED", "reviewer_role": "DATA_ARCHITECT", "review_reason_contains": "orphan", "relationship_target": "policy_source.policy_id"}
     },
     {

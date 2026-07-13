@@ -1,0 +1,4 @@
+interface:
+  display_name: "Establish Insurance Solution Governance"
+  short_description: "Govern domains, evidence, review, and promotion"
+  default_prompt: "Use $establish-insurance-solution-governance to define or validate governance for the requested insurance domain and operating scope."

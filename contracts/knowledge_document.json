@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/knowledge_document.json",
+  "title": "Knowledge Document",
+  "description": "Authorized evidence metadata only; raw document bodies are prohibited",
+  "type": "object",
+  "properties": {
+    "schema_version": {"$ref": "common.json#/definitions/schema_version"},
+    "document_id": {"type": "string", "pattern": "^EVIDENCE\\.[A-Z0-9_.-]+$"},
+    "title": {"type": "string"},
+    "evidence_class": {
+      "type": "string",
+      "enum": [
+        "SYNTHETIC_GOVERNED_KNOWLEDGE",
+        "AUTHORIZED_PUBLIC_KNOWLEDGE",
+        "LICENSED_COTS_KNOWLEDGE"
+      ]
+    },
+    "source_classification": {
+      "type": "string",
+      "enum": ["SYNTHETIC_VENDOR_NEUTRAL", "PUBLIC_AUTHORIZED", "LICENSED_AUTHORIZED"]
+    },
+    "authorization_basis": {"type": "string"},
+    "retention_class": {
+      "type": "string",
+      "enum": ["VERSION_CONTROLLED_METADATA", "CUSTOMER_GOVERNED_METADATA"]
+    },
+    "structured_retrieval_eligible": {"type": "boolean"},
+    "prompt_eligible": {"type": "boolean"},
+    "vector_index_eligible": {"type": "boolean", "const": false},
+    "raw_document_body_retained": {"type": "boolean", "const": false},
+    "scope": {"$ref": "common.json#/definitions/knowledge_scope"},
+    "provenance": {"$ref": "common.json#/definitions/knowledge_provenance"}
+  },
+  "required": [
+    "schema_version",
+    "document_id",
+    "title",
+    "evidence_class",
+    "source_classification",
+    "authorization_basis",
+    "retention_class",
+    "structured_retrieval_eligible",
+    "prompt_eligible",
+    "vector_index_eligible",
+    "raw_document_body_retained",
+    "scope",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

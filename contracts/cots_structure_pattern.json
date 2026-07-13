@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-insurance/contracts/cots_structure_pattern.json",
+  "title": "COTS Structure Pattern",
+  "description": "Product, module, and version-specific source-recognition pattern",
+  "type": "object",
+  "properties": {
+    "schema_version": {"$ref": "common.json#/definitions/schema_version"},
+    "pattern_id": {"type": "string", "pattern": "^PATTERN\\.[A-Za-z0-9_.-]+$"},
+    "pattern_type": {"type": "string", "enum": ["OBJECT", "ATTRIBUTE", "RELATIONSHIP", "EXTENSION_MARKER"]},
+    "source_object_pattern": {"type": "string"},
+    "source_attribute_pattern": {"type": ["string", "null"]},
+    "ontology_concept_id": {"type": ["string", "null"]},
+    "expected_physical_types": {"type": "array", "items": {"type": "string"}},
+    "required_for_object_match": {"type": "boolean"},
+    "expected_confidence": {"$ref": "common.json#/definitions/confidence_score"},
+    "match_evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "lifecycle_state": {"$ref": "common.json#/definitions/lifecycle_state"},
+    "scope": {"$ref": "common.json#/definitions/knowledge_scope"},
+    "provenance": {"$ref": "common.json#/definitions/knowledge_provenance"}
+  },
+  "required": [
+    "schema_version",
+    "pattern_id",
+    "pattern_type",
+    "source_object_pattern",
+    "source_attribute_pattern",
+    "ontology_concept_id",
+    "expected_physical_types",
+    "required_for_object_match",
+    "expected_confidence",
+    "match_evidence",
+    "lifecycle_state",
+    "scope",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,157 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Motor
+description: Motor product concepts for personal auto, commercial auto, motorcycle, and recreational vehicle risks.
+concepts:
+- concept_id: Motor.Driver
+  name: Driver
+  domain: Motor
+  definition: A person assigned or permitted to operate a vehicle in an insurance context.
+  synonyms: [operator, rated driver]
+  physical_name_variants: [driver, driver_id, operator_id]
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV]
+  privacy_sensitivity: DIRECT
+  temporality: SCD2
+- concept_id: Motor.DriverAssignment
+  name: Driver Vehicle Assignment
+  domain: Motor
+  definition: A time-bounded association of a driver with a vehicle and policy role.
+  synonyms: [driver assignment, operator assignment]
+  physical_name_variants: [driver_vehicle, driver_assignment, operator_unit]
+  relationships:
+  - type: references
+    target: Motor.Driver
+  - type: references
+    target: Shared.Vehicle
+  - type: belongs_to
+    target: Policy.Policy
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV]
+  privacy_sensitivity: DIRECT
+  temporality: SCD2
+- concept_id: Motor.VehicleUse
+  name: Vehicle Use
+  domain: Motor
+  definition: The governed operating purpose assigned to a covered vehicle.
+  synonyms: [use class, vehicle purpose]
+  physical_name_variants: [vehicle_use, use_class, usage_cd]
+  relationships:
+  - type: describes
+    target: Shared.Vehicle
+  lifecycle_state: Specialized
+  concept_type: CODE
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Motor.MotorCoverage
+  name: Motor Coverage
+  domain: Motor
+  definition: A motor-specific specialization of insurance coverage applicable to vehicles, drivers, or liability.
+  synonyms: [auto coverage, vehicle cover]
+  physical_name_variants: [motor_coverage, auto_coverage, vehicle_cov]
+  relationships:
+  - type: is_a
+    target: Shared.Coverage
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Motor.Accident
+  name: Motor Accident
+  domain: Motor
+  definition: A motor incident involving a vehicle that may give rise to damage, injury, or liability.
+  synonyms: [collision, vehicle incident]
+  physical_name_variants: [accident, collision, motor_incident]
+  relationships:
+  - type: is_a
+    target: Claim.LossEvent
+  lifecycle_state: Specialized
+  concept_type: EVENT
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV]
+  privacy_sensitivity: DIRECT
+  temporality: EVENT
+- concept_id: Motor.VehicleDamage
+  name: Vehicle Damage
+  domain: Motor
+  definition: Physical damage sustained by a vehicle in relation to a loss event.
+  synonyms: [auto damage, unit damage]
+  physical_name_variants: [vehicle_damage, damage_area, damage_type]
+  relationships:
+  - type: belongs_to
+    target: Motor.Accident
+  - type: references
+    target: Shared.Vehicle
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV]
+  privacy_sensitivity: INDIRECT
+  temporality: EVENT
+- concept_id: Motor.ThirdPartyLiability
+  name: Motor Third Party Liability
+  domain: Motor
+  definition: Liability exposure arising from injury or damage alleged against an insured motor operator.
+  synonyms: [auto liability, third party exposure]
+  physical_name_variants: [third_party_liability, bodily_injury, property_damage_liability]
+  relationships:
+  - type: belongs_to
+    target: Motor.Accident
+  - type: is_a
+    target: Claim.Exposure
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV]
+  privacy_sensitivity: DIRECT
+  temporality: EVENT
+- concept_id: Motor.NoClaimsDiscount
+  name: No Claims Discount
+  domain: Motor
+  definition: A policy rating characteristic representing eligible claim-free experience.
+  synonyms: [no claim bonus, NCD]
+  physical_name_variants: [ncd, no_claims_discount, claim_free_years]
+  relationships:
+  - type: describes
+    target: Policy.Policy
+  lifecycle_state: Specialized
+  concept_type: ATTRIBUTE
+  lob_applicability: [PERS_AUTO, MOTORCYCLE_RV]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Motor.RegistrationIdentifier
+  name: Vehicle Registration Identifier
+  domain: Motor
+  definition: A jurisdiction-issued identifier associated with a vehicle.
+  synonyms: [registration number, licence plate]
+  physical_name_variants: [registration_number, plate_number, reg_no]
+  relationships:
+  - type: identifies
+    target: Shared.Vehicle
+  lifecycle_state: Specialized
+  concept_type: ATTRIBUTE
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Motor.GaragingLocation
+  name: Garaging Location
+  domain: Motor
+  definition: The location at which a vehicle is principally kept for risk assessment.
+  synonyms: [vehicle location, principal garaging address]
+  physical_name_variants: [garaging_location, garage_postcode, vehicle_location]
+  relationships:
+  - type: is_a
+    target: Shared.Location
+  - type: references
+    target: Shared.Vehicle
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PERS_AUTO, COMM_AUTO, MOTORCYCLE_RV]
+  privacy_sensitivity: DIRECT
+  temporality: SCD2

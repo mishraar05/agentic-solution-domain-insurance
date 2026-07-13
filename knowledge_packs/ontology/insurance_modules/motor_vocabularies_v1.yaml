@@ -1,0 +1,28 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Motor
+description: Motor product controlled vocabularies and reference shapes for personal auto, commercial auto, motorcycle, and recreational vehicle risks.
+controlled_vocabularies:
+- vocabulary_id: MOTOR_VEHICLE_USE
+  name: Motor Vehicle Use
+  values: [PERSONAL, COMMUTING, BUSINESS, COMMERCIAL_DELIVERY, RIDESHARE, OTHER]
+  steward_note: Jurisdiction and product-specific codes require a governed mapping.
+- vocabulary_id: MOTOR_DRIVER_ROLE
+  name: Motor Driver Role
+  values: [PRIMARY, OCCASIONAL, EXCLUDED, PERMITTED, COMMERCIAL_OPERATOR]
+  steward_note: Excluded-driver semantics require explicit source evidence.
+- vocabulary_id: MOTOR_COVERAGE_TYPE
+  name: Motor Coverage Type
+  values: [LIABILITY, COLLISION, COMPREHENSIVE, UNINSURED_MOTORIST, MEDICAL, ROADSIDE, OTHER]
+  steward_note: Coverage values are illustrative governed categories, not policy-form authority.
+reference_shapes:
+- shape_id: MOTOR_POLICY_RISK_SHAPE
+  root_concept_id: Policy.Policy
+  required_concept_ids: [Shared.Vehicle]
+  optional_concept_ids: [Motor.Driver, Motor.DriverAssignment, Motor.VehicleUse, Motor.MotorCoverage, Motor.NoClaimsDiscount, Motor.GaragingLocation]
+- shape_id: MOTOR_LOSS_SHAPE
+  root_concept_id: Motor.Accident
+  required_concept_ids: [Claim.Claim]
+  optional_concept_ids: [Motor.VehicleDamage, Motor.ThirdPartyLiability, Shared.Vehicle, Motor.Driver]

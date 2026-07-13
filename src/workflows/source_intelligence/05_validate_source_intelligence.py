@@ -42,7 +42,7 @@ from pyspark.sql import Row
 from pyspark.sql import functions as F
 from pyspark.sql.types import ArrayType, StringType, StructField, StructType, TimestampType
 
-from source_intelligence.contract_validation import validate_records
+from common.contract_validation import validate_records
 from source_intelligence.knowledge_classifier import active_pack_versions
 from source_intelligence.source_documentation import PROMPT_VERSION
 
@@ -207,7 +207,7 @@ assert queued_keys >= key_candidates, (
 
 completed_at = datetime.now(timezone.utc)
 knowledge_pack_versions = active_pack_versions({
-    "pnc_ontology",
+    "insurance_ontology",
     "naming_rules",
     "privacy_rules",
     "type_rules",

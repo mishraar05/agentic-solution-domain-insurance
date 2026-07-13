@@ -1,0 +1,16 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Risk
+description: Shared risk, peril, hazard, factor, occupancy, and business-activity controlled vocabularies and reference shapes.
+controlled_vocabularies:
+- vocabulary_id: RISK_PERIL_FAMILY
+  name: Peril Family
+  values: [FIRE, WEATHER, THEFT, COLLISION, LIABILITY, OTHER]
+  steward_note: Product modules may specialize these values; unsupported source codes remain unresolved.
+reference_shapes:
+- shape_id: RISK_ASSESSMENT_SHAPE
+  root_concept_id: Risk.Risk
+  required_concept_ids: [Policy.InsuredObject]
+  optional_concept_ids: [Risk.Peril, Risk.Hazard, Risk.RiskFactor, Risk.Occupancy, Risk.BusinessActivity]

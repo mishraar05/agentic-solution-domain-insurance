@@ -1,0 +1,212 @@
+schema_version: 1.0.0
+pack_id: insurance_ontology
+pack_version: 1.0.0
+status: PROPOSED
+domain: Pensions
+description: Isolated pensions and retirement concepts; jurisdiction-specific tax and regulatory semantics remain unresolved.
+concepts:
+- concept_id: Pensions.Scheme
+  name: Pension Scheme
+  domain: Pensions
+  definition: A governed retirement arrangement under which members may accrue contributions, assets, or benefit entitlements.
+  synonyms: [retirement plan, pension plan]
+  physical_name_variants: [pension_scheme, retirement_plan, scheme_id]
+  relationships:
+  - type: has_many
+    target: Pensions.Account
+  - type: references
+    target: Pensions.Employer
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Pensions.Employer
+  name: Pension Sponsoring Employer
+  domain: Pensions
+  definition: An organization sponsoring or contributing to a pension scheme in an employer role.
+  synonyms: [scheme sponsor, sponsoring employer]
+  physical_name_variants: [employer, sponsor_id, employer_id]
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  - type: references
+    target: Pensions.Scheme
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
+- concept_id: Pensions.Member
+  name: Pension Member
+  domain: Pensions
+  definition: A person participating in a pension scheme under a governed member role.
+  synonyms: [scheme member, plan participant]
+  physical_name_variants: [pension_member, member_id, participant_id]
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  - type: references
+    target: Pensions.Scheme
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: DIRECT
+  temporality: SCD2
+- concept_id: Pensions.Account
+  name: Pension Account
+  domain: Pensions
+  definition: A scheme-level record of a member's retirement contributions, holdings, valuations, or entitlements.
+  synonyms: [member account, retirement account]
+  physical_name_variants: [pension_account, member_account, account_id]
+  relationships:
+  - type: belongs_to
+    target: Pensions.Scheme
+  - type: references
+    target: Pensions.Member
+  - type: has_many
+    target: Pensions.Contribution
+  - type: has_many
+    target: Pensions.FundHolding
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: DIRECT
+  temporality: SCD2
+- concept_id: Pensions.Contribution
+  name: Pension Contribution
+  domain: Pensions
+  definition: A payment allocated to a pension account by or for a member.
+  synonyms: [retirement contribution, scheme contribution]
+  physical_name_variants: [contribution, contribution_amt, pension_payment]
+  relationships:
+  - type: belongs_to
+    target: Pensions.Account
+  - type: references
+    target: Pensions.Employer
+  lifecycle_state: Specialized
+  concept_type: EVENT
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: DIRECT
+  temporality: EVENT
+- concept_id: Pensions.InvestmentFund
+  name: Pension Investment Fund
+  domain: Pensions
+  definition: A governed investment option in which pension assets may be held.
+  synonyms: [fund, investment option]
+  physical_name_variants: [investment_fund, fund_id, fund_code]
+  relationships: []
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: NONE
+  temporality: SCD2
+- concept_id: Pensions.FundHolding
+  name: Pension Fund Holding
+  domain: Pensions
+  definition: A point-in-time quantity or value of a pension account invested in a fund.
+  synonyms: [fund allocation, investment holding]
+  physical_name_variants: [fund_holding, allocation, units_held]
+  relationships:
+  - type: belongs_to
+    target: Pensions.Account
+  - type: references
+    target: Pensions.InvestmentFund
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: DIRECT
+  temporality: SNAPSHOT
+- concept_id: Pensions.Valuation
+  name: Pension Account Valuation
+  domain: Pensions
+  definition: A point-in-time measured value of a pension account or holding under stated valuation assumptions.
+  synonyms: [fund value, account value]
+  physical_name_variants: [valuation, fund_value, account_value]
+  relationships:
+  - type: measures
+    target: Pensions.Account
+  lifecycle_state: Specialized
+  concept_type: MEASURE
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: DIRECT
+  temporality: SNAPSHOT
+- concept_id: Pensions.Benefit
+  name: Pension Benefit
+  domain: Pensions
+  definition: A retirement entitlement or payment outcome arising under scheme rules.
+  synonyms: [retirement benefit, pension entitlement]
+  physical_name_variants: [pension_benefit, benefit_id, entitlement]
+  relationships:
+  - type: belongs_to
+    target: Pensions.Scheme
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: DIRECT
+  temporality: SCD2
+- concept_id: Pensions.Beneficiary
+  name: Pension Beneficiary
+  domain: Pensions
+  definition: A party nominated or eligible to receive a pension benefit under governed conditions.
+  synonyms: [nominee, survivor beneficiary]
+  physical_name_variants: [beneficiary, nominee_id, survivor_id]
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  - type: references
+    target: Pensions.Benefit
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: DIRECT
+  temporality: SCD2
+- concept_id: Pensions.RetirementEvent
+  name: Retirement Event
+  domain: Pensions
+  definition: A governed event marking retirement, benefit crystallization, transfer, or another retirement lifecycle transition.
+  synonyms: [retirement, benefit event]
+  physical_name_variants: [retirement_event, retirement_date, crystallization]
+  relationships:
+  - type: references
+    target: Pensions.Member
+  - type: precedes
+    target: Pensions.Benefit
+  lifecycle_state: Specialized
+  concept_type: EVENT
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: DIRECT
+  temporality: EVENT
+- concept_id: Pensions.ProjectedBenefit
+  name: Projected Pension Benefit
+  domain: Pensions
+  definition: A non-guaranteed estimated future benefit calculated under explicitly stated assumptions.
+  synonyms: [benefit projection, projected retirement income]
+  physical_name_variants: [projected_benefit, projected_income, estimated_pension]
+  relationships:
+  - type: derives_from
+    target: Pensions.Valuation
+  - type: describes
+    target: Pensions.Benefit
+  lifecycle_state: Specialized
+  concept_type: MEASURE
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: DIRECT
+  temporality: SNAPSHOT
+  steward_notes: Projection basis, date, assumptions, and guarantee status must be explicit; otherwise unresolved.
+- concept_id: Pensions.PensionAdministrator
+  name: Pension Administrator
+  domain: Pensions
+  definition: A party performing governed administrative services for a pension scheme.
+  synonyms: [scheme administrator, plan administrator]
+  physical_name_variants: [pension_administrator, administrator_id, scheme_admin]
+  relationships:
+  - type: is_a
+    target: Shared.Party
+  - type: references
+    target: Pensions.Scheme
+  lifecycle_state: Specialized
+  concept_type: ENTITY
+  lob_applicability: [PENSIONS]
+  privacy_sensitivity: INDIRECT
+  temporality: SCD2
