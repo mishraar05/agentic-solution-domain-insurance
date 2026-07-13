@@ -30,14 +30,9 @@ variables:
     description: Existing schema for solution-owned recommendation outputs
     default: agentic_insurance_mvp
   documentation_model_endpoint:
-    description: Databricks-hosted model endpoint for source documentation proposals
-    default: databricks-gpt-5-mini
-
-targets:
-  DEV:
-    workspace:
-      host: https://dbc-b2d72a44-d1b1.cloud.databricks.com
-      root_path: /Workspace/bundles/source-intelligence-v1
-
-include:
-  - resources/source_intelligence_pipeline.yml
+    description: >-
+      Databricks-hosted model endpoint for source documentation proposals.
+      Placeholder only: Free Edition does not reliably expose pay-per-token
+      Foundation Model API access for this workflow, so the Source
+      Documentation Agent (03) is untested end-to-end. Replace this default
+      with a 

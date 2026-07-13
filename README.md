@@ -161,7 +161,12 @@ centralizes governed versions and thresholds:
 - `source_system` identifies the configured source family;
 - `output_catalog` and `output_schema` identify the solution-owned destination;
 - `documentation_model_endpoint` identifies the Databricks-hosted model used by
-  the Source Documentation Agent;
+  the Source Documentation Agent. The bundle default is a placeholder
+  (`REPLACE_WITH_CONFIRMED_MODEL_ENDPOINT`): Databricks Free Edition does not
+  reliably expose pay-per-token Foundation Model API access for this workflow,
+  so notebook 03 remains untested end-to-end. Replace the value with a
+  confirmed serving endpoint name once validating against a full Databricks
+  workspace;
 - `ARTIFACT_VERSION` and `SCHEMA_VERSION` provide traceability;
 - `LOW_CONFIDENCE_THRESHOLD` and `EVIDENCE_COVERAGE_FLOOR` govern routing.
 
@@ -235,8 +240,4 @@ remain ineligible until that gate is evidenced.
 
 1. Read this README and `AGENTS.md` for boundaries and conventions.
 2. Read `src/workflows/source_intelligence/README.md` for execution behavior.
-3. Read the relevant contract before changing a producer.
-4. Put deterministic rules in `src/source_intelligence/`, not in notebooks.
-5. Add synthetic tests for every rule or routing change.
-6. Run the local verification commands.
-7. Update evidence honestly; unresolved human or runtime decisions stay open.
+3. Read the relevant contract before changing a 
