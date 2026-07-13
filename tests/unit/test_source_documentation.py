@@ -211,8 +211,35 @@ def test_unresolved_output_contains_no_invented_documentation():
     assert parsed["column_description"] is None
 
 
-def test_proposed_output_requires_description_and_glossary():
+def test_unresolved_model_proposal_fields_are_discarded():
+    result = _proposed_output()
+    result["generation_status"] = "UNRESOLVED"
+    original = dict(result)
+    parsed = parse_model_output(result)
+    assert parsed["generation_status"] == "UNRESOLVED"
+    assert parsed["column_description"] is None
+    assert parsed["glossary_term"] is None
+    assert parsed["glossary_definition"] is None
+    assert parsed["glossary_concept_id"] is None
+    assert "proposal fields were discarded" in parsed["contradictions"][-1]
+    assert result == original
+
+
+def test_incomplete_proposal_is_downgraded_to_unresolved():
     result = _proposed_output()
     result["glossary_definition"] = None
-    with pytest.raises(ValueError, match="requires all text fields"):
-        parse_model_output(result)
+    parsed = parse_model_output(result)
+    assert parsed["generation_status"] == "UNRESOLVED"
+    assert parsed["column_description"] is None
+    assert parsed["glossary_term"] is None
+    assert parsed["glossary_definition"] is None
+    assert "incomplete documentation" in parsed["contradictions"][-1]
+
+
+def test_missing_resolution_reason_is_downgraded_to_unresolved():
+    result = _proposed_output()
+    result["resolution_reason"] = "  "
+    parsed = parse_model_output(result)
+    assert parsed["generation_status"] == "UNRESOLVED"
+    assert parsed["resolution_reason"].startswith("Model output")
+    assert "omitted a usable resolution reason" in parsed["contradictions"][-1]

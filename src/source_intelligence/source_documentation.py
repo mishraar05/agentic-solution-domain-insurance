@@ -18,7 +18,7 @@ import os
 from source_intelligence.contract_validation import validate_records
 
 
-PROMPT_VERSION = "1.0.0"
+PROMPT_VERSION = "1.0.1"
 MODEL_OUTPUT_CONTRACT = "source_documentation_model_output.json"
 RECOMMENDATION_CONTRACT = "source_documentation_recommendation.json"
 
@@ -295,22 +295,55 @@ def unresolved_model_output(reason):
 
 
 def parse_model_output(output):
-    """Parse and validate one structured LLM response."""
+    """Parse and govern one structured LLM response.
+
+    JSON Schema validates field shapes but cannot reliably enforce the
+    cross-field status rule supported by every serving path. A structurally
+    valid yet inconsistent proposal is therefore downgraded to ``UNRESOLVED``;
+    proposed semantics are discarded and the normalization is made visible to
+    the Domain Steward as a contradiction.
+    """
     result = json.loads(output) if isinstance(output, str) else dict(output)
     validate_records([result], MODEL_OUTPUT_CONTRACT)
-    if not result["resolution_reason"].strip():
-        raise ValueError("Documentation output requires a resolution reason.")
     proposed_fields = (
         "column_description", "glossary_term", "glossary_definition"
     )
-    if result["generation_status"] == "PROPOSED":
-        if any(not result[field] for field in proposed_fields):
-            raise ValueError("PROPOSED documentation requires all text fields.")
-    elif (
+    contradictions = list(result["contradictions"])
+    reason = result["resolution_reason"].strip()
+    proposed_complete = all(
+        isinstance(result[field], str) and result[field].strip()
+        for field in proposed_fields
+    )
+    unresolved_has_proposal = (
         any(result[field] is not None for field in proposed_fields)
         or result["glossary_concept_id"] is not None
-    ):
-        raise ValueError("UNRESOLVED documentation must not invent text fields.")
+    )
+    if not reason:
+        contradictions.append(
+            "Model omitted a usable resolution reason; output was downgraded "
+            "to UNRESOLVED for Domain Steward review."
+        )
+    if result["generation_status"] == "PROPOSED" and not proposed_complete:
+        contradictions.append(
+            "Model marked incomplete documentation as PROPOSED; output was "
+            "downgraded to UNRESOLVED and proposal fields were discarded."
+        )
+    if result["generation_status"] == "UNRESOLVED" and unresolved_has_proposal:
+        contradictions.append(
+            "Model populated proposal fields while marking the result "
+            "UNRESOLVED; proposal fields were discarded."
+        )
+    if contradictions != result["contradictions"]:
+        result = dict(result)
+        result["generation_status"] = "UNRESOLVED"
+        for field in proposed_fields + ("glossary_concept_id",):
+            result[field] = None
+        result["resolution_reason"] = reason or (
+            "Model output was internally inconsistent; Domain Steward review "
+            "is required."
+        )
+        result["contradictions"] = contradictions
+        validate_records([result], MODEL_OUTPUT_CONTRACT)
     return result
 
 
