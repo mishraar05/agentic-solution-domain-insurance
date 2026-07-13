@@ -32,7 +32,16 @@ variables:
   documentation_model_endpoint:
     description: >-
       Databricks-hosted model endpoint for source documentation proposals.
-      Placeholder only: Free Edition does not reliably expose pay-per-token
-      Foundation Model API access for this workflow, so the Source
-      Documentation Agent (03) is untested end-to-end. Replace this default
-      with a 
+      The default was confirmed READY through the workspace serving-endpoints
+      API; endpoint invocation remains subject to workspace permissions and
+      must be evidenced separately.
+    default: databricks-gpt-5-6-luna
+
+targets:
+  DEV:
+    workspace:
+      host: https://dbc-b2d72a44-d1b1.cloud.databricks.com
+      root_path: /Workspace/bundles/source-intelligence-v1
+
+include:
+  - resources/source_intelligence_pipeline.yml

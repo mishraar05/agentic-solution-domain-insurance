@@ -7,7 +7,10 @@ a syntax error even though local ``compileall`` succeeds.
 """
 
 import ast
+import re
 from pathlib import Path
+
+import yaml
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -107,3 +110,17 @@ def test_dictionary_uses_governed_pack_selection_and_contradiction_routing():
     assert 'naming_contradicted=naming["naming_contradicted"]' in dictionary
     assert '_required_widget("naming_convention")' in config
     assert '_required_widget("rule_effective_date")' in config
+
+
+def test_every_job_task_supplies_required_shared_config_parameters():
+    config = (WORKFLOW_DIR / "00_config.py").read_text(encoding="utf-8")
+    required = set(re.findall(r'_required_widget\("([A-Za-z0-9_]+)"\)', config))
+    resource_path = ROOT / "resources" / "source_intelligence_pipeline.yml"
+    resource = yaml.safe_load(resource_path.read_text(encoding="utf-8"))
+    tasks = resource["resources"]["jobs"]["source_intelligence_pipeline"]["tasks"]
+    for task in tasks:
+        supplied = set(task["notebook_task"].get("base_parameters", {}))
+        assert required <= supplied, (
+            f"{task['task_key']} omits required parameters: "
+            f"{sorted(required - supplied)}"
+        )
