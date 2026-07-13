@@ -24,11 +24,64 @@ RECOMMENDATION_CONTRACT = "source_documentation_recommendation.json"
 
 
 class AIQueryInvocationError(RuntimeError):
-    """An ``ai_query`` row reported an endpoint/model invocation failure."""
+    """An ``ai_query`` row reported a safely classified invocation failure."""
+
+    def __init__(self, message, reason_code, diagnostic_fingerprint=None):
+        super().__init__(message)
+        self.reason_code = reason_code
+        self.diagnostic_fingerprint = diagnostic_fingerprint
+
+    @property
+    def safe_diagnostic(self):
+        """Return a bounded diagnostic containing no endpoint error text."""
+        if self.diagnostic_fingerprint:
+            return f"{self.reason_code}:{self.diagnostic_fingerprint}"
+        return self.reason_code
 
 
 class AIQueryResponseShapeError(ValueError):
     """An ``ai_query`` row did not match a governed response shape."""
+
+
+def _classify_ai_query_error(error_message):
+    """Map endpoint text to a bounded reason code and stable fingerprint.
+
+    The raw text is used only in memory. It is never included in an exception
+    message because serving errors can echo prompt fragments or endpoint
+    details.
+    """
+    raw_message = str(error_message)
+    normalized = raw_message.casefold()
+    classifications = (
+        ("UNSUPPORTED_BATCH_ENDPOINT", (
+            "not supported for batch inference", "batch inference unsupported",
+        )),
+        ("RATE_LIMITED", (
+            "rate limit", "resource exhausted", "too many requests", "429",
+        )),
+        ("STRUCTURED_OUTPUT_ERROR", (
+            "responseformat", "response format", "json schema",
+            "structured output", "schema validation",
+        )),
+        ("TOKEN_LIMIT", (
+            "token limit", "max tokens", "maximum context length",
+            "context length exceeded",
+        )),
+        ("TIMEOUT", ("timeout", "timed out", "deadline exceeded")),
+        ("PERMISSION_DENIED", (
+            "permission denied", "unauthorized", "forbidden", "403",
+        )),
+        ("INVALID_REQUEST", (
+            "invalid request", "invalid parameter", "bad request", "400",
+        )),
+    )
+    reason_code = "MODEL_INVOCATION_FAILED"
+    for candidate, markers in classifications:
+        if any(marker in normalized for marker in markers):
+            reason_code = candidate
+            break
+    fingerprint = hashlib.sha256(raw_message.encode("utf-8")).hexdigest()[:12]
+    return reason_code, fingerprint
 
 
 def load_system_prompt(prompt_path=None):
@@ -167,7 +220,9 @@ def extract_ai_query_response(model_result):
     deliberately not treated as documentation.
     """
     if model_result is None:
-        raise AIQueryInvocationError("ai_query returned a null result.")
+        raise AIQueryInvocationError(
+            "ai_query returned a null result.", "NULL_MODEL_RESULT"
+        )
     if hasattr(model_result, "asDict"):
         result = model_result.asDict(recursive=True)
     elif isinstance(model_result, dict):
@@ -180,7 +235,12 @@ def extract_ai_query_response(model_result):
 
     if result.get("errorMessage"):
         # Endpoint text may contain request/model details; do not propagate it.
-        raise AIQueryInvocationError("ai_query reported a model error.")
+        reason_code, fingerprint = _classify_ai_query_error(
+            result["errorMessage"]
+        )
+        raise AIQueryInvocationError(
+            "ai_query reported a model error.", reason_code, fingerprint
+        )
     payload_field = next(
         (field for field in ("response", "result") if field in result),
         None,
@@ -190,7 +250,8 @@ def extract_ai_query_response(model_result):
         if response is None:
             raise AIQueryInvocationError(
                 f"ai_query returned a null {payload_field} without a model "
-                "error."
+                "error.",
+                f"NULL_{payload_field.upper()}_PAYLOAD",
             )
         if hasattr(response, "asDict"):
             return response.asDict(recursive=True)

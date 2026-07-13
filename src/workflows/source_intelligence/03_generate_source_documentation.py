@@ -156,22 +156,37 @@ else:
         result_rows = requests_df.select(
             "source_table", "source_column", invocation.alias("model_result")
         ).collect()
-        failed = []
+        failed_by_diagnostic = defaultdict(list)
         for result_row in result_rows:
             key = (result_row.source_table, result_row.source_column)
             try:
                 model_outputs[key] = extract_ai_query_response(
                     result_row.model_result
                 )
-            except AIQueryInvocationError:
-                failed.append(key)
+            except AIQueryInvocationError as exc:
+                failed_by_diagnostic[exc.safe_diagnostic].append(key)
             except AIQueryResponseShapeError as exc:
                 raise RuntimeError(
                     f"Unexpected ai_query response for {key}: {exc}"
                 ) from exc
-        if failed:
+        if failed_by_diagnostic:
+            failed_count = sum(
+                len(keys) for keys in failed_by_diagnostic.values()
+            )
+            diagnostic_groups = []
+            for diagnostic, keys in sorted(failed_by_diagnostic.items()):
+                samples = ", ".join(
+                    f"{table}.{column}" for table, column in keys[:5]
+                )
+                omitted = len(keys) - 5
+                if omitted:
+                    samples += f", +{omitted} more"
+                diagnostic_groups.append(
+                    f"{diagnostic} [{samples}]"
+                )
             raise RuntimeError(
-                f"Model invocation failed for {len(failed)} source columns; "
+                f"Model invocation failed for {failed_count} source columns: "
+                f"{'; '.join(diagnostic_groups)}; "
                 "no documentation recommendations were persisted."
             )
 

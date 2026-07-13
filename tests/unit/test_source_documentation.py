@@ -139,6 +139,45 @@ def test_ai_query_model_error_is_sanitized():
             "errorMessage": "sensitive endpoint diagnostic",
         })
     assert "sensitive endpoint diagnostic" not in str(exc_info.value)
+    assert exc_info.value.reason_code == "MODEL_INVOCATION_FAILED"
+    assert len(exc_info.value.diagnostic_fingerprint) == 12
+    assert exc_info.value.safe_diagnostic.startswith("MODEL_INVOCATION_FAILED:")
+
+
+@pytest.mark.parametrize(("error_message", "reason_code"), [
+    (
+        "PERMISSION_DENIED: endpoint is not supported for batch inference",
+        "UNSUPPORTED_BATCH_ENDPOINT",
+    ),
+    ("HTTP 429: rate limit exceeded", "RATE_LIMITED"),
+    ("JSON schema validation failed", "STRUCTURED_OUTPUT_ERROR"),
+    ("maximum context length exceeded", "TOKEN_LIMIT"),
+    ("deadline exceeded", "TIMEOUT"),
+    ("HTTP 403: forbidden", "PERMISSION_DENIED"),
+    ("HTTP 400: invalid request", "INVALID_REQUEST"),
+])
+def test_ai_query_model_error_is_safely_classified(
+        error_message, reason_code):
+    with pytest.raises(AIQueryInvocationError) as exc_info:
+        extract_ai_query_response({
+            "result": None,
+            "errorMessage": error_message,
+        })
+    assert exc_info.value.reason_code == reason_code
+    assert error_message not in str(exc_info.value)
+
+
+def test_ai_query_error_fingerprint_is_stable_without_exposing_text():
+    diagnostics = []
+    for _ in range(2):
+        with pytest.raises(AIQueryInvocationError) as exc_info:
+            extract_ai_query_response({
+                "result": None,
+                "errorMessage": "opaque provider failure 123",
+            })
+        diagnostics.append(exc_info.value.safe_diagnostic)
+    assert diagnostics[0] == diagnostics[1]
+    assert "opaque provider failure 123" not in diagnostics[0]
 
 
 @pytest.mark.parametrize("field", ["content", "candidates"])
